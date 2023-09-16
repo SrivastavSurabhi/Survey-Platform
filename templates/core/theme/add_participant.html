@@ -1,0 +1,136 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="{% static 'js/theme/add-participant.js' %}" xmlns="http://www.w3.org/1999/html"></script>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="add_partici_wrp">
+
+        <div class="page-title-header mb-2">
+            <div class="row">
+                <div class="col-12 col-md-7 col-lg-12">
+                    <div class="page-title-text mb-sm-4 mb-lg-0">
+                        <h3 class="text-dark font-weight-bold">
+                            Add Participants
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>Enter each participant who would be providing feedback.</p> 
+
+        <div class="client_intake_form mt-3">
+            <form name="addparticipantfrm" class="commnewfrmdesign" id="addparticipantfrm" method="post" >
+
+                {% csrf_token %}
+                <div class="d-block client-info mb-2 mb-lg-4">
+                    <div class="row mt-2 mt-lg-4">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="text" name="fname" class="form-control cutome-input"  id="fname" placeholder="First Name">
+                                    <span class="error" id="fnameerr"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="text" name="lname" class="form-control cutome-input" id="lname" placeholder="Last Name">
+                                    <span class="error" id="lnameerr"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="email" name="email" class="form-control cutome-input" id="email" placeholder="Email">
+                                    <span class="error" id="emailerr"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <select name="relationship"  class="form-control cutome-input" id="relationship">
+                                        <option value="demo" selected>Select Relationship</option>
+                                        {% for r in relation %}
+                                        <option value={{ r.id }}>{{ r.relation }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="error" id="relationshiperr"></span>
+                                </div>
+                                <!-- <div class="cmn_field forgot_pass checkbox_cmnwrp mt-3 participant_check">
+                                    <label class="text-black"><input type="checkbox" name="forgtpass"> Enter Relation</label>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub_field">
+                    <button type="submit" id="addparticipantsub" class="btn btn-default mr-2">Save</button>
+                    <button class="btn btn-default ml-2"><a style="color:#45A29E " href="{% url 'participant-list' %}"> Cancel</a></button>
+                </div>
+
+<!--                {% if sucmessage %}-->
+<!--                <p class="sucessmsg"> {{ sucmessage }}</p>-->
+<!--                {% endif %}-->
+<!--                {% if failmessage %}-->
+<!--                <p class="failsmsg"> {{ failmessage }}</p>-->
+<!--                {% endif %}-->
+
+<!--                {% if messages %}-->
+<!--                        {% for message in messages %}-->
+<!--                            <p class="failsmsg"> {{ message  }}</p>-->
+<!--                        {% endfor %}-->
+<!--                {% endif %}-->
+            </form> 
+        </div>
+
+    </div>
+</div>
+
+
+<div class="forgotpass_popup cmn_sitepopup">
+    <div class="forgotpass_inn_poup cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <h2>Enter Value</h2>
+        
+        <form name="otherfrm" id="othersub" method="post" action="/add-relation/">
+            {% csrf_token %}
+            <div class="cmn_field inputicon emialicon">
+                <input type="text" name="rel" id="rel" placeholder="Text" value={{ relat.relation}}>
+                <span class="error" id="othererr"></span>
+            </div>
+            <div class="sub_field">
+                
+                <button type="button" id="addrelation" name="addrelation" class="btn btn-default">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+{% endblock content %}
+

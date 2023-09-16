@@ -1,0 +1,169 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-sm-12 plans_pricing mt-3">
+                <div class="row">
+
+                    <div class="col-lg-12 single_block mb-4">
+                        <div class="shadow_box">
+                            <div class="page_title with_go_back">
+                                <a onclick="history.back()"><img src="{% static 'new_theme/images/go-back.svg' %}" alt="go-back /"></a>
+                                <h4 id="page_title">Add New Client</h4>
+                            </div>
+                           <div class="form_data">
+                            <form  id="add_client" >
+                                {% csrf_token %}
+                                    <div class="title"><h2>Personal Details</h2></div>
+                                    <div class="row">
+                                      <input type="text" id="client_id" class="form-control" value="" hidden/>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>First Name<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                <input type="text" name="first_name" id = "first_name" class="form-control"required/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Last Name<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                <input type="text" name="last_name" id = "last_name" class="form-control" required/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Email<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                <input type="email" name="email" id="email" class="form-control" required/>
+                                                <span class="error" id="emailerr" ></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Username<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                <input type="text" name="username" id="username" class="form-control" required/>
+                                                <span class="error" id="usernameerr" ></span>
+                                            </div>
+                                        </div>
+                                        <div class="password col-md-6 col-lg-4 mb-3">
+                                            <div class=" form-group">
+                                                <label>Password<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                <input type="password" name="password" id="password" class="form-control" required/>
+                                                <span class="error" id="passworderr" ></span>
+                                            </div>
+                                        </div>
+                                        <div class="cnfmpassword col-md-6 col-lg-4 mb-3">
+                                            <div class="  form-group">
+                                                <label>Confirm Password<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                <input type="password" name="cnfmpassword" id="cnfmpassword" class="form-control" required/>
+                                                <span class="error" id="cnfmpassworderr" ></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Phone</label>
+                                                <input type="text" id="phone" class="form-control" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Organization</label>
+                                                <input id="organization" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Organization URL</label>
+                                                <input id="organization_url" type="text" class="form-control"  />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Title</label>
+                                                <input id="title" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Address</label>
+                                                <input id="address" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Zipcode</label>
+                                                <input id="zipcode" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>Country</label>
+                                                <input id="country" class="form-control" >
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>State</label>
+                                                <input id="state" class="form-control" >
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-group">
+                                                <label>City</label>
+                                                <input id="city" class="form-control" >        
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="{% if coaches%} d-block {% else %} d-none{% endif %}" >
+                                        <div class="title"><h2>Coach Details</h2>
+                                        </div>
+                                            <div class="row">
+                                                <div class="col-md-6 col-lg-4 mb-3">
+                                                    <div class="form-group">
+                                                        <label>Assign Coach<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                        <select id="coach" name="coach" class="form-control">
+                                                            <option disabled="" selected>Select Coach</option>
+                                                            {% for coach in coaches %}
+                                                                <option value="{{coach.id}}">{{coach.first_name}} {{coach.last_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <span class="error" id="coacherr"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                    <div class="col-sm-12 d-flex justify-content-center form_buttons mt-2">
+                                        <button class="reset" type="reset">Cancel</button>
+                                        <button class="submit" type="button" id="save_client">Save</button>
+                                    </div>
+                                </form>
+                           </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    
+{% endblock %}    
+
+{% block extrajs%}
+<script>
+var clientData = `{{data|safe}}`
+
+
+</script>
+<script src="{% static 'new_theme/appScript/add-new-client.js' %}"></script>
+{% endblock %}

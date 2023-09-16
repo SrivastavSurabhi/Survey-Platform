@@ -1,0 +1,158 @@
+body {
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    min-height: 100vh;
+}
+.feedback_form_logo {
+    text-align: center;
+}
+section.feedback_form_sect{
+    padding: 70px 0 40px;
+}
+.feedback_form_inn {
+    box-shadow: 0px 0px 30px #00000029;
+    border-radius: 40px;
+    padding: 50px 80px 150px 80px;
+    background-color: #fff;
+}
+.feedback_form_inn h1 {
+    text-align: center;
+    margin: 45px 0;
+}
+.feedback_form_logo figure {
+    width: 270px;
+    margin: 0 auto 15px;
+}
+.feedback_form_page .sitebtn {
+    margin: 0;
+}
+/* Footer */
+footer.sitefooter_new {
+    text-align: center;
+}
+.sitefooter_inn p {
+    color: #fff;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 300;
+    margin: 0;
+}
+footer.sitefooter_new {
+    text-align: center;
+    padding-bottom: 30px;
+}
+/* feedback_scrtwo style */
+.comm-screen .scrn_list li {
+    display: inline-block;
+    vertical-align: middle;
+    border: 1px solid #3AA69D;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    margin-left: 99px;
+    background-color: #fff;
+    position: relative;
+}
+.scrn_list{
+    position: relative;
+    display: inline-block;
+}
+.scrn_list::before {
+    content: "";
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    left: 0;
+    right: 0;
+    border-bottom: .5px solid #E6E6E6;
+    margin: 0 auto;
+}
+
+.comm-screen .active{
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+}
+.comm-screen .scrn_list li:first-child{
+    margin-left: 0;
+}
+.feedback_scrtwo {
+    margin-top: 50px;
+}
+.feedqueans .screenansbox {
+    border: 1px solid #E6E6E6;
+    height: 40px;
+}
+.comm-screen .feedqueans{
+    margin-top: 70px;
+}
+/* pagination style */
+.survey_paginat {
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    display: inline-block;
+    width: 90px;
+    border-radius: 30px;
+    padding: 4px 10px;
+    box-shadow: 0px 10px 20px #67c5bd59;
+}
+.survey_paginat a svg {
+    width: 9px;
+}
+.survey_paginat_wrp {
+    margin-top: 50px;
+    margin-bottom: 40px;
+}
+.survey_paginat a {
+    display: inline-block;
+    vertical-align: middle;
+    width: 47%;
+}
+a.prevpagination.disable svg .a {
+    fill: #efeeee;
+}
+.feed_scrfour_btn .savecontinue, .savelatter, .subfeedback{
+    display: inline-block;
+    margin: 0 14px;
+}
+.feed_scrfour_btn {
+    text-align: center;
+}
+.feedback_form_popup .cmn_site_inn_popup {
+    width: 440px;
+    padding: 40px 48px 40px;
+    background-size: 100% 10px;
+}
+.feedback_form_popup .popupcontant h2 {
+    font-size: 23px;
+    line-height: 28px;
+}
+.popupcontant p {
+    text-align: center;
+    margin: 0;
+    font-size: 18px;
+    line-height: 25px;
+}
+.feedback_form_popup .popupcontant h2 {
+    font-size: 23px;
+    line-height: 28px;
+    margin-bottom: 16px;
+}
+.feedback_form_popup .cmn_site_inn_popup .sub_field{
+    margin-top: 35px;
+}
+.feedback_form_inn_poup .sub_field button {
+    width: auto;
+    padding: 6px 30px;
+    font-size: 14px;
+    line-height: 19px;
+}
+.thnkcontant h2{
+    margin-bottom: 10px;
+    font-size: 25px;
+    line-height: 36px;
+}
+.fedfrm_thank_popup .cmn_site_inn_popup {
+    width: 400px;
+    padding: 40px 46px 30px;
+    background-size: 100% 10px;
+}

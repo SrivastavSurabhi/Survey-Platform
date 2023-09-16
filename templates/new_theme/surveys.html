@@ -1,0 +1,123 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+
+
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-sm-12 features_block survey_page_topbar mt-3">
+                <div class="row">
+                    <div class="col-lg-3 single_block mb-4">
+                        <div class="shadow_box">
+                            <a href="/new_theme/draft-survey" class="view_page"><i class="fa fa-eye"></i></a>
+                            <div class="pic"><img src="{% static 'new_theme/images/draft.png' %}" alt="survey-icon" /></div>
+                            <h4>Draft Survey</h4>
+                            <div class="num">{{pending_survey.count}}</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 single_block mb-4">
+                        <div class="shadow_box">
+                            <a href="/new_theme/active-survey" class="view_page"><i class="fa fa-eye"></i></a>
+                            <div class="pic"><img src="{% static 'new_theme/images/upcoming-survey.png' %}" alt="survey-icon" /></div>
+                            <h4>Active Survey</h4>
+                            <div class="num">{{active_survey.count}}</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 single_block mb-4">
+                        <div class="shadow_box">
+                            <a href="/new_theme/completed-survey" class="view_page"><i class="fa fa-eye"></i></a>
+                            <div class="pic"><img src="{% static 'new_theme/images/survey-icon.png' %}" alt="survey-icon" /></div>
+                            <h4>Completed Survey</h4>
+                            <div class="num">{{completed_survey.count}}</div>
+                        </div>
+                    </div>                    
+                    <div class="col-lg-3 single_block mb-4">
+                        <div class="shadow_box">
+                            <a href="/new_theme/surveys" class="total_survey view_page"><i class="fa fa-eye"></i></a>
+                            <div class="pic"><img src="{% static 'new_theme/images/survey-icon.png' %}" alt="survey-icon" /></div>
+                            <h4>Total Survey</h4>
+                            <div class="num">{{survey.count}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 plans_pricing mt-2">
+                <div class="row">
+                    <div class="col-lg-12 single_block mb-4">
+                        <div class="shadow_box">
+
+                            <div class="page_title without_cta">
+                                <h4>All Surveys</h4>
+                                <div class="right_area">
+                                    <a href="/new_theme/addsurvey">Add Survey</a>
+                                    <button class="page_filter survey"><img src="{% static 'new_theme/images/filter.png' %}" alt="filter"></button>
+                                </div>
+                            </div>
+
+                            <div class="page_filter_part">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-lg-3 mb-2"><input type="text" class="form-control survey_name" placeholder="Survey Name" /></div>
+                                        {% comment %} <div class="col-lg-3 mb-2"><input type="text" class="form-control datepicker created_date" placeholder="Created Date" /></div> {% endcomment %}
+                                        <div class="col-lg-3 mb-2"><input type="text" class="form-control survey_coach" placeholder="Survey Coach" /></div>
+                                        <div class="col-lg-3 mb-2">
+                                            <select class="form-control survey_status">
+                                                <option selected disabled>Status</option>
+                                                <option value="US">Draft</option>
+                                                <option value="AT">Active</option>
+                                                <option value="CT">Completed</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-12"><button type="button" class="submit apply_filter survey">Apply Filter</button></div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="table_design">
+                                <div class="sort_by">
+                                    <select id="sort_by">
+                                        <option disabled selected>Sort by</option>
+                                        <option value="1">New Entries</option>
+                                        <option value="2">Old Entries</option>
+                                    </select>
+                                </div>
+                                <table class="tableLayout responsive nowrap" id="surveysDatatable">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr. No</th>
+                                            <th>Survey Name</th>
+                                            <th>Survey Coach</th>
+                                            <th>Survey Client</th>
+                                            <th>Survey Created Date</th>
+                                            <th>Participants</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extrajs %}
+<script>
+    user_type = {{request.user.user_type}}
+</script>
+<script src="{% static 'new_theme/appScript/surveys.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs %}

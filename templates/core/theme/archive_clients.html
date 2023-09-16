@@ -1,0 +1,339 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% load customtags %}
+{% block extrastyle %}
+<style>
+   .modal-dialog.modal-lg.cmn_site_inn_popup {
+   text-align: left;
+   max-width:auto!important;
+   }
+   div#email_preview {
+   background: rgba(0,0,0,0.5);
+   }
+   button#dropdownMenuButton {
+   padding: 12px 0;
+   }
+   #allParticipants span.input-group-text i {
+   font-size: 18px;
+   }
+   .cmn_table_wrp tbody tr:hover a.newbtn.table-btn {
+   background: linear-gradient(to bottom, #686868, #696b6a, #686868, #696b6a, #686868);
+   }
+   .saveas-popup
+   {
+   width: 530px;
+   }
+   .draft_inn.cmn_site_inn_popup.saveas-popup label {
+   margin-bottom: 0;
+   }
+   .sav
+   a.newbtn.table-btn {
+   color: #fff;
+   text-decoration: none;
+   }
+   .save-as-rpt {
+   display: flex;
+   flex-direction: column;
+   }
+   .save-as-rpt .one_block
+   {
+   display: flex;
+   align-items: center;
+   margin-bottom: 8px;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup thead tr th:nth-child(1),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr td:nth-child(1)
+   {
+   width: 13%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup thead tr th:nth-child(2),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr td:nth-child(2)
+   {
+   width: 21%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup thead tr th:nth-child(3),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr td:nth-child(3)
+   {
+   width: 21%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup thead tr th:nth-child(4),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr td:nth-child(4)
+   {
+   width: 21%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup thead tr th:nth-child(5),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr td:nth-child(5)
+   {
+   width: 18%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html th:nth-child(2),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html td:nth-child(2)
+   {
+   width: 13%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html th:nth-child(3),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html td:nth-child(3)
+   {
+   width: 21%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html th:nth-child(4),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html td:nth-child(4)
+   {
+   width: 21%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html th:nth-child(5),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html td:nth-child(5)
+   {
+   width: 21%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html th:nth-child(6),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html td:nth-child(6)
+   {
+   width: 18%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html th:nth-child(7),
+   table.table.cmn_table_wrp.client_coach_list_table.coach-popup tbody#partbl2 tr.extended-html td:nth-child(7)
+   {
+   width:0%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(1)
+   {
+   width:7%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(2)
+   {
+   width:7%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(3)
+   {
+   width:18%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(4)
+   {
+   width:18%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(5)
+   {
+   width:18%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(6)
+   {
+   width:14%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(7)
+   {
+   width:16%!important;
+   }
+   table.table.cmn_table_wrp.client_coach_list_table  tbody#partbl tr.extended-html td:nth-child(7)
+   .save-as-rpt .one_block label
+   {
+   margin-bottom: 0;
+   font-weight: 600;
+   }
+   .loading_img {
+   position: fixed;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   top: 0;
+   background: #fff;
+   z-index: 99999;
+   display: none;
+   }
+   .loading_img img {
+   max-width: 50px;
+   margin: auto;
+   display: block;
+   padding: 20% 0;
+   }
+   h6.font-bold {
+   font-style: normal;
+   font-size: 16px;
+   font-weight: 800;
+   color: #3b3b3b;
+   }
+   .dropdown_area {
+   border: none;
+   font-size: 21px;
+   background: transparent !important;
+   }
+   .dropdown_area.active_btns+div {
+   display: block !important;
+   }
+   .user_link {
+   background: #e0fffc;
+   border: 1px solid #42aaa1;
+   padding: 7px 12px;
+   border-radius: 3px;
+   color: #42aaa1;
+   }
+   .btn-primary:hover {
+   color: #fff;
+   text-decoration: none;
+   background-color: transparent !important;
+   background-image: linear-gradient(to bottom, #686868, #696b6a, #686868, #696b6a, #686868);
+   border-color: #686969;
+   }
+</style>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/add_client.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/step.css' %}">
+<script src="{% static 'js/theme/sort.js' %}"></script>
+<script src="{% static 'js/theme/add_client.js' %}"></script>
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}" ></script>
+{% endblock extrastyle %}
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+{% endblock createbutton %}
+{% block content %}
+
+<div class="content-wrapper">
+   <div class="row">
+               <div class="col-12">
+                   <div class="d-block client_table client_info_title">
+                        <div class="addclientprf_cmn">
+                           <h4>Archived Clients</h4>
+                        </div>
+                  </div>
+               </div>
+               <div class="col-12 col-md-12">
+                <div class="cust-responsive global_table all-doc">
+                   <table class="table table_design client_coach_list_table uploaded_file_table mt-0" id="myTable">
+                        
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Profile</th>
+                                    <th>Name</th>
+                                    <th>Organization</th>
+                                    <th>Survey Status</th>
+                                    <th>Feedback Report Status</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cli in client  %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>
+                                        <div class="img_wrp">
+                                            <a class="d-inline-block" href="{% url 'detail-client' cli.id %}">
+                                                {% if cli.profile_img %}
+                                                <img src="{{ cli.profile_img.url}}" alt="profile">
+                                                {% else %}
+                                                <!--<span class="nav-profile-name">Louis Barnett</span>-->
+                                                <img src="{% static 'images/theme/default.png' %}" alt="profile">
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="d-inline-block" href="{% url 'detail-client' cli.id %}">
+                                            {{cli.first_name}} {{cli.last_name}}
+                                        </a>
+                                    </td>
+                                    <td>{{ cli.company_name }}</td>
+                                    <td class="survey_status">
+                                        <a class="d-inline-block" href="#">
+                                            {% for sur in surveylist  %}
+                                                {% if sur.Survey_client == cli %}
+                                                    {% if sur.total_sent == 0 %}
+                                                        Draft
+                                                    {% else %}
+                                                        {% if sur.response_count == sur.total_sent or sur.status  == 'CT' %}
+                                                            Closed
+                                                        {% else %}
+                                                            Active
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+<!--                                        <i class="mdi mdi-file-check-outline"></i>-->
+                                    </a>
+
+                                    </td>
+                                    <td class="report_status">
+                                         {% for sur in surveylist  %}
+                                            {% if sur.Survey_client == cli %}
+                                                {% for rpt in reportlist  %}
+                                                    {% if rpt.survey == sur %}
+                                                        {% if rpt.status == 'Partially Completed' %}
+                                                            -
+                                                        {% else %}
+                                                            {% if rpt.status == 'Completed' %}
+                                                                Completed
+                                                            {% else %}
+                                                                Not yet created
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        <div class="dropdown dropdown-cust">
+                                            <button class="btn btn-sm dropdown-toggle no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                <a data = "{{cli.id }}" id="unarchivecli" class="dropdown-item unarchivecli">Unarchive Client</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                   
+                </div>
+            </div>
+
+</div>
+
+
+<div class="delete_cnfm_popup cmn_sitepopup" id="del_sur">
+    <div class="delete_cnfm_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Are you sure you want to Delete Client?</h2>
+            <div class="d-flex justify-content-center">
+                <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="delete_client">Yes, Delete</button>
+                <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable({   
+            responsive: true,           
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+        });
+    
+} );
+    $(document).ready(function () {
+        $('.survey_status').each(function(){
+            if ($(this).text().trim() == '') {
+                $(this).html('Not yet created')
+            }
+        })
+        $('.report_status').each(function(){
+            if ($(this).text().trim() == '') {
+                $(this).html('')
+            }
+        })
+    })
+</script>
+{% endblock content %}

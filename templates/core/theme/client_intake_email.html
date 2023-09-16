@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Intake Form</title>
+	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body bgcolor="#c3ddd4" >
+	<table width="600" align="center" border="0" cellspacing="0" cellpadding="0" style="background: #fff;box-shadow: 0 0 14px 3px rgb(69 162 158 / 20%);padding:20px;" >
+		<tr>
+			<td align="left"><p style="font-family: "Nunito Sans", sans-serif;font-size:14px; line-height:20px; font-weight:400;">Dear {{client}},</p></td>
+		</tr>
+		<tr>
+			<td align="left" style="font-family: "Nunito Sans", sans-serif;font-size:14px; line-height:20px; font-weight:400;">
+                <p style="font-family: "Nunito Sans", sans-serif;">{{upper_text|unquote_new|safe}}</p>
+            </td>            
+		</tr>
+		<tr><td>&nbsp;&nbsp;</td></tr>
+		<tr>
+			<td align="center" style="font-size:14px; line-height:20px; font-weight:400;">
+                <a href="{{uid}}" style=" text-decoration:none; text-transform: capitalize; color: #fff;box-shadow: 3px 10px 10px #67c5bd59;border-radius: 30px;font-size: 16px;line-height: 18px;padding: 12px 24px;background: #45a29e;
+				display: inline-block;">START INTAKE</a>
+            </td>
+		</tr>
+		<tr><td>&nbsp;&nbsp;</td></tr>
+		<tr style="">
+			<td align="left" style="font-family: "Nunito Sans", sans-serif;font-size:14px; font-weight:400;">
+                {{bottom_text|unquote_new|safe}}
+            </td>            
+		</tr>
+		<tr><td>&nbsp;&nbsp;</td></tr>
+		<tr>
+			<td align="left" style="font-family: "Nunito Sans", sans-serif;font-size:14px; line-height:20px; font-weight:400;">{{user.coach_full_name}}</td>
+		</tr>
+		<tr>
+			<td align="left" style="font-family: "Nunito Sans", sans-serif; font-size:14px; line-height:20px; font-weight:400;">{{user.user_title}} </td>
+		</tr>
+		<tr>
+			<td align="left" style="font-family: "Nunito Sans", sans-serif;font-size:14px; line-height:20px; font-weight:400;">{{user.user_company}}</td>
+		</tr>
+		<tr>
+			<td align="left" style="font-family: "Nunito Sans", sans-serif;font-size:14px; line-height:20px; font-weight:400;">{{user.email}}</td>
+		</tr>
+		{% if img %}
+		<td align="left" ><img src="{{img}}" style="height: 50px;width: 50px;" ></td>
+		{% endif %}
+	</table>
+</body>
+</html>

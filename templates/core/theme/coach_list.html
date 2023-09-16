@@ -1,0 +1,155 @@
+{% extends "core/theme/base_theme.html" %} {% csrf_token %} {% load static i18n %} {% block extrastyle %}
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}"></script>
+<script src="{% static 'js/theme/survey_list.js' %}"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/active_clients.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}"> {% endblock extrastyle %} {% block createbutton %} {% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %} {% endblock createbutton %} {% block content %}
+<div class="survey_list_page_wrp client_detail_wrp">
+    <div class="content-wrapper ">
+        <div class="survey_list_page_wrp add-coach">
+            <div class="clearfix">
+                <div class="left survey_left_head">
+                    <h3 class="common-head">All Coaches</h3>
+                </div>
+                <div class="right survey_right_wrp alignright coach-btn-wrap mb-2">
+                    <!-- <div class="right survey_right_wrp alignright alignright global-table">
+
+                        <div class="survey_sort_wrp">
+                            <a href="javascript:;" class="sortbydropdowm">Sort By</a>
+                            <ul class="sortbydropdowmlist" style="display: none;">
+                                <li>
+                                    <a href="#">Enterprise</a>
+                                </li>
+                                <li>
+                                    <a href="#">Individual</a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div> -->
+                    <div class="survey_right_addclient_btn">
+                        <a href="javascript:;" class="sitebtn">Add Coach</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 mt-lg-3">
+                <div class="col-12 col-md-12">
+                    <div class="cust-responsive global_table">
+                        <div class="right survey_right_wrp alignright  global_table">
+    
+                            <div class="survey_sort_wrp sort-grp ">
+                                <a href="javascript:;" class="sortbydropdowm">Sort By</a>
+                                <ul class="sortbydropdowmlist">
+                                    <li>
+                                        <a class="nosort" value="5">Plan</a>
+                                    </li>
+                                    <li>
+                                        <a class="nosort" value="4">Type</a>
+                                    </li>                                   
+                                </ul>
+                            </div>
+    
+                        </div>
+                        <table class="table table_design " id="myTable">
+                        <!-- <table class="table cmn_table_wrp client_coach_list_table mt-0" id="myTable"> -->
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Profile</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Title</th>
+                                    <th>Type of Plan</th>
+                                    <th>Survey purchased</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- {% for coach in coachlist %}
+                                <tr data-url="">
+                                    <td>{% if coachlist.has_previous %}{{ coachlist.previous_page_number }}{% endif %}{{forloop.counter}}</td>
+                                    <td>
+                                        <div class="img_wrp">
+                                            {% if coach.user.user_avatar %}
+                                            <img src="{{coach.user.user_avatar.avatar.url}}"> {% else %}
+                                            <img src="{% static 'images/theme/default.png' %}"> {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>{{coach.first_name}}</td>
+                                    <td>{{coach.user.email}}</td>
+                                    <td>{{coach.title}}</td>
+                                    <td>{% for plan in userplan %}{% if plan.coach == coach %}{% if plan.status %}{{plan.title}}{% endif %}{% endif %}{% endfor %}</td>
+                                    <td>{% for plan in userplan %}{% if plan.coach == coach %}{{plan.surveyupgraded|add:plan.noofsurvey}}{% endif %}{% endfor %}</td>
+                                    <td><a href="javascript:;"><svg xmlns="http://www.w3.org/2000/svg" width="6.8" height="27.2" viewBox="0 0 6.8 27.2"><defs><style>.a{fill:#3b3b3b;}</style></defs><path class="a" d="M6.8,195.4A3.4,3.4,0,1,1,3.4,192,3.4,3.4,0,0,1,6.8,195.4Zm0,0" transform="translate(0 -181.8)"/><path class="a" d="M6.8,3.4A3.4,3.4,0,1,1,3.4,0,3.4,3.4,0,0,1,6.8,3.4Zm0,0"/><path class="a" d="M6.8,387.4A3.4,3.4,0,1,1,3.4,384,3.4,3.4,0,0,1,6.8,387.4Zm0,0" transform="translate(0 -363.6)"/></svg></a></td>
+                                </tr>
+                                {% endfor %} -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // $('body').on('click', 'tr', function () {
+    //     link = $(this).find('td div a').attr('href')
+    //     if($(this).find('tda').prev().length == 0){
+    //         window.location.href = link;   
+    //     }
+    // })
+    $(document).ready(function() {
+        localStorage.clear();
+        var table = $('#myTable').DataTable({
+            responsive: true, 
+            serverSide: true,
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+            
+			sAjaxSource: window.location.origin + "/coachlistjson/",  
+
+                    columns: [
+                        {
+                    name: 'no',
+                    data: null,
+                    render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }},
+                    {name: "profile_img", data:0,
+                        "render": function(data) {  
+                            link = document.location.origin+'/media/'+data                        
+                            return '<div class="img_wrp"><img src="'+link+'"/></div>';}},
+                    {name: "first_name", data:1,},                    
+                    {name: "email", data:2},
+                    {name: "title", data:3,}, 
+                    {name: "type", data:4,}, 
+                    {name: "plan", data:5,},   
+                    {name: "survey", data:6,   
+                        "render": function(data) {   
+                            link = document.location.origin+'/super_admin/coaches/'+data                      
+                        return ' <a href="javascript:;" class="edittabbtn"><svg xmlns="http://www.w3.org/2000/svg" width="6.8" height="27.2" viewBox="0 0 6.8 27.2"><defs><style>.a{fill:#3b3b3b;}</style></defs><path class="a" d="M6.8,195.4A3.4,3.4,0,1,1,3.4,192,3.4,3.4,0,0,1,6.8,195.4Zm0,0" transform="translate(0 -181.8)"/><path class="a" d="M6.8,3.4A3.4,3.4,0,1,1,3.4,0,3.4,3.4,0,0,1,6.8,3.4Zm0,0"/><path class="a" d="M6.8,387.4A3.4,3.4,0,1,1,3.4,384,3.4,3.4,0,0,1,6.8,387.4Zm0,0" transform="translate(0 -363.6)"/></svg></a><div class="editpopup_wrp" style="display: none;"> <a href="'+link+'">More Detail</a> </div>';}},                                      
+                ],
+        });
+        $(document).on('click', '.nosort', function() {
+                table.order([$(this).attr('value'), 'asc']).draw();
+                table.page('next').draw('page');
+                table.on('order.dt search.dt', function() {
+                    let i = 1;
+                    table.cells(null, 0, {
+                        search: 'applied',
+                        order: 'applied'
+                    }).every(function(cell) {
+                        this.data(i++);
+                    });
+                }).draw();
+            })
+    })
+</script>
+{% endblock content %}

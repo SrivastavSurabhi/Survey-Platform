@@ -1,0 +1,151 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-lg-12 single_block mt-3 mb-4">
+                <div class="shadow_box">
+
+                    <div class="page_title with_go_back">
+                        <a onclick="history.back()"><img src="{% static 'new_theme/images/go-back.svg' %}" alt="go-back /"></a>
+                        <h4>Client Detail</h4>
+                    </div>
+
+                    <!-- detail section -->
+                    <div class="row">
+                        <div class="col-lg-3 mt-4 left_block">
+                            <div class="profile_area">
+                                <div class="image">
+                                    {% if client.profile_img %}
+                                        <img src="{{client.profile_img.url}}">
+                                    {% else %}
+                                        <img src="{% static 'images/theme/default.png' %}">
+                                    {% endif %}
+                                </div>
+                                <div class="name">{{client.first_name}} {{client.last_name}}</div>
+                                <div class="email">{{client.email}}</div>
+                                <div class="phone"><p><img src="{% static 'new_theme/images/phone.png' %}" alt="phone" /></p><span>{{client.phone}}</span></div>
+                                <div class="address"><p><img src="{% static 'new_theme/images/address.png' %}" alt="address" /></p><span>{{client.address}}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5 mt-4 center_block client_view_center">
+                            <div class="headline">Personal Details</div>
+                            <div class="detail_list">
+                                <ul>
+                                    <li>
+                                        <span>Title</span>
+                                        <p>{{client.title}}</p>
+                                    </li>
+                                    <li>
+                                        <span>Country</span>
+                                        <p>{{client.country}}</p>
+                                    </li>
+                                    <li>
+                                        <span>State</span>
+                                        <p>{{client.state}}</p>
+                                    </li>
+                                    <li>
+                                        <span>City</span>
+                                        <p>{{client.city}}</p>
+                                    </li>
+                                    <li>
+                                        <span>Zipcode</span>
+                                        <p>{{client.zip}}</p>
+                                    </li>
+                                    <li>
+                                        <span>Organization</span>
+                                        <p>{{client.company_name}}</p>
+                                    </li>
+                                    <li>
+                                        <span>Organization URL</span>
+                                        <p>{{client.company_url}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mt-4 right_block">
+                            <div class="coach_area">
+                                <div class="data">
+                                    <div class="name">{{client.coach.first_name}} {{client.coach.last_name}}</div>
+                                    <div class="email">{{client.email}}</div>
+                                    <div class="title"><a href="/new_theme/coach-detail/{{client.coach.id}}" style="color:white;">coach</a></div>
+                                </div>
+                                <div class="image">
+                                    {% if client.coach.user.user_avatar %}
+                                        <img src="{{client.coach.user.user_avatar.avatar.url}}">
+                                    {% else %}
+                                        <img src="{% static 'images/theme/default.png' %}">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="avail_data">
+                                <ul>
+                                    <li>
+                                        <div class="data">
+                                            <p>Active Surveys</p>
+                                            <h3>{{active_survey.count}}</h3>
+                                        </div>
+                                        <div class="image"><img src="{% static 'new_theme/images/active-survey.png' %}" alt="active-survey"></div>
+                                    </li>
+                                    <li>
+                                        <div class="data">
+                                            <p>Completed Surveys</p>
+                                            <h3>{{completed_survey.count}}</h3>
+                                        </div>
+                                        <div class="image"><img src="{% static 'new_theme/images/leadership.png' %}" alt="leadership"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <!-- all listings -->
+                    <div class="below-title"><h4>All Surveys</h4></div>
+                    <div class="table_design">
+                        <div class="sort_by">
+                            <select id="sort_by">
+                                <option disabled selected>Sort by</option>
+                                <option value="1">New Entries</option>
+                                <option value="2">Old Entries</option>
+                            </select>
+                        </div>
+                        <table class="tableLayout responsive nowrap" id="clientSurveyDatatable">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Survey Name</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Survey Created Date</th>
+                                    <th>Participants</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock content%}
+
+{% block extrajs%}
+<script>
+    client_id = {{client.id}}
+    user_type =  {{request.user.user_type}}
+</script>
+<script src="{% static 'new_theme/appScript/client-detail.js'%}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs %}

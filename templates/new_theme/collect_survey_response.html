@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static i18n %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Survey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="{% static 'js/theme/jquery.richtext.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/richtext.min.css' %}">
+    <style>
+        form#responsesform .form-control.border.border-dark.ml-2.ans {
+            position: relative;
+        }
+
+        .sub-head-wrap {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .collect-resp .form-group {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        span#part_em_err {
+            color: red;
+            font-size: 14px;
+            position: absolute;
+            bottom: -18px;
+            font-weight: 700;
+        }
+
+        .collect-resp label span {
+            margin-left: 1px;
+            position: relative;
+            top: -4px;
+        }
+
+        .collect-resp .form-group .form-control {
+            border-color: #cfcfcf !important;
+            height: 40px;
+        }
+
+        .collect-resp label {
+            white-space: nowrap;
+            margin-right: 15px;
+            margin-bottom: 0;
+            font-weight: 700;
+        }
+
+        .collect-resp label span {
+            color: red;
+        }
+
+        .inner-wrap h2 {
+            color: #53B6AE;
+            font-size: 28px;
+            line-height: 38px;
+            font-weight: 700;
+            margin: 0px 0 30px;
+            text-align: center;
+        }
+
+        input {
+            margin: 0 !important;
+            position: relative;
+        }
+
+        .form-control {
+            margin-left: 0 !important;
+        }
+
+        figure.img-wrap {
+            text-align: center;
+            margin-bottom: 20px
+        }
+
+        button#speech {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 15px;
+        }
+
+        a.cstm-submit {
+            background: #fff;
+            border: #4ab1a8 solid thin;
+            width: auto;
+            border-radius: 50px;
+            font-weight: 500;
+            color: #4ab1a8;
+            cursor: pointer;
+            padding: 8px 30px;
+        }
+
+        .btn-wrap {
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .cont-wrap {
+            border-radius: 15px;
+            border: 2px solid #53b6ae;
+            padding: 20px;
+            margin: 0px 0 40px;
+            box-shadow: 3px 10px 10px #67c5bd59;
+        }
+
+        .input-wrap {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .email-survey h2 {
+            text-align: left;
+            font-size: 36px;
+            margin-top: 35px;
+            margin-bottom: 20px;
+        }
+        /* .email-survey .cont-wrap p,
+        .email-survey .cont-wrap li,
+        .email-survey div#ques_block input,
+        .email-survey span.custom_number_width {
+            font-weight: 800;
+        } */
+
+        .email-survey a.cstm-submit {
+            background: #fff;
+            border: #4ab1a8 solid 2px;
+            width: auto;
+            border-radius: 50px;
+            font-weight: 500;
+            color: #4ab1a8 !important;
+            cursor: pointer;
+            padding: 8px 30px;
+        }
+
+        .email-survey label {
+            border: 1px solid #cfcfcf;
+            width: 100%;
+            display: block;
+            padding: 12px 22px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .email-survey label::first-letter {
+            text-transform: uppercase;
+        }
+
+        @media(min-width:768px) {
+            .container {
+                max-width: 950px!important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="inner-wrap email-survey mt-3">
+            <div class="sub-head-wrap">
+                {% if surveyobj.creator.coaches.logo %}
+                <div class="showuploadlogo">
+                    <div class="showuploadlogoimgwrp">
+                        <figure>
+                            <img src={{ surveyobj.creator.coaches.logo.url }} alt="">
+                        </figure>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <form id="responsesform">
+                {% csrf_token %}
+                <input type="hidden" name="u_id" value="{{uid}}">
+
+
+                <div class="cont-wrap">
+                    {% if survey_instruction %} {{survey_instruction|unquote_new| safe}} {% else %}
+                    <div style="font-size: .875rem;">
+                        <p class="benefit-content">Please be as open and candid as possible to the benefit of your colleague. Your answers will remain anonymous.</p>
+                    </div>
+                    <ul class="bullets mt-2">
+                        <li> May type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>
+                        <li>Your direct quotes may be included in an anonymous aggregated report from all participants. Be aware that if there is something that only you would say that your colleague would know is coming from you, then you may want to be
+                            careful how you say it.</li>
+                        <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.
+                        </li>
+                        <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                    </ul>
+                    {% endif %}
+                </div>
+
+
+                {% for que in ques %}
+                <div class="custom_made_question mb-3">
+                    <div id="ques_block" class=" mb-4">
+                        <span class="custom_number_width">Q{{forloop.counter}}</span>
+                        <label class="mb-0"> {{que}}</label>
+                    </div>
+                    <div class="ans_block_preview mb-3">
+                        <span class="custom_number_width">
+                        </span>
+
+                        <div class="form-control border border-dark ml-2 ans">
+                            <textarea class="answr" type="text" style="border: none; padding:2px;" name='{{que.id}}'>
+                        {% if ans %} {% for ansr in ans %} {% if ansr.question == que %}  {{ansr.answer }}  {% endif %} {% endfor %} {% endif %}
+                    </textarea>
+                            <button class="speech" type="button" id="speech" name="record" style="float: right; border: none">
+                                <i class="fa fa-microphone" aria-hidden="true"></i>
+                            </button>
+                            <!--                <i class="fa fa-microphone " aria-hidden="true" style="float: right"></i>-->
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="btn-wrap">
+                    <a class="cstm-submit mr-2" id="shwalert">Save and Finish Later</a>
+                    <a class="cstm-submit" id="submit_survey">Submit</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        already_submitted = '{{already_submited}}'
+        if (already_submitted == 'True'){
+            alert('You have already submited survey.')
+            $('#shwalert').css('pointer-events','none').addClass('d-none');
+            $('#submit_survey').css('pointer-events','none').addClass('d-none');
+            $('textarea').each(function() {
+                $(this).attr('disabled', true);
+            });
+        }
+
+        $('textarea').each(function() {
+                $(this).val($(this).val().trim());
+        });
+
+        $('#shwalert').on('click', function() {
+            submitResponse(false)            
+        })
+
+        $('#submit_survey').click(function(){
+            submitResponse(true)
+		});
+        function submitResponse(status){
+            var data = new FormData($('#responsesform').get(0));
+            data.append('submit', status);
+            token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+            url = window.location.origin + "/new_theme/add-responses/"
+            $.ajax({
+                method: "post",
+                headers: {'X-CSRFToken': token},
+                url: url,
+                data: data,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success:function(data) {
+                    if (status) {
+                        if (data['Psuccess']){
+                            alert(data['Psuccess'])
+                        }
+                        $('#shwalert').css('pointer-events','none').addClass('d-none');
+                        $('#submit_survey').css('pointer-events','none').addClass('d-none');
+                        $('textarea').each(function() {
+                            return $(this).attr('disabled', true);
+                        });
+                    //location.reload()
+                    }
+                    else {
+                        alert('Your partial response is saved.')
+                        window.location.href = window.location.origin + "/survey/add-responses/"
+                    }
+                    
+                },
+                error: function(data) {
+                    console.log('data')
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

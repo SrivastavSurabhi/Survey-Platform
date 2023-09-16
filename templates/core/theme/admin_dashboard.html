@@ -1,0 +1,305 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% load mathfilters %}
+{% block extrastyle %}
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}"></script>
+<script src="{% static 'js/theme/progress-custom.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/admin_dash.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<div class="content-wrapper admin-wrap">
+
+    <h3 class="admin_dash">Dashboard</h3>
+    <div class="row all_client_details admin_dash">
+        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <a href="{% url 'clientlist' %}" class="client_detail_box">
+                <h4>Clients</h4>
+                <span class="count">{{client|length}}</span>
+                <div class="clientimages">
+                    <ul>
+                        {% for cli in client %}
+                        {% if client|length <= 6 %}
+                            <li><img src="{{cli.profile_img.url}}"></li> 
+                        {% else %}
+                            {% if forloop.counter <= 6 %}
+                            <li><img src="{{cli.profile_img.url}}"></li> 
+                            {% endif %} 
+                        {% endif %}
+                        {% endfor %}
+
+                            
+                            {% if client|length > 6 %}
+                            <li class="total_count"><span>+{{client|length|sub:6}}</span></li> 
+                            {% endif %} 
+                                                      
+                        
+                    </ul>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <a href="{% url 'completed-surveys' %}" class="client_detail_box lightbluecolwrp">
+                <h4>Completed Surveys</h4>
+                <div id="chart-1"></div>
+
+            </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <a href="{% url 'unsent-surveys' %}" class="client_detail_box orangecolwrp">
+                <h4>Draft Surveys</h4>
+                <div id="chart-2"></div>
+            </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <a href="{% url 'coachlist' %}" class="client_detail_box mb-0">
+                <h4>Coaches</h4>
+                <span class="count">{{coach|length}}</span>
+                <div class="clientimages">
+                    <ul>
+                        {% for cli in coach %}
+                            {% if coach|length <= 6 %}
+                                {% if cli.user.user_avatar %}
+                                <li><img src="{{cli.user.user_avatar.avatar.url}}"></li> 
+                                {% else %}
+                                <li><img src="{% static 'images/theme/default.png' %}" alt="profile"></li>
+                                {% endif %}
+                            {% else %}
+                                {% if forloop.counter <= 6 %}
+                                {% if cli.user.user_avatar %}
+                                <li><img src="{{cli.user.user_avatar.avatar.url}}"></li> 
+                                {% else %}
+                                <li><img src="{% static 'images/theme/default.png' %}" alt="profile"></li>
+                                {% endif %} 
+                                {% endif %}                                
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if coach|length > 6 %}
+                        <li class="total_count"><span>+{{coach|length|sub:6}}</span></li>
+                        {% endif %} 
+                        
+                    </ul>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <a href="{% url 'all-surveys' %}" class="client_detail_box all_surveybox mb-0">
+                <h4>Total<br /> Survey's</h4>
+                <span class="count">{{survey}}</span>
+
+            </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <a href="{% url 'active-surveys' %}" class="client_detail_box all_surveybox mb-0">
+                <h4>Active<br /> Survey's</h4>
+                <span class="count">{{active_count}}</span>
+
+            </a>
+        </div>
+    </div>
+
+</div>
+<!-- <div class="admin_dash_info_wrp">
+    <div class="clearfix dash_instr_help_icon">
+        <div class="left">
+            <h3>Dashboard</h3>
+        </div>
+        <div class="right alignright">
+            <a href="javascript:;" class="dashinsthelpbtn"><img src="{% static 'images/theme/questmark.png' %}" alt=""></a>
+            <div class="dash_instr_help_popup">
+                <div class="dash_instr_help_inn_popup">
+                    <div class="dash_instr_help_scrollbar">
+                        <h3>Dashboard Instructions</h3>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Add a client</h4>
+                            <p>Add a client to begin the feedback process</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Active Clients</h4>
+                            <p>Active Clients are clients with whom you are currently engaged. You may move your client to the Inactive Clients seciton when you have completed your coaching engagement.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Inactive Clients</h4>
+                            <p>Inactive Clients are clients with whom you are not currently engaged. You may move your client to the Active Clients section at any time. You may view Inactive Client data by clicking the client's folder.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Active Clients Dashboard</h4>
+                            <p>Click on any of the buttons to view Active Client data and get more details.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Draft Surveys</h4>
+                            <p>Draft Surveys have not yet been emailed to participants and therefore responses cannot be received.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Active Surveys</h4>
+                            <p>Active Surveys have been emailed to the participants and therefore, responses can be received.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Completed Surveys</h4>
+                            <p>Completed Surveys are no longer active and therefore, responses can no longer be received.</p>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="all_client_details">
+        <a href="{% url 'active-surveys' %}" class="client_detail_box redcolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg'%}"></div>
+            <h4>Active Surveys </h4>
+            <div class="admin_dash_prog_wrp">
+                <div class="prog_count_left alignleft">
+                    <span class="count">10/100</span>
+                </div>
+                <div class="prog_count_right alignright">
+                    <div class="progress-bar" data-percent="10" data-duration="1000" data-color="#fff,#EB5A4F"></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="{% url 'unsent-surveys' %}" class="client_detail_box orangecolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconorg.svg'%}"></div>
+            <h4>Draft Surveys</h4>
+            <div class="admin_dash_prog_wrp">
+                <div class="prog_count_left alignleft">
+                    <span class="count">20/100</span>
+                </div>
+                <div class="prog_count_right alignright">
+                    <div class="progress-bar" data-percent="20" data-duration="1000" data-color="#fff,#FDCB06"></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="{% url 'completed-surveys' %}" class="client_detail_box lightbluecolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyicongreen.svg'%}"></div>
+            <h4>Completed Surveys</h4>
+            <div class="admin_dash_prog_wrp">
+                <div class="prog_count_left alignleft">
+                    <span class="count">70/100</span>
+                </div>
+                <div class="prog_count_right alignright">
+                    <div class="progress-bar" data-percent="70" data-duration="1000" data-color="#fff,#7DBEBB"></div>
+                </div>
+            </div>
+        </a>
+        
+       
+        <a href="{% url 'all-surveys' %}" class="client_detail_box all_surveybox">
+            <h4>All<br/> Surveys</h4>
+            <span class="count">100+</span>
+        
+        </a>
+      
+        <a href="{% url 'client-intake' %}" class="client_detail_box">
+            <h4>My Clients</h4>
+            <span class="count">50 +</span>
+            <div class="clientimages">
+                <ul>
+                  
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li class="total_count"><span>+4444</span></li>
+                </ul>
+            </div>
+        </a>
+        <a href="{% url 'participant-response' %}" class="client_detail_box">
+            <h4>Subscribers</h4>
+            <span class="count">500 +</span>
+            <div class="clientimages">
+                <ul>
+                    
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li class="total_count"><span>+4444</span></li>
+                </ul>
+            </div>
+        </a>
+    </div>
+</div> -->
+<script>
+
+    var options1 = {
+        series: [{{completed_count}}],
+        chart: {
+            height: 200,
+            type: 'radialBar',
+
+        },
+        plotOptions: {
+            radialBar: {
+                hollow: {
+                    size: '70%',
+
+                }
+            },
+        },
+        stroke: {
+            lineCap: 'round'
+        },
+        fill: {
+            opacity: 1,
+            colors: ['#45a29e'],
+
+        },
+        labels: [''],
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart-1"), options1);
+    chart.render();
+
+    
+    var options2 = {
+        series: [{{unsent_count}}],
+        chart: {
+            height: 200,
+            type: 'radialBar',
+        },
+        plotOptions: {
+            radialBar: {
+                hollow: {
+                    size: '70%',
+                }
+            },
+        },
+        stroke: {
+            lineCap: 'round'
+        },
+
+        fill: {
+            opacity: 1,
+            colors: ['#eb5a4f'],
+
+        },
+        labels: [''],
+
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart-2"), options2);
+    chart.render();
+
+
+</script>
+{% endblock content %}

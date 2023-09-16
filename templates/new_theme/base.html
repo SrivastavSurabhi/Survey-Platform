@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% load static i18n %}
+<html lang="en">
+<head>
+<title>{{ title }}</title>
+<meta charset="UTF-8">
+<meta name="keywords" content="LRC">
+<meta name="description" content="LRC">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="LRC">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="{% static 'new_theme/css/bootstrap.min.css' %}?v={{CACHE_VERSION}}">
+<link rel="stylesheet" href="{% static 'new_theme/css/jquery.dataTables.min.css'%}?v={{CACHE_VERSION}}">
+<link rel="stylesheet" href="{% static 'new_theme/css/responsive.dataTables.min.css' %}?v={{CACHE_VERSION}}">
+<link rel="stylesheet" href="{% static 'new_theme/css/select.dataTables.min.css' %}?v={{CACHE_VERSION}}">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="{% static 'new_theme/css/select2.css' %}?v={{CACHE_VERSION}}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="{%static 'new_theme/css/smart_wizard_all.min.css' %}?v={{CACHE_VERSION}}" />
+<link rel="stylesheet" href="{%static 'new_theme/css/rte_theme_default.css'%}?v={{CACHE_VERSION}}" />  
+<link rel="stylesheet" type="text/css" href="{% static 'new_theme/css/style.css' %}?v={{CACHE_VERSION}}">
+
+<script src="{%static 'new_theme/siteScript/jquery.slim.min.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{%static 'new_theme/siteScript/rte.js'%}?v={{CACHE_VERSION}}"></script>  
+<script src="{%static 'new_theme/siteScript/all_plugins.js'%}?v={{CACHE_VERSION}}"></script>  
+<script src="{% static 'new_theme/siteScript/popper.min.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/siteScript/bootstrap.bundle.min.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/siteScript/dataTable.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/siteScript/dataTables.responsive.min.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/siteScript/dataTable.select.min.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="{% static 'new_theme/siteScript/validate.min.js'%}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/siteScript/select2.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{%static 'new_theme/siteScript/jquery.smartWizard.min.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="https://cdn.tiny.cloud/1/38ps30209guapjwwzxij4x3x8pwmb4wnun64fvix76gbvd3j/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@2/dist/tinymce-jquery.min.js"></script>
+
+<script src="{% static 'new_theme/appScript/constants.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/appScript/common.js' %}?v={{CACHE_VERSION}}"></script>
+
+{% block extrastyle %}
+{% endblock extrastyle %}
+</head>
+<body>
+    {% csrf_token %}
+    <div class="fixed_loading">
+        <div class="fixed_loading_inset">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+              </div>
+        </div>
+    </div>
+
+    <!-- header -->
+    <header class="header">
+        <div class="col-sm-5 left_header p-0">
+            <div class="toggle_bar"><span></span></div>
+            <div class="logo"><img src="{% static 'new_theme/images/logo.png' %}" alt="logo" /></div>
+        </div>
+
+        <div class="col-sm-7 right_header p-0">
+            <div class="search">
+                <div class="search_area">
+                    <form>
+                        <input type="text" placeholder="Type Something...">
+                        <button>Search</button>
+                    </form>
+                </div>
+                <button class="search_icon"><img src="{% static 'new_theme/images/search.svg' %}" alt="search" /></button>
+                <button class="search_close"><img src="{% static 'new_theme/images/close.svg' %}" alt="close" /></button>
+            </div>
+            <div class="notifications">
+                <div class="dropdown">
+                    <i class="fa fa-circle"></i>
+                    <button class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><img src="{% static 'new_theme/images/notification.svg' %}" alt="notification" /></button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis vitae
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- sidebar -->
+    <aside class="sidebar">
+        <div class="user">
+            <div class="image"><img src="{% if request.user.has_profile_image %}{{request.user.user_avatar.url}}{% else %}{% static 'images/theme/default.png' %}{% endif %}"  alt="user"/></div>
+            <div class="user_name">
+                <h4>{% if request.user.is_admin %}
+                        {{request.user.username}}
+                    {% else %}
+                        {% if request.user.coach_exist %}
+                            {{request.user.coach_full_name}}
+                        {% else %}
+                            {{request.user.client_full_name}}
+                        {% endif %}
+                    {% endif %}</h4>
+                <p>{% if request.user.user_title %}{{request.user.user_title}}{% endif %}</p>
+            </div>
+            <div class="logout">
+                <a href="{% url 'logout' %}"><img src="{% static 'new_theme/images/logout.svg' %}" alt="logout" /></a>
+            </div>
+        </div>
+
+        <div class="nav_area">
+            <ul>
+                <li class="dash" ><a href="/new_theme/dashboard"><span><img src="{% static 'new_theme/images/dashboard.svg'%}" alt="dashboard" /></span> <p>dashboard</p></a></li>
+                {% if request.user.is_admin %}
+                <li class="coach"><a href="/new_theme/coaches"><span><img src="{% static 'new_theme/images/coaches.svg' %}" alt="coaches" /></span> <p>coaches</p></a></li>
+                {% endif %}
+                {% if request.user.user_type == 2 or request.user.is_admin or request.user.is_superuser %}
+                <li class="client" ><a href="/new_theme/clients"><span><img src="{% static 'new_theme/images/clients.svg' %}" alt="clients" /></span> <p>clients</p></a></li>
+                {% endif %}
+                <li class="participant" ><a href="/new_theme/participants"><span><img src="{% static  'new_theme/images/participants.svg' %}" alt="participants" /></span> <p>participants</p></a></li>
+                <li class="surveys" ><a href="/new_theme/surveys"><span><img src="{% static 'new_theme/images/surveys.svg'%}" alt="surveys" /></span> <p>surveys</p></a></li>
+                {% if request.user.is_admin %}
+                <li class="revenue" ><a href="/new_theme/revenue"><span><img src="{% static 'new_theme/images/revenue.svg' %}" alt="revenue" /></span> <p>revenue</p></a></li>
+                {% endif %}
+                <li class="reports" ><a href="/new_theme/reports"><span><img src="{% static 'new_theme/images/reports.svg' %}" alt="reports" /></span> <p>reports</p></a></li>
+            </ul>
+        </div>
+        <div class="copyright">Copyright &copy; 2022</div>
+    </aside>
+
+  <!-- Modal -->
+  <div class="modal fade" id="deleteData">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content confirmation_modal">
+        <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button><!--Are you sure you want to delete the user ?-->
+            <h2 id="popup_msg"></h2>
+            <div class="confirmation">
+                <button data-dismiss="modal" id="delete">Yes</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    {% block content %}
+    {% endblock content %}
+    
+
+    {% block extrajs %}
+    {% endblock extrajs %}
+</body>
+
+</html>

@@ -1,0 +1,2865 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% load customtags %}
+{% block extrastyle %}
+<style>
+	select{
+		font-family: fontAwesome
+	}
+   .client_email_content a {
+      pointer-events: none;
+   }
+   .modal-dialog.modal-lg.cmn_site_inn_popup {
+   text-align: left;
+   max-width:auto!important;
+   }
+   div#email_preview {
+   background: rgba(0,0,0,0.5);
+   }
+   button#dropdownMenuButton {
+   padding: 12px 0;
+   }
+   #allParticipants span.input-group-text i {
+   font-size: 18px;
+   }
+   .cmn_table_wrp tbody tr:hover a.newbtn.table-btn {
+   background: linear-gradient(to bottom, #686868, #696b6a, #686868, #696b6a, #686868);
+   }
+   .saveas-popup
+   {
+   width: 530px;
+   }
+   .draft_inn.cmn_site_inn_popup.saveas-popup label {
+   margin-bottom: 0;
+   }
+   .sav
+   a.newbtn.table-btn {
+   color: #fff;
+   text-decoration: none;
+   }
+   .save-as-rpt {
+   display: flex;
+   flex-direction: column;
+   }
+   .save-as-rpt .one_block
+   {
+   display: flex;
+   align-items: center;
+   margin-bottom: 8px;
+   }
+   
+   .loading_img {
+   position: fixed;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   top: 0;
+   background: #fff;
+   z-index: 99999;
+   display: none;
+   }
+   .loading_img img {
+   max-width: 50px;
+   margin: auto;
+   display: block;
+   padding: 20% 0;
+   }
+   h6.font-bold {
+   font-style: normal;
+   font-size: 16px;
+   font-weight: 800;
+   color: #3b3b3b;
+   }
+   .dropdown_area {
+   border: none;
+   font-size: 21px;
+   background: transparent !important;
+   }
+   .dropdown_area.active_btns+div {
+   display: block !important;
+   }
+   .user_link {
+   background: #e0fffc;
+   border: 1px solid #42aaa1;
+   padding: 7px 12px;
+   border-radius: 3px;
+   color: #42aaa1;
+   }
+   .btn-primary:hover {
+   color: #fff;
+   text-decoration: none;
+   background-color: transparent !important;
+   background-image: linear-gradient(to bottom, #686868, #696b6a, #686868, #696b6a, #686868);
+   border-color: #686969;
+   }
+</style>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/add_client.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/step.css' %}">
+<script src="{% static 'js/theme/sort.js' %}"></script>
+<script src="{% static 'js/theme/add_client.js' %}"></script>
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}" ></script>
+{% if send_report%}
+
+    <script src='{% static "pdfmake/pdfmake.min.js" %}'></script>
+    <script src='{% static "pdfmake/Roboto.min.js" %}'></script>
+    <script src='{% static "pdfmake/vfs_fonts.min.js" %}'></script>
+    <script src='{% static "pdfmake/Courier.min.js" %}'></script>
+    <script src='{% static "pdfmake/Helvetica.min.js" %}'></script>
+    <script src='{% static "pdfmake/Symbol.min.js" %}'></script>
+    <script src='{% static "pdfmake/ZapfDingbats.min.js" %}'></script>
+    <script src='{% static "pdfmake/Times.min.js" %}'></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+{% endif %}
+
+{% endblock extrastyle %}
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+{% endblock createbutton %}
+{% block content %}
+<div class="loader-wrap" style="display: none;">
+<div class="loader" ></div></div>
+<div class="client_detail_wrp add_client_details">
+   <!-- <div class="clearfix dash_instr_help_icon">
+      <div class="right alignright">
+         <a href="javascript:;" class="dashinsthelpbtn"><img src="{% static 'images/theme/questmark.png' %}"
+            alt=""></a>
+         <div class="dash_instr_help_popup">
+            <div class="dash_instr_help_inn_popup">
+               <div class="dash_instr_help_scrollbar">
+                  <h3>Help & Best Practice Tips</h3>
+                  <div class="dash_instr_help_cnt">
+                     <h4>Client Intake Form</h4>
+                     <p>Email your client a link to this online form to gather their personal and professional
+                        history.
+                     </p>
+                     <h4 class="insttips">Best Practice Tip:</h4>
+                     <p>Use this information to get to know your client and use it as a basis for a conversation.
+                     </p>
+                  </div>
+                  <div class="dash_instr_help_cnt">
+                     <h4>Additional Documents</h4>
+                     <p>Upload any additional documents associated with your client, such as performance reviews.
+                     </p>
+                     <h4 class="insttips">Best Practice Tip:</h4>
+                     <p>Easily access additional client information so you have it at your fingertips.</p>
+                  </div>
+                  <div class="dash_instr_help_cnt">
+                     <h4>Feedback Reports Generated</h4>
+                     <p>View 360 feedback reports that you have created in the system.</p>
+                  </div>
+                  <div class="dash_instr_help_cnt">
+                     <h4>Create Survey</h4>
+                     <p>Create a 360 Feedback survey.</p>
+                  </div>
+                  <div class="dash_instr_help_cnt">
+                     <h4>Participants</h4>
+                     <p>View and add participants who will provide feedback. Participants in this list will
+                        automatically be linked to any survey you send for this client. Edit, add, and remove
+                        participants at any time. 
+                     </p>
+                     <h4 class="insttips">Best Practice Tip:</h4>
+                     <p>Email your client a link to this online form so they can enter their participants
+                        directly.
+                     </p>
+                  </div>
+                  <div class="dash_instr_help_cnt">
+                     <h4>Generate Feedback Report</h4>
+                     <p>Create a 360 Feedback report after participant responses have been received and the
+                        survey is marked completed.
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div> -->
+   <div class="content-wrapper">
+      <div class="d-block client_table mb-2 mb-lg-4 client_info_title">
+         <div class="row mt-2 mt-lg-2">
+            <div class="addclientprf_cmn">
+               <h4><a href="{% url 'detail-client' clientobj.id %}" style="color: black;">Client File</a></h4>
+            </div>
+         </div>
+      </div>
+      <div class="row mt-2 mt-lg-3 align-items-center">
+         <div class="col-12 col-sm-12 col-md-5 col-lg-6">
+            <div class="addclient_prof_detail">
+               <form method="post" name="profileupdatefrm" id="profileupdatefrm" enctype="multipart/form-data">
+                  <div class="addclientprf_cmn">
+                     <div class="addclientprf_img_wrp">
+                        {% if clientobj.profile_img == 'static/images/theme/default.png' %}
+                        <figure><img id="profile" src={{ clientobj.profile_img.url}}></figure>
+                        <a href="javascript:;" class="addclientprofileimg"><img src="{% static 'images/theme/pen.svg' %}"></a>
+                        <!-- <a href="javascript:;" class="delete_client_img" style="display: none;"><i class="fa fa-trash" aria-hidden="true"></i></a> -->
+                        {% else %}
+                        <figure><img id="profile" src={{ clientobj.profile_img.url}}></figure>
+                        <a href="javascript:;" class="delete_client_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                        <!-- <a href="javascript:;" class="addclientprofileimg" style="display: none;"><img src="{% static 'images/theme/pen.svg' %}"></a> -->
+                           <!-- <a class="sitebtn delete_client_img p-2">Remove Image</a> -->
+                        {% endif %}
+                     </div>
+                     <!-- <p class="upload-note">Image size should be less than 1 MB.</p> -->
+                     <input type="file" name="addclientprofilepict" id="addclientprofilepict" accept="image/*"
+                        value="" role="uploadcare-uploader" data-crop="1:1">
+                  </div>
+                  <div class="addclientprf_cmn">
+                     {% if clientobj %}
+                     <h3><a href="{% url 'edit-client' clientobj.id %}" style="color: black;">
+                        {{ clientobj.first_name }} {{ clientobj.last_name }} </a>
+                     </h3>
+                     <p>{% if clientobj.title %}{{ clientobj.title}}{% endif %}</p>
+                     <p>{% if clientobj.company_name %}{{ clientobj.company_name}}{% endif %}</p>
+                     <input type="hidden" id="profileurl" value="{% url 'client-profile' clientobj.id %}">
+                     {% endif %}
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="col-12 col-sm-12 col-md-7 col-lg-6">
+            <div class="all_client_details">
+               <div class="first_client_row">
+                  <div class="row">
+                     <div class="col-md-6 col-sm-6 col-12 similar_boxes">
+                        <a href="{% url 'edit-client-intake' clientobj.id %}" class="client_detail_box ">
+                        <div class="d-flex align-items-center similar_boxes_inner">
+                           <div class="imgwrp"><img style="height: 25px;"
+                              src="{% static 'images/theme/surveyiconredlight.svg' %}"></div>
+                           <u>
+                              <h4 class="m-0">Client Intake Form</h4>
+                           </u>
+                        </div>
+                        </a>
+                     </div>
+                     <div class="col-md-6 col-sm-6 col-12 similar_boxes">
+                        <a href={% url 'client-document' clientobj.id %} class="client_detail_box ">
+                        <div class="d-flex align-items-center similar_boxes_inner">
+                           <div class="imgwrp"><img style="height: 25px;"
+                              src="{% static 'images/theme/paper-clip.svg' %}"></div>
+                           <u>
+                              <h4 class="m-0">Additional Documents</h4>
+                           </u>
+                        </div>
+                        </a>
+                     </div>
+                     <!-- <div class="col-md-4 similar_boxes">
+                        <a href="{% url 'feedback-report' %}" class="client_detail_box browncolwrp">
+                            <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconbrown.svg' %}"></div>
+                            <h4>Feedback Reports Generated</h4>
+                        </a>
+                        </div> -->
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="client_profile_table">
+         <div class="step-container mt-lg-5">
+            <div class="row">
+               <div class="col-12 col-md-12 col-lg-12">
+                  <div class="d-block client_table mb-2 mb-lg-4  client_info_title">
+                     
+                        <div class="addclientprf_cmn">
+                           <h4>Get Feedback</h4>
+                        </div>
+                    
+                  </div>
+               </div>
+               <input type="hidden" value="{{ clientobj.id }}" id="client_id">            
+               <div class="col-12 col-md-12 col-lg-12">
+                  <div class="wizard wizard-wrap">
+                     <div class="wizard-inner">
+                        <!-- <div class="connecting-line"></div>
+                           <div class="connecting-line-active" style="width:45%;"></div> -->
+                        <ul class="nav nav-tabs custom_tabs" id="myTab" role="tablist">
+                           <li role="presentation">
+                              <a href="#step1" data-toggle="tab" id="step1-tab" role="tab" class="active"
+                                 aria-selected="true">
+                              
+                              <a href="{% url 'srvey-create' clientobj.id %}"> 
+                                 <span class="round-tab">1</span></a>                                            
+                              <h6 class="font-bold">Create Survey</h6>
+                              </a>
+                           </li>
+                           <li role="presentation">
+                              <a href="#step2" data-toggle="tab" id="step2-tab" role="tab" class="cstm-step-two"
+                                 aria-selected="false">
+                                 <span class="round-tab">2</span>
+                                 <h6>Add Participants</h6>
+                                 
+                              </a>
+                              <!-- <a href="#" class="reminder-link send_reminder_cont" id="send_reminder_cont"> <h6>Automated Reminder Email</h6></a> -->
+                           </li>
+                           <li role="presentation" class="">
+                              <a href="#step3" data-toggle="tab" id="step3-tab" role="tab" class=""
+                                 aria-selected="false">
+                              {% if Surveyobj %}                                    
+                              <a href="{% url 'feedback-report-inner' clientobj.id %}"> <span
+                                 class="round-tab">3</span></a>  
+                              {% else %}
+                              <a id="no_survey_err"> <span class="round-tab">3</span></a>
+                              {% endif %}
+                              <h6 class="font-bold">Generate Report</h6>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                     <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane show active" role="tabpanel" id="step1"
+                           aria-labelledby="step1-tab">                          
+                           <div class="row">
+                              <div class="col-12 col-md-12">
+                                       <div class="cust-responsive global_table">                               
+                                       <table class="table table_design " id="myTable">
+                                          <thead>
+                                             <tr>
+                                                <th class="blank-space">&nbsp;</th>
+                                                <th >Survey Title</th>
+                                                <th >Responses</th>
+                                                <th >Survey Period</th>
+                                                <th >Survey Status</th>
+                                                <th >Draft Feedback Reports</th>
+                                                <th >Completed Feedback Reports</th>
+                                                <th >Options </th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             {% for survey in Surveyobj %}
+                                             <tr>
+                                                <td class="blank-space">&nbsp;</td>
+                                                <td><a class="text-on-hover" href="{% url 'show-survey' survey.id %}">{{  survey.title }}</a></td>
+                                                <td><u class="redirecttoreportpage" data="{{survey.id}}">{% if survey.total_sent %}{% if survey.response_count %}{{survey.response_count}}/{{survey.total_sent}}{% else %}0/{{survey.total_sent}}{% endif %}{% else %}0/0{% endif %}</u></td>
+                                                <td>
+                                                   {% if survey.surveymarked == 'AUTOMATICALLY' %}
+                                                      {% if survey.status == 'RO' %}
+                                                         {{survey.start_datetime|date:"M d, Y"}}
+                                                      {% else %}
+                                                         {{survey.start_datetime|date:"M d, Y"}}-{{survey.end_datetime|date:"M d, Y"}}
+                                                      {% endif %}
+                                                   {% else %}
+                                                      {% if survey.status == 'CT' %}
+                                                         {{survey.start_datetime|date:"M d, Y"}}-{{survey.end_datetime|date:"M d, Y"}}
+                                                      {% else %}
+                                                         {{survey.start_datetime|date:"M d, Y"}}
+                                                      {% endif %}
+                                                   {% endif %}
+                                                </td>
+                                                <td class="status">   {% if survey.status == "CT" %} Closed {% endif %}{% if survey.status == "AT" %} Active {% endif %}{% if survey.status == "US" %} Draft {% endif %}{% if survey.status == "RO" %} Active {% endif %}</td>
+                                                <td class="view_report_btn status">
+                                                   {% for sts in draft %}{% if sts.survey == survey %}{% if sts.user == 'Client' %} {% if sts.status == 'Partially Completed' %}
+                                                   <div class="one_block">
+                                                      <label class="cstm-wrap disabled">
+                                                      <input type="checkbox" data="client">
+                                                      <span class="checkmark"></span>
+                                                      </label>      
+                                                      <label for="client">
+                                                      <a class="text-on-hover" href="{% url 'survey-feedback-detail-user' survey.id 'Client' %}" target="_blank">
+                                                      Feedback Report for Client
+                                                      </a>
+                                                      </label>
+                                                   </div>
+                                                   {% endif %}{% endif %}{% endif %}{% endfor %}
+                                                   {% for sts in draft %}{% if sts.survey == survey %}{% if sts.user == 'Coach' %}{% if sts.status == 'Partially Completed' %}
+                                                   <div class="one_block">
+                                                      <label class="cstm-wrap disabled">
+                                                      <input type="checkbox" data="coach" >
+                                                      <span class="checkmark"></span>
+                                                      </label>      
+                                                      <label for="coach">
+                                                      <a class="text-on-hover" href="{% url 'survey-feedback-detail-user' survey.id 'Coach' %}" target="_blank">
+                                                      Feedback Report for Coach
+                                                      </a>
+                                                      </label>
+                                                   </div>
+                                                   {% endif %} {% endif %}{% endif %}{% endfor %}
+                                                   {% for sts in draft %}{% if sts.survey == survey %}{% if sts.user == 'Manager' %}{% if sts.status == 'Partially Completed' %}
+                                                   <div class="one_block">
+                                                      <label class="cstm-wrap disabled">
+                                                      <input type="checkbox" data="manager">
+                                                      <span class="checkmark"></span>
+                                                      </label>      
+                                                      <label for="manager">
+                                                      <a class="text-on-hover" href="{% url 'survey-feedback-detail-user' survey.id 'Manager' %}" target="_blank">
+                                                      Feedback Report for Manager
+                                                      </a>
+                                                      </label>
+                                                   </div>
+                                                   {% endif %} {% endif %}{% endif %}{% endfor %}
+                                                   
+                                                </td>
+                                                <td class="status">
+                                                   {% for sts in draft %}{% if sts.survey == survey %}{% if sts.user == 'Client' %} {% if sts.status == 'Completed' %}                                                                
+                                                   <div class="one_block"> 
+                                                      <label class="cstm-wrap disabled" >
+                                                      <input type="checkbox" data="client">
+                                                      <span class="checkmark"></span>
+                                                      </label>
+                                                      {% if sts.mail_report_date != None %}
+                                                      <label for="client"> 
+                                                      <a class="text-on-hover" id="client_repo" href="{% url 'download-user-pdf' survey.id 'Client' %}#step-2" target="_blank">
+                                                      Feedback Report for Client-Emailed {{sts.mail_report_date|date:"m/d/y"}}
+                                                      </a></label>
+                                                      {% else %}
+                                                      <label for="client"> 
+                                                      <a class="text-on-hover" id="client_repo" href="{% url 'download-user-pdf' survey.id 'Client' %}#step-2" target="_blank">
+                                                      Feedback Report for Client
+                                                      </a></label>
+                                                      {% endif %}
+                                                   </div>
+                                                   {% endif %} {% endif %}{% endif %}{% endfor %}
+                                                   {% for sts in draft %}{% if sts.survey == survey %}{% if sts.user == 'Coach' %} {% if sts.status == 'Completed' %}                                                             
+                                                   <div class="one_block"> 
+                                                      <label class="cstm-wrap disabled" >
+                                                      <input type="checkbox" data="coach">
+                                                      <span class="checkmark"></span>
+                                                      </label>
+                                                      <label for="coach"> 
+                                                      <a class="text-on-hover" href="{% url 'download-user-pdf' survey.id 'Coach' %}#step-2" target="_blank">
+                                                      Feedback Report for Coach
+                                                      </a></label>
+                                                   </div>
+                                                   {% endif %} {% endif %}{% endif %}{% endfor %}
+                                                   {% for sts in draft %}{% if sts.survey == survey %}{% if sts.user == 'Manager' %} {% if sts.status == 'Completed' %}                                                                
+                                                   <div class="one_block"> 
+                                                      <label class="cstm-wrap disabled" >
+                                                      <input type="checkbox" data="manager">
+                                                      <span class="checkmark"></span>
+                                                      </label>
+                                                      <label for="manager"> 
+                                                      <a class="text-on-hover" href="{% url 'download-user-pdf' survey.id 'Manager' %}#step-2" target="_blank">
+                                                      Feedback Report for Manager
+                                                      </a></label>
+                                                   </div>
+                                                   {% endif %} {% endif %}{% endif %}{% endfor %}                                         
+                                                </td>
+                                                <td>
+                                                   <div class="dropdown dropdown-cust">
+                                                      <button class="btn dropdown-toggle no-arrow"
+                                                         type="button" id="dropdownMenuButton"
+                                                         data-toggle="dropdown" aria-haspopup="true"
+                                                         aria-expanded="false">
+                                                      <i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i>
+                                                      </button>
+                                                      <div class="dropdown-menu dropdown-menu-right"
+                                                         aria-labelledby="dropdownMenuButton"
+                                                         x-placement="bottom-end"
+                                                         style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 481px, 0px);"
+                                                         x-out-of-boundaries="">
+                                                         <a id='save_as_btn' data="{{survey.id}}" class="save_as_btn dropdown-item">Save client report as </a>
+                                                         <a data="{{survey.id}}" class="dropdown-item delete_survey">Delete Survey</a>
+                                                         <a data="{{survey.id}}" class="dropdown-item delete_report">Delete Feedback Report</a>
+                                                            {% if survey.status == "CT" %}
+                                                               {% if survey.surveymarked == 'AUTOMATICALLY' %}
+                                                                  <a data="{{survey.id}}" class="dropdown-item reopen_survey automate">Reopen Survey</a>
+                                                               {% else %}
+                                                               <a data="{{survey.id}}" class="dropdown-item reopen_survey manual">Reopen Survey</a>
+                                                               {% endif %}
+                                                            {% else %}
+                                                               {% if survey.status != "US" %}
+                                                                  <a data="{{survey.id}}" class="dropdown-item complete_survey">Close Survey</a>
+                                                               {% endif %}
+                                                            {% endif %}
+                                                            <a href="{% url 'message-history' survey.id %}" data="{{survey.id}}" class="dropdown-item message_history">Message History</a>
+                                                            {% for sts in draft %}{% if sts.survey == survey %}{% if sts.user == 'Client' %} {% if sts.status == 'Completed' %}{% if sts.send_feedback_report == False %}
+                                                            <a data="{{survey.id}}" class="dropdown-item send-client-report">Email Report to Client</a>
+                                                            {% endif %} {% endif %}{% endif %}{% endif%}{% endfor %}
+                                                         </div>
+                                                   </div>
+                                                </td>
+                                             </tr>
+                                             {% endfor %}
+                                          </tbody>
+                                       </table>
+                                       <input type="hidden" id="curr_survey_id">
+                                    </div>                              
+                              </div>
+                           </div>
+                        </div>
+                        <div class="tab-pane add_part" role="tabpanel" id="step2" aria-labelledby="step2-tab">
+                           <div class="row mt-2 ">
+                              <div class="col-12 d-flex justify-content-between align-items-center mb-3 head_ctm-wrap">
+                                 <h4 class="text-secondary font-weight-bold text-left mb-0">
+                                    All Participants
+                                 </h4>
+                                 <div class="create_sur_btn mr-0 text-right">
+                                    <a id="send_survey" class="newbtn">Send Survey</a>
+                                    <a id="send_reminder" class="newbtn" style="color: #fff;">Send Reminder</a>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="row">
+                              <div class="col-12 col-md-12">
+                                     <div class="cust-responsive global_table ">                               
+                                       <table class="table table_design add-participant-table " id="myTable1">
+                                   
+                                       <thead>
+                                          <tr>
+                                            
+                                             <th class="select-all-check">
+                                                <label class="input_design mr-4"><input type="checkbox"
+                                                name="selectallparti">
+                                                <span ></span>
+                                             </label>
+                                             Select All</th>
+                                             <th>No.</th>
+                                             <th>First Name</th>
+                                             <th>Last Name</th>
+                                             <th>Email</th>
+                                             <th>Relationship</th>
+                                             <th>Action</th>
+                                          </tr>
+                                       </thead>
+                                       {% comment %} <tbody id="partbl">                           
+                                       </tbody>
+                                      <tbody id="partbl">
+                                          {% for par in parlist %}
+                                          <tr id="{{par.id}}">
+                                             <td class="blank-space">&nbsp;</td>
+                                             <td>
+                                                <label class="input_design mr-2"><input type="checkbox"
+                                                   name="client"><span ></span></label>
+                                             </td>
+                                             <td > {{forloop.counter}} </td>
+                                             <td class="fName"> {{par.first_name}} </td>
+                                             <td class="lName">{{par.last_name}}</td>
+                                             <td class="eMail {{par.id}}">{{par.email}}</td>
+                                             <td class="relation" id="{{par.relationship.id}}">
+                                                {{par.relationship.relation}}
+                                             </td>
+                                             <td >
+                                                <div class="dropdown dropdown-cust">
+                                                   <button class="btn dropdown-toggle no-arrow"
+                                                      type="button" id="dropdownMenuButton"
+                                                      data-toggle="dropdown" aria-haspopup="true"
+                                                      aria-expanded="false">
+                                                   <i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i>
+                                                   </button>
+                                                   <div class="dropdown-menu dropdown-menu-right"
+                                                      aria-labelledby="dropdownMenuButton">
+                                                      <a class="dropdown-item edit_value"
+                                                         data-toggle="modal" data-id="{{par.id}}"
+                                                         data-target="#edit-part">Edit</a>
+                                                      <a class="dropdown-item"
+                                                         onclick="deletepart({{par.id}})">Delete</a>
+                                                   </div>
+                                                </div>
+                                             </td>
+                                          </tr>
+                                          {% endfor %}
+                                       </tbody> {% endcomment %}
+                                    </table>
+                                 </div>
+                                 <div class="add-action d-flex justify-content-center align-items-center m-5 mb-0">
+                                    <a class="btn them-outline-btn mr-3 open-popup-addparticipant" data-toggle="modal"
+                                       data-target="#participants">
+                                    + Add Participants
+                                    </a>
+                                    <a href="#" data-toggle="modal" class="ml-2 pt-2" id="btd1"
+                                       data-target="#allParticipants">
+                                       <h6><u><i class="fa fa-envelope mr-1" aria-hidden="true"></i>Email
+                                          client to add their own participants</u>
+                                       </h6>
+                                    </a>
+                                 </div>
+                                 
+                              </div>
+                           </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="step3" aria-labelledby="step3-tab">
+                           <div class="row mt-2 ">
+                              <div class="col-12">
+                                 <h4 class="text-secondary font-weight-bold text-left">
+                                    All Reports
+                                 </h4>
+                              </div>
+                           </div>
+                           <div class="row mt-2">
+                              <div class="col-12 col-md-12">
+                                 <div class="card rounded">
+                                    <div class="card-body">
+                                       <table class="table cmn_table_wrp client_coach_list_table">
+                                          <thead>
+                                             <tr>
+                                                <th style="width:12%">Survey Title</th>
+                                                <th>Responses</th>
+                                                <th style="width:12%">Survey Period</th>
+                                                <th style="width:12%">Survey Status</th>
+                                                <th style="width:20%">Draft Feedback Reports</th>
+                                                <th style="width:22%">Completed Feedback Reports</th>
+                                                <th style="width:9%">Options</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td style="width:12%">360 Arham Devillers</td>
+                                                <td>{% if Surveyobj %}{% if Surveyobj.total_sent %}0/{{Surveyobj.total_sent}}{% else %}0/0{% endif %}{% endif %}</td>
+                                                <td style="width:12%"> - </td>
+                                                <td style="width:12%">
+                                                   Completed
+                                                </td>
+                                                <td style="width:20%">
+                                                   <div class="d-block mb-2">
+                                                      <div class="d-flex">
+                                                         <input type="radio" class="mr-2 mt-1"
+                                                            id="Client " name="draft" value="HTML">
+                                                         <label for="Client ">360 Repeat Feedback for
+                                                         Client </label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="d-block mb-2">
+                                                      <div class="d-flex">
+                                                         <input type="radio" class="mr-2 mt-1"
+                                                            id="Coach " name="draft" value="CSS">
+                                                         <label for="Coach "
+                                                            style="display: inline;">360 Repeat
+                                                         Feedback for Coach</label>
+                                                      </div>
+                                                   </div>
+                                                </td>
+                                                <td style="width:22%">
+                                                   <div class="one_block">
+                                                      <input type="radio" id="client" name="complated"
+                                                         value="JavaScript">
+                                                      <label for="client">360 Feedback for
+                                                      Client</label>
+                                                   </div>
+                                                   <div class="one_block">
+                                                      <input type="radio" id="coach" name="complated"
+                                                         value="JavaScript">
+                                                      <label for="coach">360 Feedback for
+                                                      Coach</label>
+                                                   </div>
+                                                   <div class="one_block">
+                                                      <input type="radio" id="Manager"
+                                                         name="complated" value="JavaScript">
+                                                      <label for="Manager">360 Feedback for
+                                                      Manager</label>
+                                                   </div>
+                                                </td>
+                                                <td style="width:9%">
+                                                   <div class="dropdown dropdown-cust">
+                                                      <button class="btn dropdown-toggle no-arrow"
+                                                         type="button" data-toggle="dropdown"
+                                                         aria-haspopup="true" aria-expanded="false">
+                                                      <i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i>
+                                                      </button>
+                                                      <div class="dropdown-menu dropdown-menu-right"
+                                                         aria-labelledby="dropdownMenuButton"
+                                                         x-placement="bottom-end"
+                                                         style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 481px, 0px);"
+                                                         x-out-of-boundaries="">
+                                                         <a href="#" class="dropdown-item">View</a>
+                                                         <a href="#" class="dropdown-item">Edit</a>
+                                                         <a href="#" class="dropdown-item">Delete</a>
+                                                      </div>
+                                                   </div>
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!--Add-Participants -->
+   <div class="modal fade" id="participants" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h3 class="text-dark font-weight-bold">Add Participants</h3>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <div class="modal-body">
+               <div class="addmodal">
+                  <!--form-->
+                  <div class="add_partici_wrp">
+                     <p>Enter each participant who would be providing feedback.</p>
+                     <div class="client_intake_form mt-3">
+                        <form name="addparticipantfrm" class="commnewfrmdesign" id="addparticipantfrm"
+                           method="post">
+                           {% csrf_token %}
+                           <div class="add_participant_data overflow-auto col-sm-12 h-auto ">
+                              <div class="d-block client-info mb-0 mb-lg-0" id="block-1">
+                                 <div class="row mt-2 mt-lg-4">
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                       <div class="form-group">
+                                          <div class="input-group cst-input-group mb-3">
+                                             <div class="input-group-prepend"><span
+                                                class="input-group-text" id="basic-addon1"><i
+                                                class="mdi mdi-account-outline"></i></span>
+                                             </div>
+                                             <input type="text" name="fname"
+                                                class="form-control cutome-input" id="fname" 
+                                                onkeydown="return /[a-z]/i.test(event.key)"
+                                                placeholder="First Name" required>
+                                             <span class="error" id="fnameerr"></span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                       <div class="form-group">
+                                          <div class="input-group cst-input-group mb-3">
+                                             <div class="input-group-prepend"><span
+                                                class="input-group-text" id="basic-addon1"><i
+                                                class="mdi mdi-account-outline"></i></span>
+                                             </div>
+                                             <input type="text" name="lname"
+                                                class="form-control cutome-input" id="lname"
+                                                onkeydown="return /[a-z]/i.test(event.key)"
+                                                placeholder="Last Name" required>
+                                             <span class="error" id="lnameerr"></span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                       <div class="form-group">
+                                          <div class="input-group cst-input-group mb-3">
+                                             <div class="input-group-prepend"><span
+                                                class="input-group-text" id="basic-addon1"><i
+                                                class="mdi mdi-account-outline"></i></span>
+                                             </div>
+                                             <input type="email" name="email"
+                                                class="form-control cutome-input" id="email"
+                                                placeholder="Email" required>
+                                             <span class="error" id="emailerr"></span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                       <div class="form-group">
+                                          <div class="input-group cst-input-group mb-3">
+                                             <div class="input-group-prepend"><span
+                                                class="input-group-text" id="basic-addon1"><i
+                                                class="mdi mdi-account-outline"></i></span>
+                                             </div>
+                                             <select name="relationship"
+                                                class="form-control cutome-input" id="relationship">
+                                                <option value="demo" selected>Select Relationship
+                                                </option>
+                                                {% for r in relation %}
+                                                <option value={{ r.id }}>{{ r.relation }}</option>
+                                                {% endfor %}
+                                             </select>
+                                             <span class="error" id="relationshiperr"></span>
+                                          </div>
+                                          <!-- <div class="cmn_field forgot_pass checkbox_cmnwrp mt-3 participant_check">
+                                             <label class="text-black"><input type="checkbox" name="forgtpass"> Enter Relation</label>
+                                             </div> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-12 alignright savecanquestbtnwrp">
+                                    <!--                                <a onclick="show(this.id)" id="hide1" class="savequestbtn sitebtn">Save</a>-->
+                                    <!--                                    <a onclick="rmv(this)" id="delete1" class="savequestbtn sitebtn remCF">Delete</a>-->
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="sub_field mt-0 mb-3">
+                              <a class="savequestbtn sitebtn m-0" data-id="{{clientobj.id}}" id="save"
+                                 data-toggle="modal">Add</a>
+                              <!-- <a class="btn btn-default add_more_cta" id="add-more" style="border: 2px solid #45A29E;border-radius: 45px;color: #45A29E;margin: auto;width: fit-content;">Add More</a> -->
+                           </div>
+                        </form>
+                        <div class="row mt-2 mt-lg-4">
+                           <div class="col-12 col-md-12">
+                               <div class="cust-responsive global_table all-doc">
+                           <table class="table table_design mt-0" id="myTable2">
+                                 <thead>
+                                    <tr>
+                                       <th>No.</th>
+                                       <th>First Name</th>
+                                       <th>Last Name</th>
+                                       <th>Email</th>
+                                       <th>Relationship</th>
+                                    </tr>
+                                 </thead>
+                                 {% comment %} <tbody>
+                                    {% for par in parlist %}
+                                    <tr>
+                                       <td>{{forloop.counter}}</td>
+                                       <td>{{par.first_name}}</td>
+                                       <td>{{par.last_name}}</td>
+                                       <td>{{par.email}}</td>
+                                       <td>{{par.relationship.relation}}</td>                                       
+                                    </tr>
+                                    {% endfor %}
+                                 </tbody> {% endcomment %}
+                        </table>
+                        </div>
+                        </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!--form-end-->
+            </div>
+            <div class="modal-footer mt-2 pt-1 pb-1">
+               <div class="sub_field">
+                  <a class="savequestbtn sitebtn" data-dismiss="modal">Save</a>
+                  <!-- <a class="savequestbtn sitebtn" href="{% url 'detail-client' clientobj.id %}"> Cancel</a></a> -->
+                  <a class="savequestbtn sitebtn" data-dismiss="modal"> Cancel</a></a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="showmails cmn_sitepopup">
+   <div class="showmails_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll">
+         <div class="create_surv_reminder_info">            
+            <div class="mail-share-wrap">
+               <h3>This survey has already been sent to <em class="alreadysent"></em> participant(s) and will restrict sending to them again. Please note, you may send reminders as needed. </h3>                    
+                  <ul id="mailhistory">    
+                  </ul> 
+            </div>
+         </div>         
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="show_parameter">Continue</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+
+
+
+{% for survey in Surveyobj %}
+<div class="cnfm_popup{{survey.id}} cnfm_popup cmn_sitepopup">
+   <div class="cnfm_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <div class="create_surv_reminder_info">
+            <h3>Set Automated Reminder Email </h3>
+            <h4>Send reminder email to:</h4>
+            {% if survey.emailreminder %}
+            <label><input  class="reminderval" type="radio" name="reminderval{{survey.id}}" value="NORESPONSE" {% if survey.emailreminder == 'NORESPONSE' %}checked{% endif %}> <span >No response</span></label>
+            <label><input class="reminderval" type="radio" name="reminderval{{survey.id}}" value="PARTIALRESPONSE" {% if survey.emailreminder == 'PARTIALRESPONSE' %}checked{% endif %}> <span >Partial response</span></label>
+            <label><input class="reminderval" type="radio" name="reminderval{{survey.id}}" value="BOTH" {% if survey.emailreminder == 'BOTH' %}checked{% endif %}> <span >Both</span></label>
+            <label><input class="reminderval" type="radio" name="reminderval{{survey.id}}" value="NOREMINDER" {% if survey.emailreminder  == 'NOREMINDER' %}checked{% endif %}> <span >Do not send reminders</span></label>
+            <h4>When to send reminder:</h4>
+               {% if survey.emailreminder == 'NOREMINDER' %}
+               <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY" disabled> <span >Weekly </span></label>
+               <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY48" disabled> <span >Weekly and 48 hours before the survey is due</span></label>
+               {% else %}
+                  {% if survey.whenemailreminder %}
+                  <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY" {% if survey.whenemailreminder  == 'WEEKLY' %}checked{% endif %}> <span >Weekly</span></label>
+                  <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY48" {% if survey.whenemailreminder  == 'WEEKLY48' %}checked{% endif %}> <span >Weekly and 48 hours before the survey is due</span></label>
+                  {% else %}
+                  <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY" checked> <span >Weekly </span></label>
+                  <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY48"> <span >Weekly and 48 hours before the survey is due</span></label>
+                  {% endif %}
+               {% endif %}
+               <p class="custom-alert-text" style="display: none">Please select</p>
+            {% else %}
+            <label><input class="reminderval" type="radio" name="reminderval{{survey.id}}" value="NORESPONSE"> <span >No response</span></label>
+            <label><input class="reminderval" type="radio" name="reminderval{{survey.id}}" value="PARTIALRESPONSE"> <span >Partial response</span></label>
+            <label><input class="reminderval" type="radio" name="reminderval{{survey.id}}" value="BOTH" checked> <span >Both</span></label>
+            <label><input class="reminderval" type="radio" name="reminderval{{survey.id}}" value="NOREMINDER"> <span >Do not send reminders</span></label>
+            <h4>When to send reminder:</h4>            
+               {% if survey.whenemailreminder %}
+               <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY" {% if survey.whenemailreminder  == 'WEEKLY' %}checked{% endif %}> <span >Weekly</span></label>
+               <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY48" {% if survey.whenemailreminder  == 'WEEKLY48' %}checked{% endif %}> <span >Weekly and 48 hours before the survey is due</span></label>
+               {% else %}
+               <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY" checked> <span >Weekly </span></label>
+               <label><input class="whentoreminderval" type="radio" name="whentoreminderval{{survey.id}}" value="WEEKLY48"> <span >Weekly and 48 hours before the survey is due</span></label>
+               {% endif %}
+               <p class="custom-alert-text" style="display: none">Please select</p>
+            {% endif %}
+            <a class="reminder-link send_reminder_cont" id="send_reminder_cont"> <h4>Automated Reminder Email</h4></a>
+            <h3>Select How Survey will be Closed</h3>
+            <label>(Closed surveys are no longer active and therefore, responses can no longer be received. Once a survey is Closed, Feedback Reports may be generated)</label>
+            {% if survey.surveymarked %}
+            <label><input class="surveymarkcomplet" type="radio" name="surveymarkcomplet{{survey.id}}" value="AUTOMATICALLY" {% if survey.surveymarked == 'AUTOMATICALLY' %}checked{% endif %}> <span >Automatically (survey will be "Closed" 3 weeks from date survey is sent to participants)</span></label>
+            <label><input class="surveymarkcomplet" type="radio" name="surveymarkcomplet{{survey.id}}" value="MANUALLY" {% if survey.surveymarked == 'MANUALLY' %}checked{% endif %}> <span >Manually (Select the Option "Close Survey" in the Client's File)</span></label>
+            {% else %}
+            <label><input class="surveymarkcomplet" type="radio" name="surveymarkcomplet{{survey.id}}" value="AUTOMATICALLY" checked> <span >Automatically (survey will be "Closed" 3 weeks from date survey is sent to participants)</span></label>
+            <label><input class="surveymarkcomplet" type="radio" name="surveymarkcomplet{{survey.id}}" value="MANUALLY" > <span >Manually (Select the Option "Close Survey" in the Client's File)</span></label>
+            {% endif %}
+         </div>
+         <!-- <h2>Congratulations</h2> -->
+         <!-- <h2>Are you sure you want to send survey?</h2> -->
+         
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="send_sur_cont">Save and Continue</button>
+            <!-- <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup">No</button> -->
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+{% endfor %}
+
+<div class="parameter_reminder_popup parameter_reminder cmn_sitepopup">
+   <div class="parameter_reminder_inn cmn_site_inn_popup">
+       <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+       <div class="cmn_sitepopup_scroll">                       
+           <div class="create_surv_reminder_info">
+               <h4>Send email reminder to those with:</h4>
+               
+               <label><input class="reminderval" type="radio" name="reminderval" value="NORESPONSE"> <span>No response</span></label>
+               <label><input class="reminderval" type="radio" name="reminderval" value="PARTIALRESPONSE"> <span>Partial response</span></label>
+               <label><input class="reminderval" type="radio" name="reminderval" value="BOTH"> <span>Both</span></label> 
+               
+               <p class="custom-alert-text" style="display: none">Please select</p>
+
+           </div>
+           <div class="d-flex justify-content-center">
+               <button type="button" class="sitebtn mr-3 pl-5 pr-5 send_reminder_cont" id="send_reminder_cont">Next</button>
+           </div>
+       </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+<div class="delete_cnfm_popup cmn_sitepopup" id="del_sur">
+   <div class="delete_cnfm_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll">
+         <h2>Are you sure you want to delete survey?</h2>
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="delete_sur">Yes</button>
+            <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+
+<div class="send_mail send_mail_popup cmn_sitepopup" id="send_report">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h3 class="modal-title text-dark font-weight-bold">Email report to client</h3>
+            <button type="button" class="close close1" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form url="#" id="send_report_to_client">
+            {% csrf_token %}
+            <div class="modal-body "> 
+               <div class="row mt-2 mt-lg-4">       
+                  <div class="col-12 col-md-6 col-lg-6">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              Client
+                           </span></div>
+                           <input type="text" name="cname" class="form-control cutome-input" value="{{clientobj.first_name}} {{clientobj.last_name}}" id="cname1" readonly="">
+                           <span class="error" id="cnameerr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-6 col-lg-6">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              Email
+                           </span></div>
+                           <input type="email" name="cemail" class="form-control cutome-input" value="{{clientobj.email}}" id="cemail1" readonly="">
+                           <span class="error" id="cemailerr"></span>
+                        </div>
+                     </div>
+                  </div>             
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              Subject
+                           </span></div>
+                           <input type="text" name="subject" class="form-control cutome-input"
+                              value="" id="mail-subject" placeholder="Subject">
+                           <span class="error" id="csubjecterr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="border_wrap  cst-input-group mb-3">
+                           <p style="width:100%; display:block;font-size:16px;color: #3b3b3b; font-weight:400;margin:10px 10px 0;line-height:20px; width:100%;display:block;">Dear {{clientobj.first_name}},</p>
+                           <br>
+                           <div id="upper-mail-text" style ="display:block;width:100%;margin:0 10px 0 10px;" contenteditable="true" >
+                              {% comment %} <p style="font-size:16px;color: #3b3b3b;font-weight:400;margin:0 10px 0 10px;line-height:20px;" id="first-text"> Please see your attached feedback report.</p>
+                              <br>
+                              <p style="font-size:16px;color: #3b3b3b;font-weight:400;margin:0 10px 0 10px;line-height:20px;" id="second-text"> Feel free to reach out if you have any questions.</p> {% endcomment %}
+                           </div> 
+                           <br>
+                           <div id="bottom-mail-text" style ="display:block;width:100%;" contenteditable="false">                         
+                              <p style="font-size:16px;color: #3b3b3b;display:block;width:100%; font-weight:400;margin:0 10px 5px 10px;line-height:20px; ">Best regards,</p>                                                   
+                              <p style="font-size:16px;color: #3b3b3b;display:block;width:100%; font-weight:400;margin:10px 10px 5px 10px;line-height:20px; ">{{request.user.coach_full_name}}</p>                                                   
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <input type="hidden" id="survey_id" value="{% if Surveyobj %}{{Surveyobj.id}}{% endif %}"> 
+               </div>                
+            </div>                         
+         </form>
+         <div class="modal-footer">
+            <div class="col-12 col-md-12 col-lg-12 d-flex justify-content-center">
+               <a class="btn them-outline-btn mr-2 " data-dismiss="modal">Cancel</a>
+               <a  href="" class="btn them-outline-btn send_feedback_report ml-1">Send</a>   
+            </div>
+         </div>  
+      </div>
+   </div>   
+</div>
+<div class="delete_cnfm_popup cmn_sitepopup" id="del_particip">
+   <div class="delete_cnfm_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll">
+         <h2>Are you sure you want to delete Participant?</h2>
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="delete_participant">Yes</button>
+            <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+<div class="draft_popup cmn_sitepopup" id="draft-modal">
+   <div class="draft_inn cmn_site_inn_popup saveas-popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <!-- <h2>Congratulations</h2> -->
+         <h2>Save as </h2>
+         <div class="d-flex save-as-rpt">
+            <div class="one_block">
+               <input type="radio" id="coach_report" name="complated" value="JavaScript">
+               <label for="coach">Coach Report?</label>
+            </div>
+            <!-- <div class="one_block">
+               <input type="radio" id="client_report" name="complated" value="JavaScript" data-dismiss="modal">
+               <label for="client">Client Report?</label>
+               </div> -->
+            <div class="one_block">
+               <input type="radio" id="manager_report" name="complated" value="JavaScript" data-dismiss="modal">
+               <label for="manager">Manager Report?</label>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+<div class="redirect_popup cmn_sitepopup" >
+   <div class="redirect_inn cmn_site_inn_popup saveas-popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <!-- <h2>Congratulations</h2> -->
+         <h2>Please Select an Option</h2>
+         <div class="d-flex save-as-rpt">
+            <div class="one_block">
+               <input type="radio" id="Individual_response" name="complated" value="JavaScript" data-dismiss="modal">
+               <label for="complated">Individual Responses</label>
+            </div>
+            <!-- <div class="one_block">
+               <input type="radio" id="client_report" name="complated" value="JavaScript" data-dismiss="modal">
+               <label for="client">Client Report?</label>
+               </div> -->
+            <div class="one_block">
+               <input type="radio" id="Question_summary" name="complated" value="JavaScript" data-dismiss="modal">
+               <label for="complated">Question Summary</label>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+<div class="confed_popup cmn_sitepopup" id="confed">
+   <div class="confed_inn cmn_site_inn_popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <!-- <h2>Congratulations</h2> -->
+         <h2>Do you want to include confidential question in this report?</h2>
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5 savewithcq">Yes</button>
+            <button type="button" class="sitebtn ml-3 pl-5 pr-5 savewithoutcq " >No</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+<div class="ready_confirmation_popup cmn_sitepopup" id="ready_confirmation">
+   <div class="ready_confirmation_inn cmn_site_inn_popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <!-- <h2>Congratulations</h2> -->
+         <h2>Are you ready to send survey to <span ></span> participants?</h2>
+         <h5>Note: survey will be sent immediately after clicking "Yes, Send Survey".</h5>
+         <div class="d-flex justify-content-center edit-btn-wrap">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5 send_email">Yes, Send Survey</button>
+            <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal" >Not yet</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+<div class="reminder_ready_confirmation_popup cmn_sitepopup" id="reminder_ready_confirmation">
+   <div class="reminder_ready_confirmation_inn cmn_site_inn_popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <h2>Are you ready to send survey reminder to <span ></span> participants?</h2>
+         <h5>Note: survey reminder will be sent immediately after clicking "Yes, Send Reminder".</h5>
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5 send_reminder_email">Yes, Send Reminder</button>
+            <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal" >Not yet</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+
+<div class="email_preview_popup cmn_sitepopup" id="email_preview">
+  
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h3 class="modal-title text-dark font-weight-bold">Email preview for Participant</h3>
+            <button type="button" class="close close1" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form url="{% url 'send_email' %}" id="sendemailtopart">
+            {% csrf_token %}
+            <div class="modal-body ">
+               <div class="row mt-2 mt-lg-4">
+                  <div class="col-12 col-md-6 col-lg-6">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              <!-- <i class="fa fa-user" aria-hidden="true"></i> -->From
+                           </span></div>
+                           <input type="text" name="coach" class="form-control cutome-input"
+                              value="{{clientobj.coach.first_name}} {{clientobj.coach.last_name}}" id="coach" readonly>
+                           <span class="error" id="cnameerr"></span>
+                        </div>
+                     </div>
+                  </div>
+                   
+                 <div class="col-12 col-md-6 col-lg-6">
+                  <div class="form-group to-dropdown">
+                     <div class="input-group cst-input-group mb-3">
+                        <div class="input-group-prepend">
+                           <span class="input-group-text">To</span>
+                        </div>
+                    
+                     <div class="dropdown">
+                        <button class="btn dropdown-toggle part_count" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </button>
+                        <div class="dropdown-menu  cstm_part_count" aria-labelledby="dropdownMenuButton">
+                           <ul class="client_count"> </ul>
+                        </div>
+                      </div>
+               
+               
+                     </div>
+                  </div>
+               </div>
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              <!-- <i class="fa fa-commenting" aria-hidden="true"></i> -->Subject
+                           </span></div>
+                           <input type="text" name="subject" class="form-control cutome-input"
+                              value="Feedback survey" id="subject" placeholder="Subject">
+                           <span class="error" id="csubjecterr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="border_wrap input-group cst-input-group mb-3" style="border: 1px solid #45A29E;">
+                           <p style="width:100%; display:block;font-size:14px;color: #3b3b3b; font-weight:400;margin:10px;line-height:20px; width:100%;display:block;">Dear [PARTICIPANT FIRST NAME],</p>
+                           <div id="upper-text" contenteditable="true" >
+                              <p style="font-size:14px;color: #3b3b3b; font-weight:400;line-height:20px; "><span class="first-text">Thank you for agreeing to provide feedback for {{ clientobj.first_name}} {{ clientobj.last_name}}. Please complete the survey by </span><span class="date-text" contenteditable="false"></span><input type="date" id="datepicker" class="datepicker" min="{{today_date}}" style="display: none;" />.<span class="second-text"> Click the button below to get started.</span></p>
+                           </div>
+                           <div name="desc" id="instr" contenteditable class="p-3"> 
+                              <div style="font-size: .875rem;">Please be as open and candid as possible to the benefit of your colleague. Your answers will remain anonymous.</div>
+                              <ul class="bullets mt-2">                      
+                              <li> May type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>                                  
+                              <li>Your direct quotes may be included in an anonymous aggregated report from all participants. Be aware that if there is something that only you would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                              <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>                                            
+                              <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                              </ul>    
+                           </div>
+                          
+                              <p style="margin: 0 auto;display: block;width: 100%;text-align: center; ">
+                              <button type="button" class="sitebtn" style="text-decoration: none;text-transform: capitalize;pointer-events: none;color: #fff;box-shadow: 3px 10px 10px #67c5bd59;border-radius: 30px;font-size: 16px;line-height: 18px;border: none!important;font-weight:700;padding: 12px 24px;background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+                              display: inline-block;"> START SURVEY </button></p>
+                              <br> 
+                              <div id="bottom-text" style="margin-left:10px;" contenteditable> 
+                             
+                              </div>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 5px 10px;line-height:20px; ">{{request.user.coach_full_name}}</p>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 5px 10px;line-height:20px;">{{clientobj.coach.title}} </p>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 5px 10px;line-height:20px;">{{clientobj.coach.company_name}}</p>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 5px 10px;line-height:20px;">{{request.user.email}}</p>
+                              <!-- <p style="font-size:14px;color: #3b3b3b; font-weight:400;margin:0;line-height:20px;">{{clientobj.phone}}</p> -->
+                              <p  style="margin: 0 0 10px 15px;"><figure style="width: 100px;"><img src="{{ request.user.user_avatar.avatar.url }}" ></img></p>
+                                                   
+                        </div>
+                     </div>
+                  </div>   
+                  <div class="col-12 col-md-12 col-lg-12 p-3 d-flex justify-content-center">
+                  <button type="button" class="btn btn-primary mr-3 close1" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary ready_confirmation" >Send</button>   
+                  </div>
+                  <input type="hidden" id="survey_id" value="{% if Surveyobj %}{{Surveyobj.id}}{% endif %}">                 
+               </div>               
+            </div>            
+         </form>
+      </div>
+   </div>
+   
+</div>
+
+<div class="reminder_email_preview_popup cmn_sitepopup" id="reminder_email_preview"> 
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h3 class="modal-title text-dark font-weight-bold">Email reminder preview for Participant</h3>
+            <button type="button" class="close close1" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form url="{% url 'send_email' %}" id="sendrememailtopart">
+            {% csrf_token %}
+            <div class="modal-body ">
+               <div class="row mt-2 mt-lg-4">
+                  <div class="col-12 col-md-6 col-lg-6">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">From</span></div>
+                           <input type="text" name="coach" class="form-control cutome-input"
+                              value="{{clientobj.coach.first_name}} {{clientobj.coach.last_name}}" id="coach" readonly>
+                           <span class="error" id="cnameerr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  
+                 <div class="col-12 col-md-6 col-lg-6">
+                     <div class="form-group to-dropdown">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">To</span>
+                           </div>
+                       
+                        <div class="dropdown">
+                           <button class="btn dropdown-toggle part_count" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">2 Participant</button>
+                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <ul class="client_count"></ul>
+                           </div>
+                         </div>
+                  
+                  
+                        </div>
+                        
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">Subject</span></div>
+                           <input type="text" name="rem_subject" class="form-control cutome-input"
+                              value="Reminder: Feedback Survey" id="subject" placeholder="Subject">
+                           <span class="error" id="csubjecterr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="border_wrap input-group cst-input-group mb-3" style="border: 1px solid #45A29E;">
+                           <p style="font-size:14px;color: #3b3b3b; font-weight:400;margin:10px 0 10px 15px;line-height:20px;width:100%;display:block;">Dear [PARTICIPANT FIRST NAME],</p>
+                           <div id="rem_upper-text" contenteditable="true" >
+                              <p style="font-size:14px;color: #3b3b3b; font-weight:400;line-height:20px; "><span class="first-text">Thank you for agreeing to provide feedback for {{ clientobj.first_name}} {{ clientobj.last_name}}. Please complete the survey by </span> <span class="date-text" contenteditable="false"></span><input type="date" id="datepicker" class="datepicker" min="{{today_date}}" style="display: none;" />.<span class="second-text"> Click the button below to get started.</span></p>
+                           </div>
+                           <div name="desc" id="rem_instr" contenteditable class="p-3">                              
+                              <div style="font-size: .875rem;">Please be as open and candid as possible to the benefit of your colleague. Your answers will remain anonymous.</div>
+                              <ul class="bullets mt-2">                      
+                              <li> May type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>                                  
+                              <li>Your direct quotes may be included in an anonymous aggregated report from all participants. Be aware that if there is something that only you would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                              <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>                                            
+                              <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                              </ul> 
+                           </div>
+                          
+                              <p style="margin: 0 auto;display: block;width: 100%;text-align: center; ">
+                              <button type="button" class="sitebtn" style="text-decoration: none;text-transform: capitalize;pointer-events: none;color: #fff;box-shadow: 3px 10px 10px #67c5bd59;border-radius: 30px;font-size: 16px;line-height: 18px;border: none!important;font-weight:400;padding: 12px 24px;background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+                              display: inline-block;"> START SURVEY </button></p>
+                              <br> 
+                              <div id="rem_bottom-text" contenteditable>                              
+                           </div>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px; ">{{request.user.coach_full_name}}</p>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px;">{{clientobj.coach.title}} </p>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px;">{{clientobj.coach.company_name}}</p>
+                              <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px;">{{request.user.email}}</p>
+                              <p  style="margin: 0 0 10px 15px;"><figure style="width: 100px;"><img src="{{ request.user.user_avatar.avatar.url }}" ></img></p>
+                                                   
+                        </div>
+                     </div>
+                  </div>   
+                  <div class="col-12 col-md-12 col-lg-12 p-3 d-flex justify-content-center">
+                  <button type="button" class="btn btn-primary mr-3 close1" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary ready_confirmation" >Send</button>   
+                  </div>
+                  <input type="hidden" id="survey_id" value="{% if Surveyobj %}{{Surveyobj.id}}{% endif %}">                 
+               </div>               
+            </div>            
+         </form>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="create_survay_popup cmn_sitepopup new_modal_design send-survey" id="scratchpopup">
+   <div class="create_survay_popup_inn cmn_site_inn_popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">        
+         <div class="cmn_field inputicon custom_input_icon usericon1">
+            <select name="surveycat" id="surveycat">
+               <option value="demo" selected>Select Survey</option>
+               {% for survey in Surveyobj %}               
+               {% if survey.status|cut:" " != "CT" %}
+               <option value={{ survey.id }}> {{ survey }}</option>
+               {% endif %}
+               {% endfor %}
+            </select>
+            <span class="error" id="surveycaterr"></span>
+         </div>
+         <div class="all_survey_btn">
+            <div class="surveybtnwrp sub_field">
+               <button type="button" id="send-survey" class="btn btn-default">Next</button>
+            </div>
+         </div>
+         <!-- </form> -->
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+<!-- end of create_survay_popup -->
+
+<div class="reminder_survay_popup cmn_sitepopup new_modal_design send-survey" id="reminder_survey">
+   <div class="reminder_survay_popup_inn cmn_site_inn_popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <div class="cmn_field inputicon custom_input_icon usericon1">
+            <select name="surveycat" id="surveyreminderid">
+               <option value="demo" selected>Select Survey</option>
+               {% for survey in Surveyobj %}
+                  {% if survey.total_sent > 0 %}
+                     {% if survey.status != "CT" %}
+                     <option value={{ survey.id }}> {{ survey }}</option>
+                     {% endif %}
+                  {% endif %}
+               {% endfor %}
+            </select>
+            <span class="error" id="surveycaterr"></span>
+         </div>
+         <div class="all_survey_btn">
+            <div class="surveybtnwrp sub_field">
+               <button type="button" id="send-reminder" class="btn btn-default">Next</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+<!-- end of create_survay_popup -->
+
+<div class="sucss_popup cmn_sitepopup congrats-wrap">
+   <div class="sucss_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <h2>Congratulations</h2>
+         <!-- <h5>Survey Sent Successfully</h5> -->
+         <h5></h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-center">
+         <div class="imgwrp"><i class="fa fa-user"></i></div>
+         <a href="{% url 'detail-client' clientobj.id %}" style="text-decoration:underline;    color: #545454;">Back To Client File</a>
+     </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+<div class="fail_popup cmn_sitepopup">
+   <div class="fail_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+         <h5>Please select the participants, then click Send Survey to continue.</h5>
+      </div>
+      <button class="sitebtn ok">Ok</button>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+<div class="buy_survey_popup cmn_sitepopup">
+   <div class="buy_survey_inn cmn_site_inn_popup">
+      <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+      <div class="cmn_sitepopup_scroll">
+          <h5>You don't have any surveys remaining in your account. Go to 'My Account' from your profile page to Purchase Surveys. </h5> 
+      </div>
+      <a href="{% url 'my-account' %}" class="sitebtn">Goto My Account</a>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+<div class="modal fade" id="edit-part" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h3 class="text-dark font-weight-bold">Edit Participant</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="addmodal">
+               <!--form-->
+               <div class="add_partici_wrp">
+                  <div class="client_intake_form mt-3">
+                     <form name="editparticipantfrm" class="commnewfrmdesign" id="editparticipantfrm"
+                        method="post">
+                        {% csrf_token %}
+                        <div class="add_participant_data overflow-auto col-sm-12 h-auto ">
+                           <div class="d-block client-info mb-0 mb-lg-0" id="block-1">
+                              <div class="row mt-2 mt-lg-4">
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="text" name="fname"
+                                             class="form-control cutome-input" id="efname"
+                                             placeholder="First Name">
+                                          <span class="error" id="fnameerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="text" name="lname"
+                                             class="form-control cutome-input" id="elname"
+                                             placeholder="Last Name">
+                                          <span class="error" id="lnameerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="email" name="email"
+                                             class="form-control cutome-input" id="eemail"
+                                             placeholder="Email">
+                                          <span class="error" id="eemailerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <select name="relationship" class="form-control cutome-input"
+                                             id="erelationship">
+                                             <option value="demo">Select Relationship</option>
+                                             {% for r in relation %}
+                                             <option value={{ r.id }}>{{ r.relation }}</option>
+                                             {% endfor %}
+                                          </select>
+                                          <span class="error" id="relationshiperr"></span>
+                                       </div>
+                                       <!-- <div class="cmn_field forgot_pass checkbox_cmnwrp mt-3 participant_check">
+                                          <label class="text-black"><input type="checkbox" name="forgtpass"> Enter Relation</label>
+                                          </div> -->
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-md-12 alignright savecanquestbtnwrp">
+                              </div>
+                           </div>
+                        </div>
+                        <input type="hidden" id="id" value="#id" name="id">
+                        <div class="sub_field mt-0 mb-3">
+                           <a class="savequestbtn sitebtn m-0" id="edit" data-toggle="modal">Save</a>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+               <!--form-end-->
+            </div>
+            <div class="modal-footer pt-1 pb-1">
+               <div class="sub_field">
+                  <a class="savequestbtn sitebtn" data-dismiss="modal"> Cancel</a></a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade cmn_sitepopup" id="allParticipants" tabindex="-1" role="dialog"
+   aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h3 class="modal-title text-dark font-weight-bold">Email form to client</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form url="{% url 'send_email' %}" id="sendmailform">
+            {% csrf_token %}
+            <div class="modal-body">
+               <div class="row mt-2 mt-lg-4">
+                  <div class="col-12 col-md-6 col-lg-6">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              <!-- <i class="fa fa-user" aria-hidden="true"></i> -->Client
+                           </span></div>
+                           <input type="text" name="cname" class="form-control cutome-input"
+                              value="{{clientobj.first_name}} {{clientobj.last_name}}" id="cname1" readonly>
+                           <span class="error" id="cnameerr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-6 col-lg-6">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              <!-- <i class="fa fa-envelope" aria-hidden="true"></i> -->Email
+                           </span></div>
+                           <input type="email" name="cemail" class="form-control cutome-input"
+                              value="{{clientobj.email}}" id="cemail1" readonly>
+                           <span class="error" id="cemailerr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="input-group-prepend"><span class="input-group-text">
+                              <!-- <i class="fa fa-commenting" aria-hidden="true"></i> -->Subject
+                           </span></div>
+                           <input type="text" name="csubject" class="form-control cutome-input"
+                              value="Enter feedback participants" id="csubject1" placeholder="Subject">
+                           <span class="error" id="csubjecterr"></span>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-12 col-lg-12">
+                     <div class="form-group">
+                        <div class="input-group cst-input-group mb-3">
+                           <div class="form-control cutome-input client_email_content" contenteditable name="cdesc" placeholder="Description"
+                              rows="6"><p style="display:block; width:100%;">Dear {{clientobj.first_name}} {{clientobj.last_name}},</p>       
+<p>Please click the link below to enter the participants who will be providing feedback.</p>
+<a {} href="{}" contenteditable="false" style="text-decoration: none;text-transform: capitalize;color: #fff;box-shadow: 3px 10px 10px #67c5bd59;border-radius: 30px;font-size: 16px;line-height: 18px;border: none!important;font-weight:400;padding: 12px 24px;background: #45a29e;
+             font-size: 14px;text-decoration: none ; margin: auto; margin: 20px auto 20px auto; display: block;width: 160px;text-align: center;"> Add Participants </a>
+<p contenteditable="true" style="display:block; margin:0px;">Feel free to reach out if you have any questions.</p>
+<p contenteditable="true" style="display:block; margin:0px;">Thank you,</p><p style="display:block; margin:0px;" contenteditable="false">{{request.user.coach_full_name}}</p></div>
+                           <span class="error" id="cdescriptionerr"></span>
+                        </div>
+                     </div>
+                  </div>
+                 
+                           <input type="hidden" name="url" value="{{url}}" >
+                           <input type="hidden" name="client_count" >
+                           <input type="hidden" id="survey_id" value="{% if Surveyobj %}{{Surveyobj.id}}{% endif %}">
+                 
+               </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+
+               <button type="button"  class="btn them-outline-btn mr-2 " data-dismiss="modal">Close</button>
+               <button type="button" class="btn them-outline-btn " id="sendmail">Send</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+<!-- select individual pop up -->
+<div class="default_survey_templ_popup cmn_sitepopup individual_pop_up">
+   <div class="create_survay_popup_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll">
+         <!-- <h2>Name your Survey</h2> -->
+         <div class="cmn_field inputicon usericon1">
+            <select name="defsurveycat" id="indi_rel" style="padding-left: 51px;">
+               
+               <option value="1">Select Relationship </option>
+               <option value="0">All Relationships</option>
+               {% for rel in relation%}                           
+               <option value={{ rel.id }}>{{ rel.relation }}</option>
+               {% endfor %}
+            </select>
+            <span class="error" id="indi_relerr" style="display: none;">Please Select Relationship</span>
+         </div>
+         <div class="cmn_field inputicon custom_input_icon usericon">
+            <select name="surveycat" id="individual">
+               <option value="">Select participant</option>
+            </select>
+            <span class="error indiv_err" style="display: none;">Please Select Participant</span>
+         </div>
+         <div class="all_survey_btn">
+            <div class="surveybtnwrp sub_field"><button type="button" class="btn btn-default" id="show_resp">See Response</button></div>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"> </div>
+</div>
+<!-- end of select individual pop up -->
+<!-- question summary pop up -->
+<div class="default_survey_templ_popup cmn_sitepopup question_summary_pop_up">
+   <div class="create_survay_popup_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+         <div class="cmn_field inputicon usericon1">
+            <select name="defsurveycat" id="que_sum" style="padding-left: 51px;">
+               <option value="1">Select Question </option>
+               
+            </select>
+            <span class="error" id="que_sumerr" style="display: none;">Please Select Question</span>
+         </div>
+      
+         <div class="questionreviewfrm"></div>
+      </div>
+   </div>
+   <div class="whiteoverlay"> </div>
+</div>
+<!-- end of question summary pop up -->
+<!-- individual_response_popup  -->
+<div class="survey_preview_popup cmn_sitepopup individual_response_popup">
+   <div class="survey_preview_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+         <h2>Preview</h2>
+         <div class="surveypreviewfrm  surveypreviewfrm-box "> 
+         </div>
+         <div class="d-flex justify-content-center .create_sur_btn ">
+            <a class="newbtn pt-3 pb-3 text-white mb-3 " data-dismiss="modal">Done</a>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+<!-- end of individual_response_popup -->
+<div class="loading_img" id="lodingimg"><img src="https://c.tenor.com/I6kN-6X7nhAAAAAj/loading-buffering.gif"></div>
+<div id="success"></div>
+
+<script>
+     
+   $(document).ready(function () {
+       $.each($('.status'), function() {
+           if($(this).text().trim() == ''){
+               $(this).text('-')
+           }
+       });
+   
+       $(".nav-tabs a[href='#step2']").click(function () {
+           window.location.href = '#step-2';
+       });
+   
+       let str = window.location.href;
+       if (str.substr(str.indexOf("#")) == '#step-2') {
+           $('.nav-tabs a').eq(2).trigger('click');
+       }
+   
+   });
+   
+    $('#step2-tab').click(function(){
+        $('#step1').css('display', 'none');
+      
+   });
+   
+   
+   $('.add_more_cta').click(function () {
+       var x = $('<div class="d-block client-info mb-2 mb-lg-4" id="block-' + count +
+           '"> <div class="row mt-2 mt-lg-4"> <div class="col-12 col-md-6 col-lg-6"> <div class="form-group"> <div class="input-group cst-input-group mb-3"> <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div><input type="text" name="fname" class="form-control cutome-input" id="fname' +
+           count +
+           '" placeholder="First Name"> <span class="error" id="fnameerr"></span> </div></div></div><div class="col-12 col-md-6 col-lg-6"> <div class="form-group"> <div class="input-group cst-input-group mb-3"> <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div><input type="text" name="lname" class="form-control cutome-input" id="lname' +
+           count +
+           '" placeholder="Last Name"> <span class="error" id="lnameerr"></span> </div></div></div><div class="col-12 col-md-6 col-lg-6"> <div class="form-group"> <div class="input-group cst-input-group mb-3"> <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div><input type="email" name="email" class="form-control cutome-input" id="email' +
+           count +
+           '" placeholder="Email"> <span class="error" id="emailerr"></span> </div></div></div><div class="col-12 col-md-6 col-lg-6"> <div class="form-group"> <div class="input-group cst-input-group mb-3"> <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div><select name="relationship" class="form-control cutome-input" id="relationship' +
+           count +
+           '"> <option value="demo" selected>Select Relationship</option>{% for r in relation %}<option value={{r.id}}>{{r.relation}}</option>{% endfor %}</select> <span class="error" id="relationshiperr"></span> </div><!-- <div class="cmn_field forgot_pass checkbox_cmnwrp mt-3 participant_check"> <label class="text-black"><input type="checkbox" name="forgtpass"> Enter Relation</label> </div>--> </div></div></div><div class="col-md-12 alignright savecanquestbtnwrp" > <a onclick="rmv(this)" id="delete' +
+           count + '" class="savequestbtn sitebtn remCF">Delete</a> </div></div>')
+       $('.add_participant_data').append(x);
+       count++;
+       document.getElementById('count').value = count - 1;
+   });
+   
+   function rmv(e) {
+       $(e).parent().parent().remove();
+   };
+   
+
+</script>
+
+<div style="display:none;" id="count" value="1"></div>
+<!--script for deleting data-->
+
+<!--script for editing data-->
+<script>
+   
+   $('body').on('click', '.edit_value', function () {
+       var firstname = $(this).parents('tr').find('td:eq(2)').text();
+       var lastname = $(this).parents('tr').find('td:eq(3)').text();
+       var email = $(this).parents('tr').find('td:eq(4)').text();
+       var relation = $(this).parents('tr').find('td:eq(5)').text();
+       var dataId = $(this).attr('data-id');
+       var e = $.trim(firstname);
+       jQuery('#eemailerr').text('');
+       $('#edit-part #efname').val(e);
+       $('#edit-part #elname').val(lastname);
+       $('#edit-part #eemail').val(email);
+       $('#edit-part #id').val(dataId);
+       $('#erelationship').children('option').each((key, item) => {
+           var isSelected = ($(item).html() == $.trim(relation)) ? true : false;
+           if (isSelected)
+               $(item).attr('selected', 'selected');
+       });
+   });
+   
+   $('body').on('click', '.dropdown_area', function () {
+       $(this).toggleClass('active_btns');
+   });
+</script>
+
+<script>
+   var t = "";
+   var t2 = "";
+    function deletepart(id) {
+       $('#curr_survey_id').val(id);
+       $('#del_particip').modal('show');
+   }
+   var cid = $('#client_id').val();
+   $(document).ready(function() {
+       localStorage.clear();
+       $('#myTable').DataTable({searching: false,"bLengthChange" : false, responsive: true, "ordering": false, "processing": true,
+       oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},});
+       t = $('#myTable1').DataTable({
+         ordering: false,
+         responsive: true,   
+         serverSide: true,
+         searching: false,
+         processing: true,
+         rowId: "id",
+         oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+         ajax: window.location.origin + "/participantdt/"+ cid ,
+         columns: [
+         {   
+             "data": "selectbox", 
+             "render": function(data, type) {
+               return '<label class="input_design mr-2"><input type="checkbox"name="client"><span ></span></label>';
+             }
+         },
+         {   
+             "data": "id", 
+             "render": function(data, type, full, meta) {
+                 return meta.row + meta.settings._iDisplayStart + 1;
+             }
+         },
+         { "data": "first_name" },
+         { "data": "last_name"},
+         { "data": "email", "class":"participant_email", },
+         { "data": "relationship"},
+         { 
+             "data": "id",              
+             "render": function(data) { 
+                 link = document.location.origin + '/survey/show_survey/'+data                      
+                 return '<div class="dropdown dropdown-cust"><button class="btn dropdown-toggle no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i></button><div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"><a class="dropdown-item edit_value" data-toggle="modal" data-id="'+data+'" data-target="#edit-part">Edit</a><a class="dropdown-item" onclick="deletepart('+data+')">Delete</a></div></div>'
+              }
+         }],
+      });
+      t.on( 'draw', function () {
+         $('#myTable1 thead input').prop('checked', false);;
+     } );
+                
+      $('.open-popup-addparticipant').click(function(){	
+         t2 = $('#myTable2').DataTable(
+             {
+             "bDestroy": true,
+             searching: false,
+             "bLengthChange" : false, 
+             responsive: true,
+             "ordering": false,
+             serverSide: true,
+             ajax: window.location.origin + "/participantdt/"+ cid ,
+             rowId: "id",
+             columns: [
+              { 
+                  "data": "id", 
+                  render: function(data, type, full, meta) {
+                      return meta.row + meta.settings._iDisplayStart + 1;
+                  }
+              },
+              { "data": "first_name" },
+              { "data": "last_name"},
+              { "data": "email" },
+              { "data": "relationship"},                        
+              ],
+             }
+         );            
+         setTimeout(() => {
+         t2.columns.adjust().responsive.recalc();
+         },1000)
+      });
+       
+      $('body').on('click', '#save', function(e) {
+         e.preventDefault();
+         var data = {};
+         token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+         client_id = $('#client_id').val();
+         href_code = window.location.href.split("/client_data_view/")[1];
+ 
+ 
+         if ($('#relationship').val() != 'demo' && $('#email').val() != '' && $('#lname').val() != '' && $('#fname').val() != ''){        
+             
+         try {
+             var fn = document.getElementById('fname').value;
+             var ln = document.getElementById('lname').value;
+             var em = document.getElementById('email').value;
+             var rl = document.getElementById('relationship').value;
+             //var code = document.getElementById('link').value;
+             data["fname"]= fn;
+             data["lname"]= ln;
+             data["email"]= em;
+             data["rel"]= rl;
+             data["id"]= client_id;
+             }
+         catch(err) {
+             console.log('error')
+         } ;         
+             $.ajax({
+                     type: "POST",
+                     url: "{% url 'congo' %}",
+                     data: {'data': data},
+                     headers: {'X-CSRFToken': token },
+                     success: function (data) {
+                     if (data['error']){
+                         $('#emailerr').text(data['error']);
+                     } 
+                     else {
+                         $('#myTable1').DataTable().ajax.reload(); 
+                         $('#myTable2').DataTable().ajax.reload(); 
+                         $('#participants input').val('');
+                         $("#participants select").val('demo');
+                         }
+                     },
+                     error: function(data) {
+                         console.log(data)
+                     }
+                 });
+ 
+ 
+         }
+   }); 
+
+   $('body').on('click', '#edit', function () {
+      var email = document.getElementById('eemail').value;
+      if(email == "" || email == null) {
+			jQuery('#eemailerr').text('Please enter a email address');
+		} else {
+			var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm;
+			if (re.test(email)) {
+				jQuery('#eemailerr').text('');            
+            token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+            var data = {};
+            try {
+               var fn = document.getElementById('efname').value;
+               var ln = document.getElementById('elname').value;           
+               var id = {{ clientobj.id}};
+               var rl = document.getElementById('erelationship').value;
+               data["fname"] = fn;
+               data["lname"] = ln;
+               data["email"] = email;
+               data["rel"] = rl;
+               data["id"] = id;
+               data["participant_id"] = document.getElementById('id').value;
+            }
+            catch (err) {
+               console.log('error')
+            }
+            try {
+               $.ajax({
+                     type: "PUT",
+                     url: "{% url 'congo' %}",
+                     data: JSON.stringify(data),
+                     headers: {
+                        'X-CSRFToken': token
+                     },
+                     success: function (data) {
+                        if (data['fail'] == 'fail') {
+                           jQuery('#eemailerr').text('Email already exists.');
+                        }      
+                        else{
+                           $('#edit-part').modal('hide');
+                           jQuery('#eemailerr').text('');
+                           $('#myTable1').DataTable().ajax.reload(); 
+                        }                
+                     },
+                     error: function (data) {
+                        console.log(data)
+                     }
+               });
+            } catch (err) {
+               console.log(err)
+            } 
+			} else {
+            console.log(jQuery('#eemailerr'))
+				jQuery('#eemailerr').text('Please enter a valid email address');
+			}
+			// jQuery('#emailerr').text('');
+		
+	   }            
+   });
+  
+   
+   $('#delete_participant').on('click',function(){
+       cid = {{ clientobj.id }};
+       token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+       $('#del_particip').modal('hide');
+       $.ajax({
+           url: "{% url 'congo' %}",
+           type: "DELETE",
+           data: {
+               'id': jQuery('#curr_survey_id').val(),
+               'cid': cid
+           },
+           headers: {
+               'X-CSRFToken': token
+           },
+           success: function (data) {
+               t.row( $('tr#'+data['id']) ).remove().draw();
+               $('#myTable1').DataTable().ajax.reload();           
+           }
+       })
+       $('.loading_img').fadeIn();
+       setInterval(function () {
+           $('.loading_img').fadeOut();
+       }, 1000);
+   });
+   })
+
+</script>
+<!--script for saving data-->
+<script>
+   
+   jQuery('#fname').on('keyup',function(e){
+      var fname = $('#fname').val();
+      var fnameRegex = /^[a-zA-Z]{3,16}$/;
+      if(fnameRegex.test(fname)) {
+          jQuery('#fnameerr').text('');
+      }
+   })
+   jQuery('#lname').on('keyup',function(e){
+       var lname = $('#lname').val();
+       var lnameRegex = /^[a-zA-Z]{3,16}$/;
+       if(lnameRegex.test(lname)) {
+           jQuery('#lnameerr').text('');
+       }
+
+   })
+   jQuery('#email').on('keyup',function(e){
+       var email = $('#email').val();
+       var emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+       if(emailRegex.test(email)) {
+           jQuery('#emailerr').text('');
+       }
+   })
+   jQuery('#relationship').on('change', function () {
+      $('#relationshiperr').text('');
+   });
+   
+   {% comment %} $('body').on('change', '#relationship', function () {
+       $('#relationshiperr').text('');
+   });
+   
+   $('body').on('click', '#email', function () {
+       $('#emailerr').text('');
+   });
+   
+   $('body').on('click', '#lname', function () {
+       $('#lnameerr').text('');
+   });
+   
+   $('body').on('click', '#fname', function () {
+       $('#fnameerr').text('');
+   });
+    {% endcomment %}
+   
+   $('#no_survey_err').on("click", (function () {
+       alert('You do not have any survey. Please create the survey for report generation!')
+   }))
+   $('#survey_err').on("click", (function () {
+       alert('You already have survey!')
+   }))
+   $('.ok').click(function(){
+      modalShow(false);
+   })
+   $('.closepoup').click(function(){
+      modalShow(false);
+   })
+   $('.close1').click(function(){
+      modalShow(false);
+   })
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static i18n %}
+{% load customtags %}
+<head>
+    <meta charset="UTF-8">
+    <title>Active Clients</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,300;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+   {% if send_report%}
+  {% csrf_token %}
+  <input type="hidden" id="surveyID" value="{{survey_id}}">
+<script>
+
+  const CRegular= "{{urls}}fonts/CaflischRegular.ttf";
+  const NSansRegular= "{{urls}}fonts/Nunito_Sans/NunitoSans-Regular.ttf";
+  const NSansbold= "{{urls}}fonts/Nunito_Sans/NunitoSans-Bold.ttf";
+  const NSanssemibold= "{{urls}}fonts/NunitoSans-SemiBold.ttf";
+
+  pdfMake.fonts = {
+    Courier: {
+      normal: 'Courier',
+      bold: 'Courier-Bold',
+      italics: 'Courier-Oblique',
+      bolditalics: 'Courier-BoldOblique'
+    },
+    Helvetica: {
+      normal: 'Helvetica',
+      bold: 'Helvetica-Bold',
+      italics: 'Helvetica-Oblique',
+      bolditalics: 'Helvetica-BoldOblique'
+    },
+    Times: {
+      normal: 'Times-Roman',
+      bold: 'Times-Bold',
+      italics: 'Times-Italic',
+      bolditalics: 'Times-BoldItalic'
+    },
+    Symbol: {
+      normal: 'Symbol'
+    },
+    Caflisch: {
+      normal: CRegular
+    },
+    nunitoregular: {
+      normal: NSansRegular
+    },
+    nunitobold: {
+      normal: NSansbold
+    },
+    nunitosemibold: {
+      normal: NSanssemibold
+    },
+    ZapfDingbats: {
+      normal: 'ZapfDingbats'
+    }
+  };
+
+
+  allcontent = []
+
+  {% comment %} {% if encoded_url %}
+  logoimg =    {
+          image: "{{encoded_url}}" ,
+          width: 150,
+          // height: 105,
+          
+          fit: [105, 105]
+
+
+      },
+      allcontent.push(logoimg)
+  {% endif %} {% endcomment %}
+
+  page1= {'text': [
+                      {
+                          text: [{text: '\n\nCreative Assessment Portal \n', font:'Caflisch', fontSize: 42.75,alignment: 'center',  margin: [ 80, 0, 0, 0 ] },	],
+                      },
+
+                      {
+                          text: '\n\n{% if report.topic %}{{report.topic |title|escapejs}} {% else %}Confidential Feedback Report for{% endif %}\n\n',
+                          fontSize: 19.5,
+                          alignment: 'center',
+                          color:'#545454',
+
+                      },
+                      {
+                          text: '{% if report.first_name %}{{report.first_name|title}} {{report.last_name|title}} {% else %}{{client.first_name}} {{client.last_name}} {% endif %}\n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+
+
+                      },
+                     {% if report.title %}
+                          {
+                          text: '{{report.title|safe}} \n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+
+                          },
+
+                     {% endif %}
+
+                     {% if report.company_name %}
+                          {
+                          text: '{{report.company_name|safe}} \n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+                          },
+                    {% else %}
+                        {% if client.company_name %}
+                        {
+                          text: '{{client.company_name|safe}} \n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+                          },
+                        {% endif %}
+                     {% endif %}
+
+                     {
+                          text: '{% if report.reportgenerateat %}{{report.reportgenerateat|date:"F j, Y"}} {% else %} {% now "F j, Y" %}{% endif %}\n\n\n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+                      },
+                      {
+                          text: [
+                          { text:  ' Prepared By ',
+                              fontSize: 15,
+                              font:'nunitoregular',
+                              alignment: 'right',
+                              color:'#545454',
+                          },
+                          { text:  '{{user|title}}\n',
+                              fontSize: 15,
+                              font:'nunitobold',
+                              color:'#545454',
+
+                              alignment: 'right',
+                              color:'#545454',
+                          },
+                          ],alignment: 'right',
+                          color:'#545454',
+                      },
+                      {
+                          text: "{{coach_title|escapejs|capfirst}}\n ",
+                          alignment: 'right',
+                          fontSize: 15,
+                          font:'nunitobold',
+                          color:'#545454',
+                      },
+                ]}
+
+{% if encoded_url %}
+  registeredsymbol= {'text': '® \n\n',fontSize: 22, bold:true,  absolutePosition: { x: 470, y: 240 },}
+{% else %}
+  registeredsymbol= {'text': '® \n\n',fontSize: 22, bold:true,  absolutePosition: { x: 470, y: 140 },}
+{% endif %}
+
+  const SvgImage1=()=>{
+  return  {
+          svg:'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 403"><defs><clipPath id="clip-path"><rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px"  fill="#000" stroke="#707070" stroke-width="1"/></clipPath></defs><g id="Mask_Group_1" data-name="Mask Group 1" clip-path="url(#clip-path)"><path id="Path_1" class="bc-color-styling" data-name="Path 1" d="M0,173.333s440-142.667,904-6.667,878.667,64,1018.667,0,0,352,0,352l-1936-13.333-6.667-332Z" transform="translate(0 -97.285)" fill="{{request.user.coaches.color}}"/> </g> </svg>',
+           margin: [-40,0,0,0],
+           width:595,
+           height: 400,
+           absolutePosition: { x: 0, y: 570 },
+
+      }
+  }
+
+  const SvgImage2=()=>{
+  return  {
+          svg:'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 403"><defs><clipPath id="clip-path"><rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px" fill="#d7de68" stroke="#707070" stroke-width="1"/></clipPath></defs><g id="Mask_Group_1" data-name="Mask Group 1" clip-path="url(#clip-path)"><path id="Path_1" class="bc-color-styling" data-name="Path 1" d="M1964.89,173.333s-440-142.667-904-6.667-878.667,64-1018.667,0,0,352,0,352l1936-13.333,6.667-332Z" transform="translate(-44.89 -108.285)" fill="{{request.user.coaches.frontfootercolor}}"/></g></svg> ',
+           margin: [-40,0,0,0],
+           width:595,
+           height: 400,
+           absolutePosition: { x: 0, y: 570 }
+      }
+  }
+
+  page2part1 = {'text': [
+                     {% if report.heading %}
+                      { text: "{{report.heading|escapejs|capfirst}} \n".replace(/<p>/gi,'\n').replace(/<div>/gi,'\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '),
+                          fontSize:17,
+                          color:'#000',
+                          font:'nunitobold',
+                          lineHeight:1,
+                        },
+                     {% else %}
+                      { text: "Overview \n" ,
+
+                          fontSize:17,
+                          color:'#000',
+                          font:'nunitobold',
+                          lineHeight:1.5,
+                          },
+                     {% endif %}
+
+                      {% if report.comments %}
+                        { text: "{{report.comments|escapejs|capfirst}}\n".replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '),
+                        fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                          margin:[5,20,5,20]
+                           },
+                     {% else %}
+                          { text: [{ text: "As part of your executive coaching engagement, {{request.user.coach_full_name}} conducted a feedback process to understand how others perceive your strengths as well as your learning and development opportunities.\n",fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,},
+                          { text: "\n{{request.user.coaches.first_name}} gathered feedback data from {{survey.response_count}} participants with whom you have interfaced and have known for at least six months. All data was collected via an online questionnaire {% if survey.start_datetime == survey.end_datetime %} for {{survey.start_datetime|date:'F j'}} {% else %} from {{survey.start_datetime|date:'F j'}} to {{survey.end_datetime|date:'F j'}}{% endif %}. The participants included:\n" ,
+                          fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                          margin:[5,20,5,20]
+                        }   ],
+                          },
+                     {% endif %}
+                ], pageBreak: 'before' }
+
+page2part2 = {
+                bold:false,
+                margin: [0,15,0,8],
+                ol: [
+                    {% for part in participant %}
+                      {% for sc in surcom %}
+                        {% if sc.participant == part %}
+                          {
+                            text: "{{part.first_name}} {{part.last_name}}, {{part.relationship.relation}} \n" ,
+                            fontSize:10.5,
+                            color:'#545454',
+                            font:'nunitoregular',
+                            lineHeight:1.5,
+                          },
+                        {% endif %}
+                      {% endfor %}
+                    {% endfor %}
+                  ]
+                },
+
+              
+page2part3 = {'text': [
+        {% if report.summary %}
+              {
+                text: "{{report.summary|capfirst|escapejs}} \n" ,
+                fontSize:13.5,
+              color:'#000',
+              font:'nunitobold',
+              lineHeight:1.5,
+              },
+        {% else %}
+              {
+                text: "Participant Summary \n" ,
+                fontSize:13.5,
+              color:'#000',
+              font:'nunitobold',
+              lineHeight:1.5,
+              },
+        {% endif %}
+
+], margin: [0,0,0,8],}
+  const createTable=()=>{
+    return {
+    table: {
+          widths: ['25%', '25%', '25%', '25%'],
+        alignment: 'center',
+      body: [
+                 [{text: 'Relationship', alignment: 'center',font:'nunitobold',margin:10},
+                 {text: 'Selected', alignment: 'center',font:'nunitobold',margin:10,}, {text: 'Participated', alignment: 'center',font:'nunitobold',margin:10} , {text: 'Participation %', alignment: 'center',font:'nunitobold',margin:10}],
+                 {% for rel in relationobj%}
+                 {% for part in ansrecord %}
+                 {% if part.rel == rel.relation %}
+                 [{text: '{{ rel.relation }}', alignment: 'center',font:'nunitoregular',margin:10}, {text: '{{part.sentto}}', alignment: 'center',font:'nunitoregular',margin:10}, {text: '{{part.count}}', alignment: 'center',font:'nunitoregular',margin:10}, {text: '{{part.sur}} %', alignment: 'center',font:'nunitoregular',margin:10}],
+                 {% endif %}
+                 {% endfor %}
+                 {% endfor %}
+           ]
+        }
+      }
+  }
+
+  page2part4 = {'text': [
+                     {% if report.text %}
+                         {
+                          text: "\n{{ report.text|capfirst|escapejs}}".replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '),
+                          fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                    {% else %}
+                    {
+                           text: "\nAs is best practice, participants were given anonymity to engender trust and candor. Their anonymous direct quotes were aggregated by question and are included in the report\n" ,
+                           fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                         {
+                           text: "\nWhen reviewing your report, please keep in mind that these are their perception of you, which may differ from how you see yourself. \n" ,
+                           fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                         {
+                           text: "\nDuring your coaching session with {{request.user.coaches.first_name}}, the report will be analyzed and key themes will be elicited. The purpose is to gain clarity and self-awareness to help refine your goals and determine the best path forward to achieve them.\n" ,
+                           fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                    {% endif %}
+
+               ], pageBreak: 'after' }
+
+  allcontent.push(page1)
+  allcontent.push(registeredsymbol)
+  allcontent.push(SvgImage2());
+  allcontent.push(SvgImage1());
+  allcontent.push(page2part1)
+  allcontent.push(page2part2)
+  allcontent.push(page2part3)
+  allcontent.push(createTable())
+  allcontent.push(page2part4)
+
+
+  {% for que, headcom, ansobjlist in quesanslist %}
+      page{{forloop.counter|add:3}} = {'text': [
+            {% if headcom.heading %}
+                  {
+                    text: "{{headcom.heading |capfirst|escapejs }} \n" ,
+                    fontSize:16.5,
+                    color:'#000',
+                    font:'nunitobold',
+
+              },
+             {% endif %}
+             {% if headcom.comments %}
+                  {
+                    text: "{{headcom.comments|capfirst |escapejs}}\n\n" ,
+                    fontSize: 12,
+                    color:'#545454',
+                    font:'nunitoregular',                    
+                  },
+             {% endif %}
+             {
+                text: "{{que|capfirst|escapejs}}\n" ,
+                fontSize: 13.5,
+                color:'#000',
+                font:'nunitosemibold',
+             },
+      ], margin: [ 0, 30, 0, 0], {% if forloop.counter != 1 %} {% if headcom.heading %} pageBreak: 'before' {% endif %}{% endif %}},
+      allcontent.push(page{{forloop.counter|add:3}}),
+      {% if grps %}
+        {% Check_manager grps ansobjlist as has %}
+          {% if has == False %}
+            {% Answer_length ansobj que "Manager" as ans_len %}
+              {% if ans_len != 0 %}
+                allcontent.push({
+                text: "Manager\n" ,
+                fontSize: 12,
+                color:'#545454',
+                font:'nunitoregular',
+                lineHeight:1.6,
+                margin: [0, 4, 0, 0],
+                  },)
+              {% endif %}          
+            {% for ans, editedans in ansobjlist %}
+              {% if ans.question == que %}
+                {% if ans.answer != '' and ans.participant.relationship.relation == "Manager" %}
+                  {% if editedans == 'null' %}
+                    allcontent.push(
+                      {
+                        bold:false,
+                        margin: [5, 5],
+                          ul: [
+                          {text: " {{ans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                          lineHeight:1.3, color:'#545454',  bold:false },
+                    ]
+                    },)
+                  {% else %}
+                    {% if editedans.deleted == False %}
+                      allcontent.push(
+                        {
+                          bold:false,
+                          margin: [5, 5],
+                            ul: [
+                            {text: " {{ editedans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                            lineHeight:1.3, color:'#545454',  bold:false },
+                      ]
+                      },)
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% for grp in grps %}
+            {% Answer_length ansobj que grp as ans_len %}
+            {% if ans_len != '0' %}
+            allcontent.push({
+                  text: "{% for g in grp.relation.all %}{{g.relation}}{% if forloop.counter != grp.relation.all|length %},{% endif %} {% endfor %}\n",
+                  fontSize: 12,
+                  color:'#545454',
+                  font:'nunitoregular',
+                  lineHeight:1.6,
+                  margin: [0, 4, 0, 0],  
+                },)
+            {% endif %}
+            
+              {% if forloop.parentloop.counter|divisibleby:stat_random_num %}
+                {% for ans, editedans in ansobjlist reversed %}
+                  {% for g in grp.relation.all %}
+                    {% if ans.participant.relationship.relation == g.relation and ans.answer != '' %}                          
+                      {% if editedans == 'null' %}
+                        allcontent.push(
+                          {
+                            bold:false,
+                            margin: [5, 5],
+                              ul: [
+                              {text: " {{ans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                              lineHeight:1.3, color:'#545454',  bold:false },
+                          ]
+                          },)
+                      {% else %}
+                        {% if editedans.deleted == False %}
+                          allcontent.push(
+                            {
+                              bold:false,
+                              margin: [5, 5],
+                                ul: [
+                                {text: " {{ editedans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                                lineHeight:1.3, color:'#545454',  bold:false },
+                          ]
+                          },)
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}
+              {% else %}
+                {% for ans, editedans in ansobjlist %}
+                  {% for g in grp.relation.all %}
+                    {% if ans.participant.relationship.relation == g.relation and ans.answer != '' %}                          
+                      {% if editedans == 'null' %}
+                        allcontent.push(
+                          {
+                            bold:false,
+                            margin: [5, 5],
+                              ul: [
+                              {text: " {{ans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                              lineHeight:1.3, color:'#545454',  bold:false },
+                          ]
+                          },)
+                      {% else %}
+                        {% if editedans.deleted == False %}
+                          allcontent.push(
+                            {
+                              bold:false,
+                              margin: [5, 5],
+                                ul: [
+                                {text: " {{ editedans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                                lineHeight:1.3, color:'#545454',  bold:false },
+                          ]
+                          },)
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}  
+              {% endif %}   
+            
+          {% endfor %}
+      {% else %}
+        {% if forloop.counter|divisibleby:stat_random_num %} 
+          {% for ans, editedans in ansobjlist reversed %}
+            {% if ans.answer != '' %}
+              {% if editedans == 'null' %}
+                allcontent.push(
+                  {
+                    bold:false,
+                    margin: [5, 5],
+                      ul: [
+                      {text: " {{ans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                      lineHeight:1.3, color:'#545454',  bold:false },
+                ]
+                },)
+              {% else %}
+                {% if editedans.deleted == False %}
+                  allcontent.push(
+                    {
+                      bold:false,
+                      margin: [5, 5],
+                        ul: [
+                        {text: " {{ editedans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                        lineHeight:1.3, color:'#545454',  bold:false },
+                  ]
+                  },)
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+        {% for ans, editedans in ansobjlist %}
+            {% if ans.answer != '' %}
+              {% if editedans == 'null' %}
+                allcontent.push(
+                  {
+                    bold:false,
+                    margin: [5, 5],
+                      ul: [
+                      {text: " {{ans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                      lineHeight:1.3, color:'#545454',  bold:false },
+                ]
+                },)
+              {% else %}
+                {% if editedans.deleted == False %}
+                  allcontent.push(
+                    {
+                      bold:false,
+                      margin: [5, 5],
+                        ul: [
+                        {text: " {{ editedans.answer|escapejs}}  \n".replace(/<br\s*\/?>/gi,'\n').replace(/&nbsp;/g, ' '), listType: 'circle',
+                        lineHeight:1.3, color:'#545454',  bold:false },
+                  ]
+                  },)
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+
+      {% if conque %}
+       
+            confques = {'text': [
+                  
+                              {% if conque.heading %}
+                              {
+                                    text: "{{ conque.heading|capfirst|escapejs}}\n",
+                                    fontSize:16.5,                                              
+                                    color:'#000',
+                                    font:'nunitobold',                                    
+                              },
+                              {% endif %}
+                              {% if conque.comments %}
+                              {
+                                    text: "{{ conque.comments|escapejs|capfirst }}\n\n",
+                                    fontSize: 12,
+                                    color:'#545454',
+                                    font:'nunitoregular',                                    
+                              },
+                              {% endif %}
+                             {
+                                text: "{{conque.question|escapejs|capfirst}}\n" ,
+                                fontSize: 13.5,
+                                color:'#000',
+                                font:'nunitosemibold',
+                             },
+                             ], margin: [ 0, 30, 0, 0], {% if conque.heading %} pageBreak: 'before' {% endif %}},
+                             allcontent.push(confques),
+                            {% if grps %}
+                                {% Check_manager grps randomfinalanswers as has %}
+                                  {% if has == False %}
+                                    allcontent.push(
+                                        {
+                                        text: "Manager\n" ,
+                                        fontSize: 12,
+                                        color:'#545454',
+                                        font:'nunitoregular',
+                                        lineHeight:1.6,
+                                        margin: [0, 4, 0, 0],                                       },)
+                                        {% for ans, editedans in randomfinalanswers %}
+                                          {% if ans.participant.relationship.relation == "Manager" %}
+                                            {% if ans.answer != '' %}
+                                              allcontent.push(
+                                              {
+                                                bold:false,
+                                                margin: [5, 3],
+                                                  ul: [
+                                                  {text: " {% if editedans == 'null' %}{{ans.answer|escapejs}}{% else %}{{ editedans.answer|escapejs }}{% endif %} \n", listType: 'circle',
+                                                  font:'nunitoregular', color:'#545454',  bold:false },
+                                              ]
+                                              },)         
+                                            {% endif %}                                        
+                                          {% endif %}
+                                        {% endfor %}
+                                  {% endif %}
+                                {% for grp in grps %}                                 
+                                  allcontent.push({
+                                    text: "{% for g in grp.relation.all %}{{g.relation}}{% if forloop.counter != grp.relation.all|length %},{% endif %} {% endfor %}\n" ,
+                                    fontSize: 12,
+                                    color:'#545454',
+                                    font:'nunitoregular',
+                                    lineHeight:1.6,
+                                    margin: [0, 4, 0, 0], 
+                                  },)
+                                  {% if grps|length == 1 %}                                     
+                                    {% for ans, editedans in randomfinalanswers reversed %}
+                                      {% for g in grp.relation.all %}
+                                        {% if ans.participant.relationship.relation == g.relation %}
+                                          {% if ans.answer != '' %}
+                                            allcontent.push(
+                                            {
+                                              bold:false,
+                                              margin: [5, 3],
+                                                ul: [
+                                                {text: " {% if editedans == 'null' %}{{ans.answer|escapejs}}{% else %}{{ editedans.answer|escapejs }}{% endif %} \n", listType: 'circle',
+                                                font:'nunitoregular', color:'#545454',  bold:false  },
+                                            ]
+                                            },)
+                              
+                                          {% endif %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    {% endfor %}                                    
+                                  {% else %}
+                                    {% for ans, editedans in randomfinalanswers %}
+                                      {% for g in grp.relation.all %}
+                                        {% if ans.participant.relationship.relation == g.relation %}
+                                          {% if ans.answer != '' %}
+                                            allcontent.push(
+                                            {
+                                              bold:false,
+                                              margin: [5, 3],
+                                                ul: [
+                                                {text: " {% if editedans == 'null' %}{{ans.answer|escapejs}}{% else %}{{ editedans.answer|escapejs }}{% endif %} \n", listType: 'circle',
+                                                font:'nunitoregular', color:'#545454',  bold:false  },
+                                            ]
+                                            },)
+                              
+                                          {% endif %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    {% endfor %}
+                                  {% endif %} 
+                                {% endfor %}
+                            {% else %}
+                              {% for ans, editedans in randomfinalanswers %}
+                                {% if ans.answer != '' %}
+                                  allcontent.push(
+                                    {
+                                      bold:false,
+                                      margin: [5, 5],
+                                        ul: [
+                                        {text: " {% if editedans == 'null' %}{{ans.answer|escapejs}}{% else %}{{ editedans.answer|escapejs }}{% endif %} \n", listType: 'circle',
+                                        font:'nunitoregular', color:'#545454',  bold:false },
+                                  ]
+                                  },)
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                      {% endif %}
+   
+
+
+  notes = {'text': [
+                  {% if report.noteheading %}
+                      {
+                            text: "\n{{report.noteheading|escapejs}}".replace(/<div>/gi, "\n").replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ') ,
+                            fontSize:15,
+                            color:'#000',
+                            font:'nunitobold',
+                         },
+                  {% endif %}
+                  {% if report.notecomments %}
+                      {
+                            text: "\n{{report.notecomments|escapejs}}".replace(/<div>/gi, "\n").replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ') ,
+                            fontSize: 12,
+                            color:'#545454',
+                            font:'nunitoregular',
+                            bold:false
+                         },
+                  {% endif %}
+                      ]}
+
+  allcontent.push(notes)
+
+
+  // console.log("allcontent: ", allcontent)
+  const pdfCreate=()=>{
+
+      var dd = {
+            footer: function (currentPage, pageCount) {
+                  return {
+              columns: [
+                  {
+                      margin:0,
+                      alignment:'center',
+                      table: {
+                          widths:'*',
+                          body: [
+                              [{
+                                  border: [false, false, false, false],
+                                  fillColor: '{{request.user.coaches.color}}',
+                                  margin: [0,14.2,0,0],
+                                  columns: [
+                                    { text: '{{fotrtxt}}', alignment: 'left', fontSize:10.5, margin: [0,0,0,10], color: '#fff' },
+                                    { text: "Page " + currentPage.toString() + ' of ' + pageCount+'\n\n', alignment: 'right', fontSize:10.5, margin: [0,0,0,10], color: '#fff' },
+
+                                  ]
+                              },
+                              ]
+                          ]
+                      },
+                  },
+              ]
+
+            };
+            },
+
+            background:function () {
+                            return {
+                              canvas: [
+                            {
+                              type: 'rect',
+                              x: 0, y: 0, w: 595.28, h: 841.89,
+                              color: '#f2f2f2'
+                            }
+                          ]
+                          };
+                        },
+
+              content: allcontent,
+
+              defaultStyle: {
+                  font: 'Helvetica',
+                  fontSize: 12,
+                },
+      }
+      return dd
+   }
+
+  function sendajaxrequest(result){
+    var token ="";
+    var cmail = $('#client_mail').val();
+    var client_id = $('#client_id').val();
+    var survey_id = $('#surveyID').val();
+    var data = new FormData();
+    data.append('data', result);
+    data.append('cmail',cmail)
+    data.append('client_id',client_id)
+    data.append('survey_id',survey_id)
+    token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    var endpoint = window.location.origin + "/survey/send-mail/"
+    $.ajax({
+      type: "POST",
+      headers: {'X-CSRFToken': token},
+      url: endpoint,
+      data: data,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      success:function(data) {
+         alert("Mail sent successfully");
+         jQuery('.loader-wrap').show();
+         window.location = document.referrer;
+      },
+      error:function(data){
+         alert("Mail not sent");
+         jQuery('.loader-wrap').show();
+         window.location = document.referrer;
+      }
+  });
+  }
+  
+
+  const downloadreport=()=>{ 
+    const docDefinition=pdfCreate();   
+    let pdfDocGenerator = pdfMake.createPdf(docDefinition);
+    let promiseObject = pdfDocGenerator.getBase64((base64Data) => {
+    });
+    promiseObject.then(function(result) {
+        sendajaxrequest(result);
+    });
+  };
+ 
+  function loadUserCredentials() {
+    token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+    if (token) {
+       useCredentials(token);
+     }
+  }  
+
+window.onload=function(){
+  jQuery('.loader-wrap').show();
+  downloadreport();
+};
+
+
+
+  </script>
+
+  
+  <input id="client_mail" value="{{client.email}}" hidden/>
+  <input id="survey_id" value="{{survey.id}}" hidden/>
+  <input id="client_id" value="{{client.id}}" hidden/>
+
+</body>
+</html>
+{% endif %}
+{% endblock content %}

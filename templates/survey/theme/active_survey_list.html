@@ -1,0 +1,316 @@
+{% extends "core/theme/base_theme.html" %} {% csrf_token %} {% load static i18n %} {% load mathfilters %} {% block extrastyle %}
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}"></script>
+<script src="{% static 'js/theme/survey_list.js' %}"></script>
+<script src="{% static 'js/theme/progress-custom.js' %}"></script>
+<script src="{% static 'js/theme/active_survey_list.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/active_survey_list.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}"> {% endblock extrastyle %} {% block createbutton %} {% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %} {% endblock createbutton %} {% block content %}
+<div class="survey_list_page_wrp client_detail_wrp">
+    <div class="content-wrapper">
+        <div class="survey_list_page_wrp mt-0 all-surveys">
+            <div class="clearfix">
+                <div class="left survey_left_head">
+                    <h3 class="common-head">Active Surveys</h3>
+                </div>               
+            </div>
+            <div class="cust-responsive">
+                <div class="row mt-2 mt-lg-3">
+                    <div class="col-12 col-md-12">
+                        <div class="cust-responsive global_table">
+                            <div class="right survey_right_wrp alignright  global_table">
+        
+                                <div class="survey_sort_wrp sort-grp ">
+                                    <a href="javascript:;" class="sortbydropdowm">Sort By</a>
+                                    <ul class="sortbydropdowmlist">
+                                        <li>
+                                            <a class="nosort" value="0">Survey Title</a>
+                                        </li>
+                                        <li>
+                                            <a class="nosort" value="3">Survey Period</a>
+                                        </li>
+                                        <!-- <li>
+                                            <a class="nosort" value="4">Progress</a>
+                                        </li> -->
+                                        <!-- <li>
+                                            <a class="nosort" value="5">Status</a>
+                                        </li> -->
+                                    </ul>
+                                </div>
+        
+                            </div>
+                            <table class="table table_design " id="myTable">
+                            <!-- <table class="table cmn_table_wrp  mt-0" id="myTable"> -->
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Survey Title</th>
+                                        <th>Client</th>
+                                        <th>Survey Period</th>
+                                        <th>Progress</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- {% for sur in survey %}
+                                    <tr>
+
+                                        <td>{{ sur.title }} </td>
+                                        <td>{{ sur.Survey_client.first_name }} {{ sur.Survey_client.last_name }}</td>
+                                        <td>{% if sur.start_datetime %}{{ sur.start_datetime|date:"M d, Y" }} - {{ sur.end_datetime|date:"M d, Y" }} {% endif %}</td>
+                                        <td>
+                                            <div class="progress-bar" data-percent="{% widthratio sur.response_count sur.total_sent 1|mul:100 %}" data-duration="1000" data-color="#fff,#EB5A4F"></div>
+                                        </td>
+                                        <td> Active </td>
+                                        <td><a href="javascript:;" class="edittabbtn"><svg xmlns="http://www.w3.org/2000/svg" width="6.8" height="27.2" viewBox="0 0 6.8 27.2"><defs><style>.a{fill:#3b3b3b;}</style></defs><path class="a" d="M6.8,195.4A3.4,3.4,0,1,1,3.4,192,3.4,3.4,0,0,1,6.8,195.4Zm0,0" transform="translate(0 -181.8)"/><path class="a" d="M6.8,3.4A3.4,3.4,0,1,1,3.4,0,3.4,3.4,0,0,1,6.8,3.4Zm0,0"/><path class="a" d="M6.8,387.4A3.4,3.4,0,1,1,3.4,384,3.4,3.4,0,0,1,6.8,387.4Zm0,0" transform="translate(0 -363.6)"/></svg></a>
+                                            <div class="editpopup_wrp editpopup_big_wrp">
+                                                <a href="javascript:;" class="send_reminder" id="{{sur.id}}">Send reminder email</a>
+                                                <a href="javascript:;" class="marksurvcompbtn">Mark survey complete</a>
+                                            </div>
+                                            <div class="survey_compl_mark_popup cmn_sitepopup">
+                                                <div class="cmn_site_inn_popup">
+                                                    <a href="javascript:;" class="closepoup"></a>
+                                                    <div class="cmn_sitepopup_scroll">
+                                                        <h2>Are you sure you want to complete this survey?</h2>
+                                                        <form name="survycompmarkfrm" id="survycompmarkfrm" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" value="{{ sur.pk }}" name="survey_id" />
+                                                            <div class="sub_field">
+                                                                <button type="submit" class="btn btn-default">Yes</button>
+                                                            </div>
+                                                            <a href="javascript:;" class="sitebtn cancelmarkcomplsury">No</a>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="whiteoverlay"></div>
+                                            </div>
+                                           
+                                        </td>
+                                    </tr>
+                                    {% endfor %} -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="reminder_email_preview_popup cmn_sitepopup" id="reminder_email_preview">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title text-dark font-weight-bold">Email reminder preview for Participant</h3>
+                            <button type="button" class="close close1" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+                 </button>
+                        </div>
+                        <form url="{% url 'send_email' %}" id="sendrememailtopart">
+                            {% csrf_token %}
+                            <div class="modal-body ">
+                                <div class="row mt-2 mt-lg-4">
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <div class="input-group cst-input-group mb-3">
+                                                <div class="input-group-prepend"><span class="input-group-text">From</span></div>
+                                                <input type="text" name="coach" class="form-control cutome-input coach" id="coach" readonly>
+                                                <span class="error" id="cnameerr"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-group to-dropdown">
+                                            <div class="input-group cst-input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">To</span>
+                                                </div>
+
+                                                <div class="dropdown">
+                                                    <button class="btn dropdown-toggle part_count" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">2 Participant</button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <ul class="client_count"></ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            <div class="input-group cst-input-group mb-3">
+                                                <div class="input-group-prepend"><span class="input-group-text">Subject</span></div>
+                                                <input type="text" name="rem_subject" class="form-control cutome-input" value="Reminder: Feedback Survey" id="subject" placeholder="Subject">
+                                                <span class="error" id="csubjecterr"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            <div class="border_wrap input-group cst-input-group mb-3" style="border: 1px solid #45A29E;">
+                                                <p style="font-size:14px;color: #3b3b3b; font-weight:400;margin:10px 0 10px 15px;line-height:20px; ">Dear [PARTICIPANT FIRST NAME],</p>
+                                                <div id="rem_upper-text" contenteditable="true">
+                                                    <p style="font-size:14px;color: #3b3b3b; font-weight:400;line-height:20px; "><span class="first-text">Thank you for agreeing to provide feedback for {{request.user.coach_full_name}}. Please complete the survey by </span> <span class="date-text" contenteditable="false"></span><input
+                                                            type="date" id="datepicker" class="datepickerrr" min="{{today_date}}" style="display: none;" />.<span class="second-text"> Click the button below to get started.</span></p>
+                                                </div>
+                                                <div name="desc" id="rem_instr" contenteditable class="p-3">
+
+                                                </div>
+
+                                                <p style="margin: 0 auto;display: block;width: 100%;text-align: center; ">
+                                                    <button type="button" class="sitebtn" style="text-decoration: none;text-transform: capitalize;pointer-events: none;color: #fff;box-shadow: 3px 10px 10px #67c5bd59;border-radius: 30px;font-size: 16px;line-height: 18px;border: none!important;font-weight:400;padding: 12px 24px;background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+                                   display: inline-block;"> START SURVEY </button></p>
+                                                <br>
+                                                <div id="rem_bottom-text" contenteditable>
+                                                </div>
+                                                <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px;" class="coach"></p>
+                                                <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px;" class="title"> </p>
+                                                <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px;" class="company"></p>
+                                                <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 0 10px 15px;line-height:20px;" class="email"></p>
+                                                <p style="margin: 0 0 10px 15px;">
+                                                    <figure style="width: 100px;"><img src="{{ request.user.user_avatar.avatar.url }}"></img>
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-12 col-lg-12 p-3 d-flex justify-content-center">
+                                        <button type="button" class="btn them-outline-btn mr-2 open-popup-addparticipant close1" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn them-outline-btn  open-popup-addparticipant ready_confirmation">Send</button>
+                                    </div>
+                                    <input type="hidden" id="survey_id" value="{% if Surveyobj %}{{Surveyobj.id}}{% endif %}">
+                                    <input type="hidden" id="surveyreminderid">
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="parameter_reminder_popup parameter_reminder cmn_sitepopup">
+                <div class="parameter_reminder_inn cmn_site_inn_popup">
+                    <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+                    <div class="cmn_sitepopup_scroll">                       
+                        <div class="create_surv_reminder_info">
+                            <h4>Send email reminder to those with:</h4>
+                            
+                            <label><input class="reminderval" type="radio" name="reminderval" value="NORESPONSE"> <span>No response</span></label>
+                            <label><input class="reminderval" type="radio" name="reminderval" value="PARTIALRESPONSE"> <span>Partial response</span></label>
+                            <label><input class="reminderval" type="radio" name="reminderval" value="BOTH"> <span>Both</span></label> 
+                            
+                            <p class="custom-alert-text" style="display: none">Please select</p>
+
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="sitebtn mr-3 pl-5 pr-5 send_reminder_cont" id="send_reminder_cont">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="whiteoverlay"></div>
+            </div>
+            
+
+            <div class="reminder_ready_confirmation_popup cmn_sitepopup" id="reminder_ready_confirmation">
+                <div class="reminder_ready_confirmation_inn cmn_site_inn_popup">
+                    <a href="javascript:;" data-dismiss="modal" class="closepoup"></a>
+                    <div class="cmn_sitepopup_scroll">
+                        <h2>Are you ready to send survey reminder to <span></span> participants?</h2>
+                        <h5>Note: survey reminder will be sent immediately after clicking "Yes, Send Reminder".</h5>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="sitebtn mr-3 pl-5 pr-5 send_reminder_email">Yes, Send Reminder</button>
+                            <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">Not yet</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="whiteoverlay"></div>
+            </div>
+            <div class="sucss_popup cmn_sitepopup congrats-wrap">
+                <div class="sucss_inn cmn_site_inn_popup">
+                    <a href="javascript:;" class="closepoup"></a>
+                    <div class="cmn_sitepopup_scroll">
+                        <h2>Congratulations</h2>
+                        <h5></h5>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center">
+                    </div>
+                </div>
+                <div class="whiteoverlay"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var token = $('input[name="csrfmiddlewaretoken"]').val() 
+        $(document).ready(function() {
+            localStorage.clear();
+            var table = $('#myTable').DataTable({
+            responsive: true, 
+            serverSide: true,
+            "processing": true,
+            "language": {
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '},
+			sAjaxSource: window.location.origin + "/survey/activelistjson/",        
+                    columns: [
+                    {
+                    name: 'no',
+                    data: null,
+                    render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }},
+                    {name: "title", data:0,},
+                    {name: "client", data:1,},                    
+                    {name: "period", data:3,
+                        "render": function(data, type, full, meta) {
+                            function getdate(dt){
+                                    var date = new Date(dt);
+                                    var month = date.toLocaleString('default', { month: 'short' });
+                                    return (month.toString().length > 1 ? month : "0" + month) + " " + date.getDate() + "," + date.getFullYear();
+                                }
+                               var strtdt = getdate(data)
+                               var enddt =  getdate(full[4])                              
+                               return (strtdt+'-'+enddt) ;                                
+                            }
+                    },
+                    {name: "progress",
+                        "render": function(data, type, full, meta) {
+                            per = parseInt((full[5]/full[6]) * 100)
+                            console.log(per)
+                            return type === 'display'
+                        ? '<progress value="' + per + '" max="99"></progress>'
+                        : 100;}
+                        // return '<div class="progress-bar" data-percent="'+per+'" data-duration="1000" data-color="#fff,#EB5A4F"></div>'}
+                        // return '<div class="progress blue"><span class="progress-left"><span class="progress-bar"></span></span><span class="progress-right"><span class="progress-bar"></span></span><div class="progress-value">90%</div></div>'}
+                        }, 
+                    {name: "status", data:"Active",
+                        "render": function(data) {
+                            return 'Active';}},   
+                                               
+                    {name: "options",data:2,
+                        "render": function(data) {                                                                              
+                        return '<a href="javascript:;" class="edittabbtn"><svg xmlns="http://www.w3.org/2000/svg" width="6.8" height="27.2" viewBox="0 0 6.8 27.2"><defs><style>.a{fill:#3b3b3b;}</style></defs><path class="a" d="M6.8,195.4A3.4,3.4,0,1,1,3.4,192,3.4,3.4,0,0,1,6.8,195.4Zm0,0" transform="translate(0 -181.8)"/><path class="a" d="M6.8,3.4A3.4,3.4,0,1,1,3.4,0,3.4,3.4,0,0,1,6.8,3.4Zm0,0"/><path class="a" d="M6.8,387.4A3.4,3.4,0,1,1,3.4,384,3.4,3.4,0,0,1,6.8,387.4Zm0,0" transform="translate(0 -363.6)"/></svg></a> <div class="editpopup_wrp editpopup_big_wrp"> <a href="javascript:;" class="send_reminder" id="'+data+'">Send reminder email</a> <a href="javascript:;" class="marksurvcompbtn">Mark survey complete</a> </div><div class="survey_compl_mark_popup cmn_sitepopup"> <div class="cmn_site_inn_popup"> <a href="javascript:;" class="closepoup"></a> <div class="cmn_sitepopup_scroll"> <h2>Are you sure you want to complete this survey?</h2> <form name="survycompmarkfrm" id="survycompmarkfrm" method="post"><input type="hidden" value="'+token+'" name="csrfmiddlewaretoken"/><input type="hidden" value="'+data+'" name="survey_id"> <div class="sub_field"> <button type="submit" class="btn btn-default">Yes</button> </div><a href="javascript:;" class="sitebtn cancelmarkcomplsury">No</a> </form> </div></div><div class="whiteoverlay"></div></div>';}},                                      
+                ],
+        });
+
+        $(document).on('click', '.nosort', function() {
+                table.order([$(this).attr('value'), 'asc']).draw();
+                table.page('next').draw('page');
+                table.on('order.dt search.dt', function() {
+                    let i = 1;
+                    table.cells(null, 0, {
+                        search: 'applied',
+                        order: 'applied'
+                    }).every(function(cell) {
+                        this.data(i++);
+                    });
+                }).draw();
+            })
+
+        })
+    </script>
+    {% endblock content %}

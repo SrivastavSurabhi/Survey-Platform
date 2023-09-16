@@ -1,0 +1,170 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Feedback Form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
+    <script src="{% static 'js/theme/feedback_form.js' %}" ></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/feedback_form.css' %}">
+</head>
+<body>
+    <div class="content-wrapper">
+	<div class="feedback_form_page">
+		<section class="feedback_form_sect">
+			<div class="center-wr">
+				<div class="feedback_form_inn">
+					<form method="post" id="feedbackform" class="commnewfrmdesign" name="feedbackform" enctype="multipart/form-data">
+						<div class="feedback_form_logo">
+							<figure>
+								<img src="Images/sitelogo.png" alt="">
+							</figure>
+							<input type="file" name="feedbacfrmlogo" id="feedbacfrmlogo" style="display: none;">
+							<a href="javascript:;" class="sitebtn uploadchangelogo">Update/Change Logo</a>
+						</div>
+                        <h1>FEEDBACK FORM</h1>							
+						<div class="cmn_field inputicon usericon1">
+							<input type="email" name="uemail" id="uemail" placeholder="Email Address">
+							<span class="error" id="uemailerr"></span>
+						</div>
+						<div class="clearfix">
+							<div class="left cmn_field inputicon usericon1 feeback_selct">
+								<select name="collename" id="collename">
+                                    <option value="">Colleague Name</option>
+                                    <option value="test1">Test1</option>
+                                    <option value="test2">Test2</option>
+                                </select>
+								<span class="error" id="collenmerr"></span>
+							</div>
+							<div class="right cmn_field inputicon usericon1 feeback_selct">
+								<select name="yourtitle" id="yourtitle">
+                                    <option value="">Your Title</option>
+                                    <option value="test1">Test1</option>
+                                    <option value="test2">Test2</option>
+                                </select>
+								<span class="error" id="titleerr"></span>
+							</div>
+                        </div>
+                        <div class="clearfix">
+                            <div class="left cmn_field inputicon usericon1 feeback_selct">
+                                <select name="workedwith" id="workedwith">
+                                    <option value="">How long have you worked with him/her</option>
+                                    <option value="test1">Test1</option>
+                                    <option value="test2">Test2</option>
+                                </select>
+                                <span class="error" id="workederr"></span>
+                            </div>
+                            <div class="right cmn_field inputicon usericon1 feeback_selct">
+                                <select name="relationwith" id="relationwith">
+                                    <option value="">Relation with him/her</option>
+                                    <option value="test1">Test1</option>
+                                    <option value="test2">Test2</option>
+                                </select>
+                                <span class="error" id="relationerr"></span>
+                            </div>
+                        </div>
+                        <div class="comm-screen">
+                            <div class="feedback_scrtwo">
+                                <ul class="scrn_list">
+                                    <li class="active"></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                                <div class="feedqueans">
+                                    <p>1. What are the things that make your colleague most effective?</p>
+                                    <div class="screenansbox">                               
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="feedback_quetwo comm-screen" style="display: none;">
+                                <div class="feedqueans">
+                                    <p>2. What other strengths do you see in your colleague?</p>
+                                    <div class="screenansbox">                               
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="feedback_quethree comm-screen" style="display: none;">
+                                <div class="feedqueans">
+                                    <p>3. What other strengths do you see in your colleague?</p>
+                                    <div class="screenansbox">                               
+                                    </div>
+                                </div>
+                           </div> 
+                            <div class="feedback_quenine" style="display: none;">
+                                <div class="feedqueans">
+                                    <p>9. Please share anything that you wish to tell the coach but you do not want to share with your colleague. Please note that this answer will be kept strictly confidential between you and the coach.</p>
+                                    <div class="screenansbox">                               
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="survey_paginat_wrp alignright">
+								<div class="survey_paginat">
+									<a href="javascript:;" class="prevpagination disable alignleft"><svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#e0e0e0;}</style></defs><path class="a" d="M82.826,11.233,93.455.619a2.048,2.048,0,0,1,2.935,0l1.239,1.223a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L89.705,12.7l7.923,7.923a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L96.39,24.8a2.086,2.086,0,0,1-2.935,0L82.826,14.184a2.087,2.087,0,0,1-.6-1.484A2,2,0,0,1,82.826,11.233Z" transform="translate(-82.222 0)"/></svg></a>
+									<a href="javascript:;" class="nextpagination alignright"><svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#fff;}</style></defs><g transform="translate(0 0)"><path class="a" d="M97.628,11.233,87,.619a2.048,2.048,0,0,0-2.935,0L82.826,1.842a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L90.749,12.7l-7.923,7.923a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L84.064,24.8A2.086,2.086,0,0,0,87,24.8L97.628,14.184a2.087,2.087,0,0,0,.6-1.484A2,2,0,0,0,97.628,11.233Z" transform="translate(-82.222 0)"/></g></svg></a>                                 
+							   </div>  
+                           </div>
+                        </div>
+                        <div class="feed_scrfour_btn">
+                            <div class="savecontinue  sub_field">
+                                <button type="button" class="btn dafault_btn" id="feedformsubmit2">Save and Continue</button>
+                            </div>
+                            <div class="savelatter sub_field">
+                                <button type="button" class="btn dafault_btn" id="feedformsubmit1">Save for later</button>
+                            </div>
+                            <div class="subfeedback sub_field">
+                                <button type="button" class="btn dafault_btn" id="feedformsubmit">Submit Feedback</button>
+                            </div>
+                        </div>
+					</form>
+				</div>
+			</div>
+		</section><!-- end of_feedback_form_sect -->
+		<div class="feedback_form_popup cmn_sitepopup">
+			<div class="feedback_form_inn_poup cmn_site_inn_popup">
+				<a href="javascript:;" class="closepoup"></a>
+                <div class="cmn_sitepopup_scroll">
+                    <div class="popupcontant">
+                        <h2>Are you sure you want to submit your form?</h2>
+                        <p>Once you submit this form you cannot go back and make any changes</p>
+                    </div>
+                    <div class="sub_field suresub">
+                        <button type="submit">Sure</button>
+                    </div>
+                </div>
+			</div>
+            <div class="whiteoverlay"></div>
+        </div>   
+		<div class="fedfrm_thank_popup cmn_sitepopup">
+			<div class="fedfrm_thank_inn_poup cmn_site_inn_popup">
+				<a href="javascript:;" class="closepoup"></a>
+                <div class="cmn_sitepopup_scroll">
+                    <div class="thnkcontant">
+                        <h2>Thank you for submitting your feedback!</h2>
+                    </div>
+                </div>
+			</div>
+            <div class="whiteoverlay"></div>
+        </div>   
+	</div><!-- end of feedback_form_page -->
+    </div>
+    
+	<footer class="sitefooter_new">
+		<div class="center-wr">
+			<div class="sitefooter_inn">
+				<p>&#169; Creative Assessment Portal  powered by Back Bay Executive Coaching</p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>

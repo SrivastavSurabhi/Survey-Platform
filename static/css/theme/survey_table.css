@@ -1,0 +1,226 @@
+/* Common Table List */
+.cmn_table_wrp {
+    font-size: 14px;
+    color: #3B3B3B;
+    line-height: 20px;
+    text-align: left;
+    width: 100%;
+    /*margin: 20px auto;*/
+}
+.cmn_table_wrp thead, .cmn_table_wrp tbody {
+    display: block;
+}
+.cmn_table_wrp tr td, .cmn_table_wrp tr th {
+    padding: 10px;
+    font-weight: 600;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    word-break: break-word;
+    font-size: 14px;
+    line-height: 18px;
+}
+.cmn_table_wrp tr th {
+	font-weight: bold;
+}
+.cmn_table_wrp tr {
+    border: 1px solid #D5D5D5;
+    border-radius: 8px;
+    display: block;
+    margin: 10px 0;
+    min-height: 56px;
+    line-height: 54px;
+}
+.dashb_survey_list_wrp h3.common-head {
+    text-align: left;
+}
+.cmn_table_wrp tbody tr:hover {
+    box-shadow: 0px 10px 20px #67c5bd59;
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    color: #fff;
+}
+.cmn_table_wrp tbody tr:hover td a, .cmn_table_wrp tbody tr:hover .dropdown.dropdown-cust .btn{
+    color: #fff;
+}
+
+.cmn_table_wrp tbody tr:hover td .dropdown-menu a, 
+.cmn_table_wrp tbody tr:hover td .edittabbtn .editpopup_wrp a { 
+    color: #3b3b3b;
+}
+
+.cmn_table_wrp svg .a {
+    fill: #3b3b3b;
+}
+.cmn_table_wrp tbody tr:hover svg .a {
+    fill: #fff;
+}
+.cmn_table_wrp svg {
+    width: 5px;
+}
+.cmn_table_wrp .fourth-col {
+    width: 12%;
+    padding-right: 10px;
+}
+.cmn_table_wrp .five-col {
+    width: 4%;
+}
+.cmn_table_wrp .third-col {
+    width: 24%;
+}
+.cmn_table_wrp .second-col {
+    width: 18%;
+}
+.cmn_table_wrp .first-col {
+    width: 40%;
+    /* padding-left: 30px; */
+}
+.survey_paginat {
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    display: inline-block;
+    width: 90px;
+    border-radius: 30px;
+    padding: 4px 10px;
+    box-shadow: 0px 10px 20px #67c5bd59;
+}
+.survey_paginat a svg {
+    width: 9px;
+}
+.survey_paginat_wrp {
+    margin-top: 50px;
+}
+.survey_paginat a {
+    display: inline-block;
+    vertical-align: middle;
+    width: 47%;
+}
+a.prevpagination.disable svg .a {
+    fill: #efeeee;
+}
+.survey_list_page_wrp {
+    margin-top: 10px;
+}
+.cmn_table_wrp tr a.sitebtn:first-child {
+    margin-left: 0;
+}
+.cmn_table_wrp tr a.sitebtn {
+    font-size: 12px;
+    margin: 0 0 0 5px;
+    padding: 5px 13px;
+}
+.cmn_table_wrp tr:hover a.sitebtn,.cmn_table_wrp tr a.sitebtn:hover {
+    background-color: #fff;
+    color: #45A29E;
+}
+.cmn_table_wrp tbody tr:hover {
+    cursor: pointer;
+}
+/* End */
+/* Common Survey Sort CSS */
+.survey_right_wrp > div {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+.survey_right_addclient_btn a.sitebtn {
+    margin: 0;
+}
+.survey_sort_wrp {
+    position: relative;
+    box-shadow: 0px 8px 8px #dfdfdf59;
+    padding: 8px 15px;
+    width: 140px;
+    text-align: left;
+    border: 2px solid #45a29e;
+    border-radius: 100px;
+    font-weight: 500;
+}
+.survey_right_wrp a.sortbydropdowm {
+    color: #3B3B3B;
+    display: block;
+    background-image: url(../../images/theme/down-arrow.svg);
+    background-repeat: no-repeat;
+    background-size: 10px 10px;
+    background-position: right center;
+}
+.survey_right_wrp a.sortbydropdowm:hover
+{
+    text-decoration: none;
+}
+.survey_right_wrp ul {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0px 8px 8px #dfdfdf59;
+    padding: 5px 18px;
+    z-index:99;
+    top: 100%;
+    width: 100%;
+}
+.survey_right_wrp ul li {
+    margin-bottom: 10px;
+}
+.survey_right_wrp a, .survey_right_wrp ul li {
+    font-size: 14px;
+    line-height: 20px;
+    
+}
+.survey_right_wrp ul li a, .survey_right_wrp a, .survey_right_wrp ul li{
+    color: #545454;
+}
+
+/* End */
+.sitebtn.disabletablebtn,.sitebtn.disabletablebtn:hover,.sitebtn.disabletablebtn:focus,.cmn_table_wrp tbody tr:hover .sitebtn.disabletablebtn {
+    box-shadow: 0px 6px 15px #0000002e;
+    border: 2px solid #C4C4C4 !important;
+    color: #C4C4C4;
+    background-color: #fff;
+    pointer-events: none;
+    cursor: default;
+}
+.editpopup_wrp a {
+    font-size: 13px;
+    line-height: 20px;
+    color: #3B3B3B;
+    margin: 4px 0;
+    display: block;
+}
+.editpopup_wrp {
+    box-shadow: 5px 5px 20px 8px #dfdfdf59;
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 6px 10px;
+    position: absolute;
+    left: 0;
+    width: 100px;
+    display: none;
+    z-index: 1;
+}
+.cmn_table_wrp tbody tr:hover td .editpopup_wrp a
+{
+    color: #3B3B3B;
+}
+.editpopup_wrp.editpopup_big_wrp {
+    right: 0;
+    width: 155px;
+    left: unset;
+}
+.cmn_table_wrp a.edittabbtn {
+    display: block;
+}
+
+@media all and (max-width:991px){
+    .participant_mobile_cta {
+        text-align: left;
+        margin-top: 24px;
+    }
+}
+@media all and (max-width:768px){
+    .cmn_table_wrp {
+        width: 768px !important;
+    }
+    /*.cmn_table_wrp tr td, .cmn_table_wrp tr th {
+        padding: 14px !important;
+        width: auto !important;
+    }*/
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+{% csrf_token %}
+{% load static i18n %}
+
+<html lang="en">
+
+<head>
+	<title>Login Page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="{% static 'js/theme/custom.js' %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+	<!-- <header class="siteheader  cstm-header">
+		<div class="site_head_main">
+			<div class="container-fluid">
+				<div class="site_head_inn">
+					<a href="#">
+						<img src="{% static 'images/theme/logo.png' %}">
+					</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="cstm-main-warp">
+		<div class="row p-0">
+			<div class="col-md-6 p-0">
+				<div class="custom-bg"></div>
+			</div>
+			<div class="col-md-6 p-0">
+				<div class="login_inn_wrp commn_page_inn login_wrap">
+					<h1>Login</h1>
+					<form name="loginform" id="loginform" method="post">
+						{% csrf_token %}
+						<div class="cmn_field inputicon usericon">
+							<input type="text" name="email" placeholder="Username or Email" id="loginemail"
+								required="true" />
+
+							<span class="error" id="loginemailerr"></span>
+						</div>
+						<div class="cmn_field inputicon keyicon">
+							<input type="password" name="password" id="loginpassword" placeholder="Password"
+								required="true" />
+							<span class="error" id="loginpasserr"></span>
+						</div>
+						<div class="my-2 d-flex justify-content-end align-items-center">						
+							<a href="javascript:void();" class="auth-link text-dark forgotpassbtn">Forgot password?</a>
+						</div>
+
+						<div class="d-block text-center mt-2 mt-lg-5">
+							<button type="submit" class="btn theme-btn">Login</button>
+						</div>
+						<p class="sign-up-text">Don't have an account ? <a href="{% url 'signup' %}">Sign Up</a></p>
+					</form>
+				</div>
+
+				{% if messages %}
+				{% for message in messages %}
+				<p class="failsmsg">{{ message }}</p>
+				{% endfor %}
+				{% endif %}
+
+			</div>
+			<div class="forgotpass_popup cmn_sitepopup">
+				<div class="forgotpass_inn_poup cmn_site_inn_popup forgot-popup">
+					<a href="javascript:;" class="closepoup"></a>
+					<div class="cmn_sitepopup_scroll">
+						<h2>Forgot Your Username/Password?</h2>
+						<p>Don't worry! Just fill in your email and we'll help you reset your password.</p>
+						<form name="forgotpassfrm" id="forgotpassfrm" method="post" action={% url 'send-otp' %}>
+							{% csrf_token %}
+							<div class="cmn_field inputicon emialicon">
+								<input type="email" name="email" placeholder="Email">
+								<span class="error" id="emailerr"></span>
+							</div>
+							<div class="sub_field">
+
+								<button type="submit" name="sendemail" class="btn btn-default">Send Email</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="whiteoverlay"></div>
+			</div>
+
+
+			<div class="forgotemail_popup cmn_sitepopup">
+				<div class="forgotemail_inn_poup cmn_site_inn_popup">
+					<h2>Forgot your email?</h2>
+					<p>Don't worry! Just fill in your company name.</p>
+					<form name="forgotemailfrm" method="post">
+						<div class="cmn_field inputicon emialicon">
+							<input type="text" name="" placeholder="Company Name">
+						</div>
+						<div class="sub_field">
+							<input type="submit" name="send" value="Send">
+
+						</div>
+					</form>
+				</div>
+				<div class="whiteoverlay"></div>
+			</div>
+		</div>
+	</div> -->
+
+
+	<header class="siteheader">
+		<div class="site_head_main">
+			<div class="center-wr">
+				<div class="site_head_inn">
+					<a href="#">
+						<img src="{% static '/new_theme/images/logo.png' %}">
+					</a>
+				</div>
+			</div>
+		</div>
+	</header>
+
+
+	<div class="login_page_wrp">
+
+		<section class="login_detail_sect commn_page_sect">
+			<div class="center-wr">
+				<div class="login_inn_wrp commn_page_inn">
+					<h1>Login</h1>
+					<form name="loginform" id="loginform" method="post">
+						{% csrf_token %}
+						<div class="cmn_field inputicon usericon">
+							<input type="text" name="email" placeholder="Username or Email" id="loginemail"
+								required="true" />
+
+							<span class="error" id="loginemailerr"></span>
+						</div>
+						<div class="cmn_field inputicon keyicon">
+							<input type="password" name="password" id="loginpassword" placeholder="Password"
+								required="true" />
+							<span class="error" id="loginpasserr"></span>
+						</div>
+						<div class="my-2 d-flex justify-content-between align-items-center">
+							<div class="form-check keep_me_signed">
+								<label class="form-check-label text-muted">
+									<input type="checkbox" class="form-check-input"> Keep me signed in
+									<i class="input-helper"></i><i class="input-helper"></i></label>
+								</label>
+							</div>
+							<a href="javascript:void();" class="auth-link text-dark forgotpassbtn">Forgot password?</a>
+						</div>
+
+						<div class="d-block text-center mt-2 mt-lg-5">
+							<button type="submit" class="btn theme-btn">Login</button>
+						</div>
+						<p>Don't have an account ? <a href="{% url 'signup' %}">Sign Up</a></p>
+					</form>
+				</div>
+
+				{% if messages %}
+				{% for message in messages %}
+				<p class="failsmsg">{{ message }}</p>
+				{% endfor %}
+				{% endif %}
+			</div>
+		</section>
+
+
+		<div class="forgotpass_popup cmn_sitepopup">
+			<div class="forgotpass_inn_poup cmn_site_inn_popup">
+				<a href="javascript:;" class="closepoup"></a>
+				<div class="cmn_sitepopup_scroll">
+					<h2>Forgot Your Username/Password?</h2>
+					<p>Don't worry! Just fill in your email and we'll help you reset your password.</p>
+					<form name="forgotpassfrm" id="forgotpassfrm" method="post" action={% url 'send-otp' %}>
+						{% csrf_token %}
+						<div class="cmn_field inputicon emialicon">
+							<input type="email" name="email" placeholder="Email">
+							<span class="error" id="emailerr"></span>
+						</div>
+						<div class="sub_field">
+
+							<button type="submit" name="sendemail" class="btn btn-default">Send Email</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="whiteoverlay"></div>
+		</div>
+
+
+		<div class="forgotemail_popup cmn_sitepopup">
+			<div class="forgotemail_inn_poup cmn_site_inn_popup">
+				<h2>Forgot your email?</h2>
+				<p>Don't worry! Just fill in your company name.</p>
+				<form name="forgotemailfrm" method="post">
+					<div class="cmn_field inputicon emialicon">
+						<input type="text" name="" placeholder="Company Name">
+					</div>
+					<div class="sub_field">
+						<input type="submit" name="send" value="Send">
+
+					</div>
+				</form>
+			</div>
+			<div class="whiteoverlay"></div>
+		</div>
+
+
+	</div>
+</body>
+
+</html>

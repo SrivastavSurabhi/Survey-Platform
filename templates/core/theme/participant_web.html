@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+{% csrf_token %}
+{% load static i18n %}
+<html>
+<head>
+	<title>Participant Entry Form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/participant-form.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/participant-form.css' %}">
+
+</head>
+<body>
+	<div class="participant_form_page">
+		<section class="participant_form_sect">
+			<div class="center-wr">
+				<div class="participant_form_inn">
+					<h3>Participant Entry Form</h3>
+					<p>Please complete this form for each participant who will be providing feedback. Once all participants have been added, you may click the Submit button.</p>
+					<form method="post" id="participantform" class="commnewfrmdesign" name="participantform" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="clearfix">
+							<div class="left cmn_field inputicon usericon1"><input type="text" name="fname" id="fname" placeholder="First Name">
+								<span class="error" id="fnameerr"></span>
+							</div>
+							<div class="right cmn_field inputicon usericon1"><input type="text" name="lname" id="lname" placeholder="Last Name">
+								<span class="error" id="lnameerr"></span>
+							</div>
+						</div>
+						<div class="clearfix">
+							<div class="left cmn_field inputicon usericon1"><input type="email" name="email" id="email" placeholder="Email"><span class="error" id="emailerr"></span></div>
+							<div class="right cmn_field inputicon usericon1">
+								<select name="relationship" id="relationship">
+                                    <option value="demo" selected>Select Relationship</option>
+                                    {% for r in relation %}
+                                    <option value={{ r.id }}>{{ r.relation }}</option>
+                
+                                    {% endfor %}
+									
+								</select>
+								<span class="error" id="relationshiperr"></span>
+							</div>
+						</div>
+						<div class="sub_field">
+							<button type="submit" id="addpartfrmsub" class="btn btn-default">Add participant</button>
+							
+						</div>
+					</form>
+				</div> 
+			</div>
+		</section><!-- end of participant_form_sect -->
+		<div class="partaddsucc_popup cmn_sitepopup">
+			<div class="cmn_site_inn_popup">
+				<a href="javascript:;" class="closepoup"></a>
+				<div class="cmn_sitepopup_scroll">
+					<h2>Congratulations!</h2>
+					<p>All participants added successfully.</p>
+				</div>
+			</div>
+			<div class="whiteoverlay"></div>
+		</div><!-- end of partaddsucc_popup -->
+	</div><!-- end of participant_form_page -->
+	<footer class="sitefooter_new">
+		<div class="center-wr">
+			<div class="sitefooter_inn">
+				<p>&#169; Creative Assessment Portal  powered by Back Bay Executive Coaching</p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>

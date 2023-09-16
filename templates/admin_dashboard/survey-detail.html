@@ -1,0 +1,206 @@
+{% extends "core/theme/base_theme.html" %} 
+{% load static i18n %} 
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+{% endblock extrastyle %}
+<title></title>
+{% block content %}
+<div class="personal-dtl survey-detail-sec">
+    <div class="row">
+       <div class="col-lg-2 padd-10 profile-box">
+          <div class="client-profile-wrap outer_cstm_box profile_info">
+            
+             <div class="uploaded_client_img">
+                {% if survey.creator.coaches.logo %} <img src="{{survey.creator.coaches.logo.url}}">
+                {% else %}  <img src="{% static 'images/theme/default.png' %}">
+                {% endif %} 
+             </div>
+          </div>
+       </div>
+       <div class="col-lg-10 padd-10 personal-box">
+          <div class="outer_cstm_box">
+             <div class="row">
+                <div class="col-lg-12">
+                   <h4 class="text-secondary font-weight-bold mb-4 text-center text-md-left">Survey Detail</h4>
+                </div>
+                <div class="col-lg-12">
+                   <div class="client_admin_det_wrp">
+                      <span>Survey Coach</span>
+                      <p>{{survey.creator.coach_full_name}}</p>
+                   </div>
+                </div>
+                <div class="col-lg-12">
+                   <div class="client_admin_det_wrp">
+                      <span>Survey Client</span>
+                      <p>{{survey.Survey_client.first_name}} {{survey.Survey_client.first_name}}</p>
+                   </div>
+                </div>
+                <div class="col-lg-12">
+                   <div class="client_admin_det_wrp">
+                      <span>Survey Created Date</span>
+                      <p>{{survey.created_ts|date:"F d, Y"}}</p>
+                   </div>
+                </div>
+                <div class="col-lg-12">
+                   <div class="client_admin_det_wrp">
+                      <span>Participants</span>
+                      <p>{{survey.total_sent}}</p>
+                   </div>
+                </div>
+                
+                
+             </div>
+          </div>
+       </div>
+       <!-- <div class="col-lg-3 padd-10 organisation-box">
+          <div class="outer_cstm_box">
+             <div class="row">
+                <div class="col-lg-12">
+                   <h4 class="text-secondary font-weight-bold mb-4 text-center text-md-left">Survey Progress</h4>
+                </div>
+                <div id="chart"></div>
+             </div>
+          </div>
+       </div>
+       <div class="col-12">
+        <div class="survey-cont">
+            <div class="d-flex justify-content-between align-items-center head_wrap">
+              <h4 class="text-secondary font-weight-bold mt-3 mb-3  text-md-left survey-heading">Summer Vication Camp Activities</h4>
+              <a href="" class="main-btn viewall-btn">Download Report</a>
+            </div>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        </div>
+       </div> -->
+       <div class="col-12 col-md-12">
+        <div class="cust-responsive global_table all-doc">
+           <table class="table table_design client_coach_list_table uploaded_file_table survey-qestion-table mt-0" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>Sr.No.</th>
+                            <th>Question</th>
+                            <th>Answer</th>                        
+                            {% comment %} <th>Participant</th>                         {% endcomment %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% comment %} {% for ques in surveyQuestions%}
+                        <tr> 
+                            <td>Q{{forloop.counter}}</td>
+                            <td><p class="font-weight-bold survey-question">{{ques.question}}</p></td>
+                            <td>
+                                <ul class="answer-list">
+                                    {% for ans in surveyAnswers %}
+                                    {% if ans.question == ques%}
+                                    <li>
+                                        <p class="mb-0">{{ans.answer}}</p>
+                                        <span class="d-block font-weight-bold mb-1">{{ans.participant.first_name}}</spa>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}                                 
+                                </ul>
+                            </td>                       
+                        </tr>
+                        {% endfor %} {% endcomment %}
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> {% endcomment %}
+<script>
+    {% comment %} $(document).ready(function () {
+          if (!$.browser.webkit) {
+              $('.wrapper').html('<p>Sorry! Non webkit users. :(</p>');
+          }
+      }); {% endcomment %}
+  $(document).ready( function () {
+    var id = {{survey.id}}
+    console.log(id)
+    $('#myTable').DataTable({
+        responsive: true, 
+        serverSide: true,
+        "processing": true,
+        searching: true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+			sAjaxSource: window.location.origin + "/super_admin/surveylist/"+id,               
+                    columns: [
+                        {
+                    name: 'no',
+                    data: null,
+                    render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }},
+                    {data:'question',
+                        "render": function(data, type, full, meta) { 
+                           ele = ''                           
+                           if (full.is_confidential){
+                              ele += '<span class="conf-icon" data-type="987" style="right: 20px; top: 15px;"><i class="mdi mdi-star"></i></span>'
+                           }
+                           ele += '<div>'+data+'</div>'
+                           return ele}
+                        },
+                    {data:null,
+                        "render": function(data, type, full, meta) { 
+                            ele = '<div class="scrollbar-wrap"><div class="scrollbar" id="style-3"><div class="force-overflow"><ul class="answer-list">'
+                            for (let i = 0; i < full.answer.length; i++)
+                            {
+                               a = full.answer[i] //list of answers
+                            ele += '<li><p class="mb-0">'+a.answer+'</p><span class="d-block font-weight-bold mb-1">'+a.participant__first_name+' '+a.participant__last_name+'</span></li>'
+                            }
+                            ele += '</ul></div></div></div>'
+                            return ele}
+                    },
+                    
+                ],     
+        });    
+} );
+      
+    
+    // second chart
+    {% comment %} var options = {
+  chart: {
+      height: 250,
+      type: "radialBar"
+  },
+  series: [58],
+  plotOptions: {
+      radialBar: {
+      hollow: {
+          margin: 15,
+          size: "70%"
+      },
+      
+      dataLabels: {
+          showOn: "always",
+          name: {
+              offsetY: -10,
+              show: true,
+              color: "#000",
+              fontSize: "15px"
+          },
+          value: {
+              offsetY: 5,
+              color: "#111",
+              fontSize: "24px",
+              show: true
+          }
+      }
+      }
+  },
+  fill: {
+      colors: ['#E13B3B'],
+  },
+  stroke: {
+      lineCap: "round",
+  },
+  labels: ["Progress"]
+  };
+  var chart = new ApexCharts(document.querySelector("#chart"), options);
+  chart.render(); {% endcomment %}
+
+</script>
+{% endblock content %}

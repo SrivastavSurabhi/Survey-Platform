@@ -1,0 +1,406 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}" ></script>
+<script src="{% static 'js/theme/progress-custom.js' %}" ></script>
+<script src="{% static 'js/theme/survey_list.js' %}" ></script>
+<script src="{% static 'js/theme/sort.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/admin_dash.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/theme/admin_dash.css' %}"> -->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+    *{
+        box-sizing: border-box;
+    }
+    body{
+        margin: 0;
+        padding: 0;
+        background-color: rgb(238, 238, 238);
+        font-family: 'Poppins', sans-serif;
+    }
+    .header{
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 15px 15px 10px 15px;
+    }
+    .header .logo{
+        width: 100%;
+        text-align: center;
+    }
+    .header .logo img{
+        max-width: 260px;
+    }
+    .data{
+        width: 100%;
+        padding: 20px;
+    }
+    .data .inside{
+        background-color: #fff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        border-radius: 5px;
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+    .data .title{
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .data table{
+        font-size: 14px;
+        color: #3B3B3B;
+        line-height: 20px;
+        text-align: left;
+        width: 100%;
+        display: block;
+    }
+    .data thead, .data tbody {
+        width: 100%;
+        display: block;
+    }
+    .data table tr{
+        border: 1px solid #D5D5D5;
+        border-radius: 8px;
+        display: block;
+        margin: 10px 0;
+        min-height: 56px;
+        line-height: 54px;
+        width: 100%;
+    }
+    .data table tr th{
+        font-weight: bold;
+    }
+    .data table tr td, .data table tr th{
+        padding: 10px;
+        display: inline-block;
+        vertical-align: middle;
+        position: relative;
+        word-break: break-word;
+        font-size: 14px;
+        line-height: 18px;
+        width: 16.3%;
+    }
+    .data table tbody tr:hover{
+        box-shadow: 0px 10px 20px #67c5bd59;
+        background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+        color: #fff;
+    }
+    .data .dropdown{
+        position: relative;
+    }
+    .data .dropdown i {
+        font-size: 20px;
+        cursor: pointer;
+    }
+    .data .dropdown .dropdown-list {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        top: 130%;
+        z-index: 9;
+        border: none;
+        -webkit-box-shadow: 0 3px 21px 0 rgb(0 0 0 / 20%);
+        -moz-box-shadow: 0 3px 21px 0 rgba(0,0,0,.2);
+        box-shadow: 0 3px 21px 0 rgb(0 0 0 / 20%);
+        border-radius: 6px;
+        display: none;
+    }
+    .data .dropdown .dropdown-list ul {
+        padding: 8px;
+        margin: 0;
+        width: 110px;
+    }
+    .data .dropdown .dropdown-list ul li {
+        list-style-type: none;
+        text-align: left;
+    }
+    .data .dropdown .dropdown-list ul li a {
+        display: block;
+        padding: 4px 5px;
+        color: #000;
+        text-decoration: none;
+    }
+    .data table td:last-child{
+        text-align: center;
+    }
+    .back_cta{
+        margin-bottom:20px;
+    }
+    .back_cta button{
+    color: #fff;
+    border:none;
+    box-shadow: 3px 10px 10px #67c5bd59;
+    border-radius: 30px;
+    font-size: 15px;
+    line-height: 18px;
+    padding: 8px 20px 11px;
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    display: inline-block;
+    }
+</style>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+        <div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+    {% else %}
+        <div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+    {% endif %}
+{% endblock createbutton %}
+
+{% block content %}
+
+</head>
+<body>
+
+{% csrf_token %}
+
+<section class="data" id="sec">
+    <!-- <div class="back back_cta" onclick="goBack()" ><button>GO BACK</button></div> -->
+    <div class="inside">
+        <div class="title">All Invites
+
+    </div>
+        <table id="table">
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Subject</th>
+                <th>Email</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="body">
+            {% for invite in invites %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td class="Name">{{invite.name}}</td>
+                <td class="Subject">{{invite.subject}}</td>
+                <td class="Mail">{{invite.email}}</td>
+                <td class="Message">
+                    {{invite.message}}
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <i class="fa fa-ellipsis-v"></i>
+                        <div class="dropdown-list">
+                            <ul>
+                                <li><a class="dropdown-item edit_value" data-id="{{invite.id}}">Edit</a></li>
+                                <li><a class="deleteinvite" href="#" data-id="{{invite.id}}">Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</section>
+
+<div class="modal fade" id="edit-invite" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-dark font-weight-bold">Edit Invite</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="addmodal">
+                    <!--form-->
+                    <div class="add_partici_wrp">
+
+                        <div class="client_intake_form mt-3">
+                            <form name="editinvite" class="commnewfrmdesign" id="editinvite" method="post">
+
+                                {% csrf_token %}
+                                <div class="add_participant_data overflow-auto col-sm-12 h-auto ">
+                                    <div class="d-block client-info mb-0 mb-lg-0" id="block-1">
+                                        <div class="row mt-2 mt-lg-4">
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <div class="input-group cst-input-group mb-3">
+                                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                                                               id="basic-addon1"><i
+                                                                class="mdi mdi-account-outline"></i></span></div>
+                                                        <input type="text" name="fname"
+                                                               class="form-control cutome-input" id="name"
+                                                               placeholder="First Name">
+                                                        <span class="error" id="fnameerr"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <div class="input-group cst-input-group mb-3">
+                                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                                                               id="basic-addon1"><i
+                                                                class="mdi mdi-account-outline"></i></span></div>
+                                                        <input type="text" name="subject"
+                                                               class="form-control cutome-input" id="subject"
+                                                               placeholder="Subject">
+                                                        <span class="error" id="sub"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <div class="input-group cst-input-group mb-3">
+                                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                                                               id="basic-addon1"><i
+                                                                class="mdi mdi-account-outline"></i></span></div>
+                                                        <input type="email" name="email"
+                                                               class="form-control cutome-input" id="email"
+                                                               placeholder="Email" readonly>
+                                                        <span class="error" id="emailerr"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <div class="input-group cst-input-group mb-3">
+                                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                                                               id="basic-addon1"><i
+                                                                class="mdi mdi-account-outline"></i></span></div>
+                                                        <input type="text" name="desc" class="form-control cutome-input"
+                                                               id="desc" placeholder="Description">
+                                                        <span class="error" id="description"></span>
+                                                    </div>
+                                                    <!-- <div class="cmn_field forgot_pass checkbox_cmnwrp mt-3 participant_check">
+                                                        <label class="text-black"><input type="checkbox" name="forgtpass"> Enter Relation</label>
+                                                    </div> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 alignright savecanquestbtnwrp">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub_field mt-0 mb-3">
+                                    <a class="savequestbtn sitebtn m-0" id="edit" data-toggle="modal">Save</a>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                    <!--form-end-->
+                </div>
+                <div class="modal-footer pt-1 pb-1">
+                    <div class="sub_field">
+                        <a class="savequestbtn sitebtn" data-dismiss="modal"> Cancel</a></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function(){
+      $('body').on('click', ".data .dropdown i", function(){
+        $(this).next('div').toggle();
+      });
+    });
+
+
+    $('body').on('click', ".deleteinvite", function(){
+        var id = $(this).data('id');
+	    token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+        $.ajax({
+            url: '{% url 'all-invites' %}',
+            type: "DELETE",
+            data: {'id': id},
+            headers: {'X-CSRFToken': token },
+            success: function(data) {
+               $( "#table" ).empty(),
+               $( "#table" ).load( "{% url 'all-invites' %} #table" );
+            }
+        })
+        });
+
+    $('body').on('click', '#edit', function() {
+        $('#edit-invite').modal('hide');
+        token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+        var data = {};
+        try {
+            var nm = document.getElementById('name').value;
+            var sb = document.getElementById('subject').value;
+            var em = document.getElementById('email').value;
+            var ds = document.getElementById('desc').value;
+            var id = $(this).data('id')
+            data["name"]= nm;
+            data["sub"]= sb;
+            data["email"]= em;
+            data["desc"]= ds;
+            data["id"]= id;
+            }
+        catch(err) {
+            console.log('error')
+        }
+        try {
+             $.ajax({
+                    type: "PUT",
+                    url: "{% url 'all-invites' %}",
+                    data: JSON.stringify(data),
+
+                    headers: {'X-CSRFToken': token },
+                    success: function (data) {
+                           $( "#table" ).empty(),
+                           $( "#table" ).load( "{% url 'all-invites' %} #table" );
+
+                        },
+                    error: function(data) {
+                        console.log(data)
+                    }
+                });
+            }
+        catch(err) {
+            console.log(err)
+            }
+})
+
+
+</script>
+<script>
+        $('body').on('click', ".edit_value", function(){
+         var id = $(this).data('id');
+        $('#edit').attr('data-id', id);
+        $('#edit-invite').modal('show');
+        var a = $(this).parents('tr').find('.Name').text();
+        var b = $(this).parents('tr').find('.Subject').text();
+        var c = $(this).parents('tr').find('.Mail').text();
+        var d = $(this).parents('tr').find('.Message').text();
+        var e = $.trim(d);
+
+        $('#edit-invite #name').val(a);
+        $('#edit-invite #subject').val(b);
+        $('#edit-invite #email').val(c);
+        $('#edit-invite #desc').val(e);
+
+    });
+    </script>
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+{% endblock content %}

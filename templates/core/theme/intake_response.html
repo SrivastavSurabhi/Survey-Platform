@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static i18n %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Intake Form</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="{% static 'js/theme/jquery.richtext.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/richtext.min.css' %}">
+    <script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}"></script>
+    <style>
+        .loader-wrap
+{
+    position: fixed;
+    content: '';
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 99999;
+}
+.loader {
+    transform: translate(-50% , -50%);
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #38a49b;
+    width: 50px;
+    height: 50px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    z-index: 1;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+        form#responsesform .form-control.border.border-dark.ml-2.res        
+        {
+            position: relative;
+        }
+
+        label.conf-question-label {
+            position: relative;
+        }
+
+        span.conf-icon {
+        position: absolute;
+        right: 15px !important;
+        color: red;
+        top: 50%;
+        transform: translateY(-50%);
+        }
+
+        .showuploadlogoimgwrp figure {
+            height: 120px;
+            width: 200px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+
+        .sub-head-wrap {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .showuploadlogoimgwrp figure img {
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .collect-resp .form-group {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        span#part_em_err {
+            color: red;
+            font-size: 14px;
+            position: absolute;
+            bottom: -18px;
+            font-weight: 700;
+        }
+
+        .collect-resp label span {
+            margin-left: 1px;
+            position: relative;
+            top: -4px;
+        }
+
+        .collect-resp .form-group .form-control {
+            border-color: #cfcfcf !important;
+
+            height: 40px;
+        }
+
+        .collect-resp label {
+            white-space: nowrap;
+            margin-right: 15px;
+            margin-bottom: 0;
+            font-weight: 700;
+        }
+
+        .collect-resp label span {
+            color: red;
+        }
+
+        .inner-wrap h2 {
+            color: #53B6AE;
+            font-size: 28px;
+            line-height: 38px;
+            font-weight: 700;
+            margin: 0px 0 30px;
+            text-align: center;
+        }
+
+        input {
+            margin: 0 !important;
+            position: relative;
+        }
+
+        .form-control {
+            margin-left: 0 !important;
+        }
+
+        figure.img-wrap {
+            text-align: center;
+            margin-bottom: 20px
+        }
+
+        button#speech {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 15px;
+        }
+
+        a.cstm-submit {
+            background: #fff;
+            border: #4ab1a8 solid thin;
+            width: auto;
+            border-radius: 50px;
+            font-weight: 500;
+            color: #4ab1a8;
+            cursor: pointer;
+            padding: 8px 30px;
+        }
+
+        .btn-wrap {
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .cont-wrap {
+            border-radius: 15px;
+            border: 2px solid #53b6ae;
+            padding: 20px;
+            margin: 0px 0 40px;
+            box-shadow: 3px 10px 10px #67c5bd59;
+        }
+
+        .input-wrap {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .email-survey h2 {
+            text-align: left;
+            font-size: 36px;
+            margin-top: 35px;
+            margin-bottom: 20px;
+        }
+
+        /* .email-survey .cont-wrap p,
+        .email-survey .cont-wrap li,
+        .email-survey div#ques_block input,
+        .email-survey span.custom_number_width {
+            font-weight: 800;
+        } */
+
+        .email-survey a.cstm-submit {
+            background: #fff;
+            border: #4ab1a8 solid 2px;
+            width: auto;
+            border-radius: 50px;
+            font-weight: 500;
+            color: #4ab1a8 !important;
+            cursor: pointer;
+            padding: 8px 30px;
+        }
+
+        .email-survey .custom_made_question label {
+            border: 1px solid #cfcfcf;
+            width: 100%;
+            display: block;
+            padding: 12px 22px;
+            font-weight: 700;
+            font-size: 14px;
+
+        }
+
+        .email-survey label::first-letter {
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loader-wrap" style="display: none;">
+        <div class="loader" ></div></div>
+    <div class="container">
+
+        <div class="inner-wrap email-survey mt-3">
+            <div class="sub-head-wrap">
+                {% if intk.coach.logo %}
+                <div class="showuploadlogo">
+                    <div class="showuploadlogoimgwrp">
+                        <figure>
+                            <img src={{ intk.coach.logo.url }} alt="">
+                        </figure>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+      
+            <form id="responsesform">
+                {% csrf_token %}
+                <input type="hidden" name="u_id" value="{{uid}}">
+
+                <div class="row">
+                </div>
+                <div class="cont-wrap">                   
+                    {% if intk %}
+                        {{intk.instructions|unquote_new| safe}}
+                        <p class="coach-name">{{user.coach_full_name}}</p>
+                        <p class="coach-title">{{user.user_title}}</p>
+                        <p class="coach-comp">{{user.user_company}}</p>
+                        {% if intk.coachimg %}
+                        <img src="{{ intk.coachimg.url }}" alt="" height="60px" width="60px">
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+
+
+                {% for que in ques %}
+                <div class="custom_made_question mb-3">
+                    <div id="ques_block" class=" mb-3">
+                        <span class="custom_number_width">Q{{forloop.counter}}</span>
+                        <label> {{que.question}}</label>
+                    </div>
+                    <div class="ans_block_preview mb-3">
+                        <span class="custom_number_width">
+                        </span>
+
+                        <div class="form-control border border-dark ml-2 res">
+                            <div class="text-wrap d-flex align-items-center">
+                                <textarea class="res" type="text" style="border: none;" name='{{que.id}}'>
+                                    {% if ans %} {% for ansr in ans %} {% if ansr.question == que %}  {{ansr.answer }}  {% endif %} {% endfor %} {% endif %}
+                                </textarea>
+                                <button class="speech" type="button" id="speech" name="record"
+                                    style="float: right; border: none">
+                                    <i class="fa fa-microphone" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+
+        </form>
+            <form id="submit_files">
+                {% csrf_token %}
+                <input type="hidden" name="u_id" value="{{uid}}">
+                <div class="logo-parent multiplefileinput">
+                    <div class="survey_upload_inst_btn upload_logo_cta">
+                        <input type="file" id="file" name="file" multiple="">
+                        <label for="file" class="btn-2 multiple-upload">
+                        <i><img src="/static/images/theme/uploadimg.svg"></i>Upload File</label>
+                    </div>
+                </div>
+
+                <div id="shwfiles">
+                    {% if clientintakefiles %}
+                    {% for cli in clientintakefiles %} 
+                    <div class="multiple-file-wrap">
+                    <a href="{{cli.file.url}}"><img src="{{cli.file.url}}" style="height: 100px; width: 100px;"></a>
+                    <button type="button" class="sitebtn add_question" id="{{cli.id}}">Remove File</button>
+                    </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="btn-wrap">
+                    <a class="cstm-submit" id="shwalert">Save and Finish Later</a>
+                    <a class="cstm-submit" id="submit_intake_response" style="background: #efefef;">Submit</a>
+                </div>
+            </form>
+    </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            $('textarea').each(function () {
+                $(this).val($(this).val().trim());
+            }
+            );            
+        })
+        $('#shwalert').on('click',function(){
+            var data = new FormData($('#responsesform').get(0));
+			token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+			url = window.location.origin + "/intake-responses/"
+			$.ajax({
+				method: "post",
+				headers: {'X-CSRFToken': token},
+				url: url,	
+				data: data,	
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				success:function(data) {
+					alert('Your partial response is saved.')
+				}, 
+				error: function(data) {
+					console.log('data')
+				}
+			});
+        })
+    </script>
+</body>
+
+</html>
+

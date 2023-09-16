@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static i18n %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Survey</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="{% static 'js/theme/jquery.richtext.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/richtext.min.css' %}">
+    <script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}"></script>
+    <style>
+        label.conf-question-label {
+        position: relative;
+        }
+        span.conf-icon {
+            position: absolute;
+            right: 15px!important;
+            color: red;
+        }
+
+        .showuploadlogoimgwrp figure {
+            height: 120px;
+            width: 200px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+        .sub-head-wrap {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .showuploadlogoimgwrp figure img {
+            height: 100%;
+            object-fit: contain;
+        }
+        .collect-resp .form-group {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        span#part_em_err {
+            color: red;
+            font-size: 14px;
+            position: absolute;
+            bottom: -18px;
+            font-weight: 700;
+        }
+        .collect-resp label span {
+            margin-left: 1px;
+            position: relative;
+            top: -4px;
+        }
+
+        .collect-resp .form-group .form-control {
+            border-color: #cfcfcf !important;
+
+            height: 40px;
+        }
+
+        .collect-resp label {
+            white-space: nowrap;
+            margin-right: 15px;
+            margin-bottom: 0;
+            font-weight: 700;
+        }
+
+        .collect-resp label span {
+            color: red;
+        }
+
+        .inner-wrap h2 {
+            color: #53B6AE;
+            font-size: 28px;
+            line-height: 38px;
+            font-weight: 700;
+            margin: 0px 0 30px;
+            text-align: center;
+        }
+
+        input {
+            margin: 0 !important;
+            position: relative;
+        }
+
+        .form-control {
+            margin-left: 0 !important;
+        }
+
+        figure.img-wrap {
+            text-align: center;
+            margin-bottom: 20px
+        }
+
+        button#speech {
+            position: absolute;
+        }
+
+        a.cstm-submit {
+            background: #fff;
+            border: #4ab1a8 solid thin;
+            width: auto;
+            border-radius: 50px;
+            font-weight: 500;
+            color: #4ab1a8;
+            cursor: pointer;
+            padding: 8px 30px;
+        }
+
+        .btn-wrap {
+            margin: 40px auto;
+            text-align: center;
+        }
+        .cont-wrap {
+    border-radius: 15px;
+    border: 2px solid #53b6ae;
+    padding: 20px;
+    margin: 0px 0 40px;
+    box-shadow: 3px 10px 10px #67c5bd59;
+}
+.input-wrap {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+html {
+  scroll-behavior: smooth;
+}
+.email-survey h2 {
+    text-align: left;
+    font-size: 36px;
+    margin-top: 35px;
+    margin-bottom: 20px;
+}
+/* .email-survey .cont-wrap p,
+.email-survey .cont-wrap li,
+.email-survey div#ques_block input,
+.email-survey span.custom_number_width {
+    font-weight: 800;
+} */
+.email-survey a.cstm-submit {
+    background: #fff;
+    border: #4ab1a8 solid 2px;
+    width: auto;
+    border-radius: 50px;
+    font-weight: 500;
+    color: #4ab1a8!important;
+    cursor: pointer;
+    padding: 8px 30px;
+}
+.email-survey label {
+    border: 1px solid #cfcfcf;
+    width: 100%;
+    display: block;
+    padding: 12px 22px;
+    font-weight:700;
+    font-size:14px;
+    
+}
+.email-survey label::first-letter
+{
+    text-transform: uppercase;
+}
+
+.progress {
+    display: contents;
+    height: 1rem;
+    overflow: hidden;
+    font-size: .75rem;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+}
+
+.progress h4.progress-text {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 15px;
+}
+.progress .progress-bar {
+    border-radius: 3px;
+}
+.progress-bar .inner-warp {
+    width: 100%!important;
+    display: block;
+    height: 19px;
+    background: #ffffff;
+    position: absolute;
+    border-radius: 10px;
+    border: 2px solid #45a29e;
+}
+[data-progress] {
+    background: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    border-radius: 10px;
+    height: 15px;
+    width: 0;
+    line-height: 30px;
+    position: absolute;
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="inner-wrap email-survey mt-3">
+            <div class="sub-head-wrap">
+                <!-- <h2 id="section1">Survey</h2> -->
+                {% if surveyobj.creator.coaches.logo   %}
+                <div class="showuploadlogo" >
+                    <div class="showuploadlogoimgwrp">
+                        <figure>
+                            <img src={{ surveyobj.creator.coaches.logo.url }} alt="" >
+                        </figure>
+                    </div>                    
+                </div>
+                {% endif %}
+            </div>
+            <form id="responsesform">
+                {% csrf_token %}     
+                <input type="hidden" name="u_id" value="{{uid}}"> 
+                <div class="cont-wrap">
+                  {% if surveyobj.instructions %}
+                              {{surveyobj.instructions|unquote_new| safe}}
+                  {% else %}                   
+                  <div style="font-size: .875rem;">Please be as open and candid as possible to the benefit of your colleague. Your answers will remain anonymous.</div>
+                  <ul class="bullets mt-2">                      
+                  <li> May type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>                                  
+                  <li>Your direct quotes may be included in an anonymous aggregated report from all participants. Be aware that if there is something that only you would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                  <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>                                            
+                  <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                  </ul> 
+                  {% endif %}    
+                </div>
+                {% for que in ques %}
+                <div class="custom_made_question mb-3" id="{{forloop.counter}}" style="display: none;">
+                    <div id="ques_block" class=" mb-3">
+                        <span class="custom_number_width">Q{{forloop.counter}}</span>
+                        <label> {{que}}</label>
+                        <!-- <input class="form-control border border-dark" type="text" value="{{que}}" readonly> -->
+                    </div>
+                    <div class="ans_block_preview mb-3">
+                        <span class="custom_number_width">
+                        </span>
+
+                        <div class="form-control border border-dark ml-2 ans">
+                            <textarea class="answr" type="text" style="border: none;" name='{{que.id}}'>
+                                {% if ans %} {% for ansr in ans %} {% if ansr.question == que %}  {{ansr.answer }}  {% endif %} {% endfor %} {% endif %}
+                            </textarea>
+                            <button class="speech" type="button" id="speech" name="record" style="float: right; border: none">
+                                <i class="fa fa-microphone" aria-hidden="true"></i>
+                            </button>
+                            <!--                <i class="fa fa-microphone " aria-hidden="true" style="float: right"></i>-->
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between"> 
+                        <button type="button" class="sitebtn prevbtn" value="{{forloop.counter}}"> 
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> 
+                        </button>
+                        <button type="button" data-direction="next" class="sitebtn nextbtn ml-auto" value="{{forloop.counter}}">
+                         <i class="fa fa-arrow-right" aria-hidden="true"></i> 
+                        </button> 
+                    </div>
+                    <!-- <div class="row justify-content-end mr-2"> 
+                        <button type="button" class="sitebtn nextbtn" data-direction="next" id="next_btn" value="{{forloop.counter}}"> 
+                          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                         </button> 
+                      </div>   -->
+                </div>
+                {% endfor %}
+                {% if conque %}
+                <div class="custom_made_question mb-3" id="{{ques|length|add:1}}" style="display: none;">
+                  <div id="conf_que_block" class="input_custom_wrap mb-4">
+                      <span class="custom_number_width">Q{{ques|length|add:1}}</span>
+                      <label class="conf-question-label mb-0">{{conque.question}}  <span class="conf-icon"><i class="mdi mdi-star"></i></span> </label>
+                  </div>
+                  <div class="ans_block_preview mb-3">
+                      <span class="custom_number_width"></span>
+                      <div class="form-control border border-dark ml-2 ans">
+                        <textarea class="answr" type="text" style="border: none;" name='confidential-ans'>
+                            {% if confans %}  {{confans.answer|safe }}  {% endif %}
+                        </textarea>
+                          <input type="hidden" value="{{conque.id}}" name="conid">
+                          <button class="speech" type="button" id="speech" name="record" style="float: right; border: none">
+                              <i class="fa fa-microphone" aria-hidden="true"></i>
+                          </button>
+                      </div>
+                  </div>
+                  <div class="d-flex justify-content-between"> 
+                    <button type="button" class="sitebtn prevbtn" value="{{ques|length|add:1}}"> 
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i> 
+                    </button>
+                    <button type="button" data-direction="next" class="sitebtn nextbtn" value="{{ques|length|add:1}}">
+                     <i class="fa fa-arrow-right" aria-hidden="true"></i> 
+                    </button> 
+                </div>
+                  <!-- <div class="row justify-content-end mr-2"> 
+                    <button type="button" class="sitebtn nextbtn" data-direction="next" id="next_btn" value="{{ques|length|add:1}}"> 
+                      <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                     </button> 
+                  </div>   -->
+                </div>
+                {% endif %}                   
+                <div class="row">
+                    <div class="col-md-12 p-0">
+                <div class="progress">
+                  <h4 class="progress-text ">1/6</h4>
+                  <div class="progress-bar">
+                      <div class="inner-warp">
+                    <div data-progress="0" style="width: 16.6667%;"></div>
+                      </div>
+                  </div>
+                </div>  
+            </div>
+
+                <div class="btn-wrap">
+                  <a class="cstm-submit" id="shwalert">Save and Finish Later</a>
+                  <a class="cstm-submit" id="submit_survey">Submit</a>
+                </div>
+            </form>                  
+        </div>
+        
+    </div>
+
+<script>
+        window.addEventListener('load', function () {
+            $('textarea').each(function(){
+                $(this).val($(this).val().trim());
+            });
+        })
+  jQuery(document).ready(function($){
+    $('#1').css('display','block');
+    numItems = $('.custom_made_question').length
+    if ($('#1').is(":visible") ){
+        $('.prevbtn[value="1"]').css('display','none')
+    }
+    
+   
+    $('.progress-text').text(1+'/'+numItems)
+    $('.nextbtn').on('click', function(){
+        $('.custom_made_question').each(function(i){
+           if ($(this).is(":visible")){
+                curr =  $(this)
+                n = parseInt(curr.attr('id'))+1
+                curr.css('display','none')
+                $('#'+n).css('display','block')
+                if ($('#'+numItems).is(":visible") ){
+                    $('.nextbtn[value='+numItems+']').css('display','none')
+                }
+                const $progressText = $('.progress-text')
+                const $progressData = $('[data-progress]')
+                $progressText.text(n+'/'+numItems)
+                $progressData.animate({
+                    width: (n / numItems) * 100 + '%'
+                }, 1000, () => {
+                    $progressText.text(n+'/'+numItems).addClass('is-active')
+
+                })
+                return false
+           };        
+        })
+    })
+    $('.prevbtn').on('click', function(){
+        $('.custom_made_question').each(function(i){
+           if ($(this).is(":visible")){
+                curr =  $(this)
+                n = parseInt(curr.attr('id'))-1
+                curr.css('display','none')
+                $('#'+n).css('display','block')               
+                const $progressText = $('.progress-text')
+                const $progressData = $('[data-progress]')
+                $progressText.text(n+'/'+numItems)
+                $progressData.animate({
+                    width: (n / numItems) * 100 + '%'
+                }, 1000, () => {
+                    $progressText.text(n+'/'+numItems).addClass('is-active')
+
+                })
+                return false
+           };        
+        })
+    })
+    
+    $('#shwalert').on('click',function(){
+        alert('Your partial response is saved.')
+        window.location.href = window.location.origin + "/survey/add-responses/"
+    })
+  })
+  
+
+</script>
+ 
+</body>
+</html>

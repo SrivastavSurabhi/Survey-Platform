@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Email Template</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+    body{
+        margin: 0;
+        padding: 30px 0;
+        background-color: rgb(238, 238, 238);
+        font-family: 'Poppins', sans-serif;
+    }
+    table{
+        width:600px; 
+        margin:0 auto;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    }
+    th,td{
+        border-collapse: collapse;
+        border: none;
+    }
+    .logo{
+        padding: 20px 10px 10px 10px;
+        text-align: center;
+        border-bottom: 1px solid rgb(248, 248, 248);
+    }
+    .logo img{
+        max-width: 300px;
+    }
+    .headline{
+        background-color: #45a29e;
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+        font-size: 19px;
+        line-height: 30px;
+        font-weight: 400;
+    }
+    .link{
+        word-break: break-all;
+        padding: 20px;
+        text-align: center;
+        font-size: 14px;
+    }
+    .footer{
+        text-align: center;
+        background-color: rgb(34, 34, 34);
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        font-size: 16px;
+    }
+    .subline {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 600;
+        text-transform: capitalize;
+        padding-top: 15px;
+    }
+    .help {
+        background: #e5e996;
+        text-align: center;
+        padding: 15px;
+    }
+    .help h3 {
+        margin: 0;
+        font-size: 22px;
+    }
+    .note {
+        padding: 20px;
+        text-align: center;
+    }
+    .note p {
+        padding: 0;
+        color: #6b6b6b;
+        max-width: 430px;
+        margin: 0 auto;
+    }
+    .note a {
+        color: #fff;
+        box-shadow: 3px 10px 10px #67c5bd59;
+        border-radius: 100px;
+        font-size: 16px;
+        line-height: 18px;
+        padding: 10px 20px;
+        background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+        display: inline-block;
+        text-decoration: none;
+        margin-top: 15px;
+    }
+    .link a,
+    .help a {
+        color: #2196f3;
+    }
+    .details {
+        padding: 0 20px;
+        margin-top: 20px;
+    }
+    .details ul {
+        margin: 0;
+        padding: 0;
+        border: 1px solid #ccc;
+    }
+    .details ul li {
+        display: flex;
+        display: -webkit-flex;
+        padding:0;
+    }
+    .details ul li:nth-child(even){
+        background-color: #ececec;
+    }
+    .details ul li strong {
+        width: 30%;
+        display: inline-block;
+        padding: 10px;
+    }
+    .details ul li span{
+        width: 70%;
+        padding: 10px 10px 10px 20px;
+        display: inline-block;
+        border-left: 1px solid #ccc;
+    }
+</style>
+</head>
+<body>
+        <table>
+            <thead>
+                <tr>
+                    <td><div class="logo"><img src="http://leadershiprealitycheck.com/static/images/theme/logo.png"></div></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="headline">You are invited by {{coach}} (Coach in Creative Assessment Portal ) to app the participants in a Survey - How to know about your inner peace". </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="details">
+                            <ul>
+                                <li>
+                                    <strong>Name:</strong>
+                                    <span>{{name}}</span>
+                                </li>
+                                <li>
+                                    <strong>Subject:</strong>
+                                    <span>{{subject}}</span>
+                                </li>
+                                <li>
+                                    <strong>Description:</strong>
+                                    <span>{{desc}}.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="subline">Please click the below link:</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="link"><a target="_blank" href="{% url 'client_data_view' code %}">{{value}}</a></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="help">
+                            <h3>Need More Help?</h3>
+                            <a href="#">We are ready to talk</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="note">
+                            <p>By selecting Unsubscribe, you are choosing to no longer receive email from LRC.</p>
+                            <a href="#">Unsubscribe</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="footer">&copy; All Right reserved 2021 - LRC</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</body>
+</html>

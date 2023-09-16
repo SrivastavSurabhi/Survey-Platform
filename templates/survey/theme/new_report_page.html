@@ -1,0 +1,2066 @@
+{% extends "core/theme/base_theme.html" %}
+{% load str_add %}
+{% csrf_token %}
+{% load static i18n %}
+{% load customtags %}
+
+{% block extrastyle %}
+
+<script src="{% static 'js/theme/jquery.mCustomScrollbar.js' %}" ></script>
+<script src="{% static 'js/theme/genfeedrep_relattype.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jquery.mCustomScrollbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/dot_list.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/custom_inputradio.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/genfeedrep_relattype.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/step.css' %}">
+<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />  -->
+    <script src='{% static "pdfmake/pdfmake.min.js" %}'></script>
+    <script src='{% static "pdfmake/Roboto.min.js" %}'></script>
+    <script src='{% static "pdfmake/vfs_fonts.min.js" %}'></script>
+    <script src='{% static "pdfmake/Courier.min.js" %}'></script>
+    <script src='{% static "pdfmake/Helvetica.min.js" %}'></script>
+    <script src='{% static "pdfmake/Symbol.min.js" %}'></script>
+    <script src='{% static "pdfmake/ZapfDingbats.min.js" %}'></script>
+    <script src='{% static "pdfmake/Times.min.js" %}'></script>
+<script src="{% static 'js/theme/jquery.richtext.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/richtext.min.css' %}">
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}" ></script>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>  -->
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/feedback.css' %}">
+
+<style>
+<!--step-2 css starts here-->
+
+      * {
+  outline: 0;
+}
+
+
+</style>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<div class="loader-wrap" style="display: none;">
+    <div class="loader" ></div></div>
+<div class="content-wrapper">
+    <div class="step_lrc_content">
+        <form id="msform">
+            <!-- progressbar -->
+            <ul id="progressbar" class="pl-0">
+                <li class="active" id="step1" href='#step-1'><strong></strong></li>
+                <!-- <li id="step2"><strong></strong></li> -->
+                <li id="step2" href='#step-2'><strong></strong></li>
+                <li id="step3" href='#step-3'><strong></strong></li>
+                <li id="step4" href='#step-4'><strong></strong></li>
+                <li id="step5" href='#step-5'><strong></strong></li>
+            </ul> <!-- fieldsets -->
+            <fieldset class="f-set step-1" href='#step-1'>               
+                    <div class="lrc_content_step">
+                        <div class="mt-3 mb-5 p-4 step-one-ow">
+                            <div class="grouping-info">
+                                <p>You can organize your participant responses by grouping them.
+                                Select how you would like to combine participant responses in your report:</p>
+                                <ul>                               
+                                    <li>Click arrow to assign relationship types to a group</li>
+                                    <li>Group number simply represents the order in which they appear in the report</li>
+                                    <li>Responses within each group will be in randomized order to maintain anonymity</li>
+                                </ul>
+                                
+                                <span>* You may press "Skip" if you do not wish to group participant responses  - all responses will then be combined and randomized automatically</span>
+                            </div>                     <!-- <div class="form-check">
+                                <input class="form-check-input partrepbypartrel" type="radio" name="radio1" id="exampleRadios1" value="">
+                                <label class="form-check-label" for="exampleRadios1">
+                                    Yes
+                                </label>{{mngr|length}}
+                            </div> -->                                                                     
+                            <div class="relationship-grp">
+                                <div class="heading-wrap">
+                                    <span class="choose">Relationship</span>
+                                    <span class="choose">Group</span>
+                                </div>
+                                {% for rel in relationobj %}      
+                                    {% for part in record %}
+                                        {% if part.rel == rel.relation %}                                    
+                                            {% if part.data|length > 0 %}
+                                                <div class="lable-wrap">
+                                                    <label>{{ rel.relation }}</label>
+                                                    <div class="dropdown">
+                                                    <div class="select select1">
+                                                        {% if grps %}
+                                                            {% for grp in grps %}
+                                                                {% for g in grp.relation.all %}
+                                                                    {% if g.relation == rel.relation %}
+                                                                    <span>{{grp.name}}</span>                                                                
+                                                                    {% endif %}
+
+                                                                {% endfor %}
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <span>Select Group</span>
+                                                        {% endif %}
+                                                    <p class="down-angle"><i class="fa fa-chevron-down"></i></p>
+                                                    </div>
+                                                    <input type="hidden" name="gender">
+                                                    <ul class="dropdown-menu">
+                                                        <li>Select Group</li>
+                                                        <li>Group 1</li>
+                                                        <li>Group 2</li>
+                                                        <li>Group 3</li>
+                                                        <li>Group 4</li>
+                                                        <li>Group 5</li>
+                                                        <li>Group 6</li>
+                                                    </ul>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="lable-wrap disable ">
+                                                    <label>{{ rel.relation }}</label>
+                                                    <div class="dropdown">
+                                                    <div class="select select1">
+                                                    <span>Select Group</span>
+                                                    <p class="down-angle"><i class="fa fa-chevron-down"></i></p>
+                                                    </div>
+                                                    <input type="hidden" name="gender">
+                                                    <ul class="dropdown-menu">
+                                                        <li>Select Group</li>
+                                                        <li>Group 1</li>
+                                                        <li>Group 2</li>
+                                                        <li>Group 3</li>
+                                                        <li>Group 4</li>
+                                                        <li>Group 5</li>
+                                                        <li>Group 6</li>
+                                                    </ul>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+
+                            <div class="alert-info-new mt-2" role="alert" style="display: none;">
+                                Responses will appear in random order within each group
+                            </div>
+                        </div>
+                        <span class="error selectoption" style="position: relative; bottom: 0px;"></span>
+                    </div>
+
+                        <a href="{% url 'feedback-report-inner' client.id %}" ><input type="button" class="action-button" value="Back" /></a>
+                        <input type="button" name="next" class="action-button " id="relationtypefrmsub" value="Save and Continue" />
+                        <input type="button" name="next" class="skip next action-button" value="Skip" />
+                   
+         
+            </fieldset>           
+       
+            <fieldset class="f-set prevndedit step-2" href='#step-2'>
+                
+                <div class="lrc_content_step">
+                   
+                    <div class="lrc_top_head ">                       
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                              <li class="breadcrumb-item">
+                                <div class="prevs">
+                                    <div class="d-flex">
+                                        <h3>Preview & Edit</h3>
+                                        <div class="info-here">
+                                            <i class="fa fa-info"></i>
+                                            <div class="hover-text">Participants name is for preview only. Final Report will be anonymized.</div>
+                                         </div>                                
+                                    </div>
+                                </div></li>                              
+                            </ol>
+                          </nav>                        
+                        <input type='hidden' id='show_per_page'/>
+                        <div class="dropdown">
+                            <a class="row_data dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               Raw Data
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right raw-data-dropdown p-2" aria-labelledby="dropdownMenuLink">
+                               <div class="form-group">
+                                <div class="form-check d-flex align-items-start">
+                                    <input class="mt-1 inlineRadio3" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                                    <label class="mb-0 ml-2 inlineRadio3" for="inlineRadio3">Individual Responses</label>
+                                </div>
+                               </div>
+                                <div class="form-group mb-0">
+                                    <div class="form-check d-flex align-items-start">
+                                        <input class="mt-1 inlineRadio4" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option4" >
+                                        <label class="mb-0 ml-2 inlineRadio4" for="inlineRadio4" >Question Summary</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                     
+                    <input type="hidden" id="que_id">
+                    <input type="hidden" id="que_no">  
+                                     
+                            {% for que, headcom, ansobjlist in quesanslist %}
+                                <div class="questionare_block" id="questionare_block{{forloop.counter}}">                                
+                                    <div class="que_head_nd_com">
+                                        <h3 class="que_heading{{forloop.counter}} main_heaing">{% if headcom.heading != 'null' and headcom.heading is not None %} {{ headcom.heading }} {% endif %}</h3>
+                                        <h6 class="comment{{forloop.counter}} main-comment">{% if headcom.comments != 'null' and headcom.comments is not None %} {{ headcom.comments }} {% endif %}</h6>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <h2 class="ques_heading">{{que}}</h2>                                    
+                                        <div class="dropdown-right dropleft">
+                                            <button type="button" class="btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i></button>
+
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" data="{{que.id}}" id="{{que.id}}">
+                                                <a class="dropdown-item addHeadings" href="javascript:void()" data-toggle="modal" data-target="#addHeadings">Add Heading</a>
+                                                <a class="dropdown-item addComments" href="javascript:void()" data-toggle="modal" data-target="#sumarytext">Add Comments</a>
+                                            </div>
+                                        </div>                                    
+                                    </div> 
+
+                                    {% if grps %}
+                                        {% Check_manager grps ansobjlist as has %}
+                                        {% if has == False %}
+                                            <h5>Manager</h5>
+                                            <div class="answer_block">
+                                                <div class="wrap_cstm_head">
+                                               <div class="main _options">                                
+                                                   <div class="response">Response</div>
+                                                   <div class="particular">Participant Name</div>
+                                                   <div class="relationship">Relationship</div>
+                                               </div>
+                                               <div class="actions">
+                                                   <div class="action">Actions</div>
+                                               </div>
+                                               </div>
+                                           {% for ans, editedans in ansobjlist %}
+                                           {% if ans.participant.relationship.relation == "Manager" and ans.answer != '' %}
+                                                
+                                               <div class="lable-wrap">
+                                                   <label class="main_response">
+                                                       <input type="radio" name="a">
+                                                       <div class="response myans" data="{{ans.id}}"><p  type="text" >{% if editedans == 'null' %}{{ans.answer|safe }}{% else %} {% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</p></div>
+                                                       <div class="particular" name="{{ans.participant.id}}">{{ans.participant.first_name}} {{ans.participant.last_name}}</div>
+                                                       <div class="relationship">{{ans.participant.relationship.relation}}</div>
+                                                   </label>
+                                                   <label class="edit" data="{{ans.id}}"><span><i class="fa fa-pencil" aria-hidden="true"></i></span></label> 
+                                                   <label class="delete" data="{{ans.id}}"><span><i class="fa fa-trash" aria-hidden="true"></i></span></label>
+                                               </div>  
+                                               
+                                               {% endif %}
+                                           {% endfor %}                                    
+                                            </div>
+                                         {% endif %}
+                                    {% endif %}
+
+                                    {% if grps %}
+                                    {% for grp in grps %}
+                                    <h5>{% for g in grp.relation.all %} {{g.relation}}{% if forloop.counter != grp.relation.all|length %},{% endif %} {% endfor %} </h5>
+                                    <div class="answer_block">
+                                            <div class="wrap_cstm_head">
+                                            <div class="main _options">                                
+                                                <div class="response">Response</div>
+                                                <div class="particular">Participant Name</div>
+                                                <div class="relationship">Relationship</div>
+                                            </div>
+                                            <div class="actions">
+                                                <div class="action">Actions</div>
+                                            </div>
+                                            </div>
+                                        {% for ans, editedans in ansobjlist %}
+                                            {% for g in grp.relation.all %}                                     
+                                            {% if ans.participant.relationship.relation == g.relation and ans.answer != '' %}
+                                            <div class="lable-wrap">
+                                                <label class="main_response">
+                                                    <input type="radio" name="a">
+                                                    <div class="response myans" data="{{ans.id}}"><p type="text" >{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</p></div>
+                                                    <div class="particular" data-id="{{ans.participant.id}}">{{ans.participant.first_name}} {{ans.participant.last_name}}</div>
+                                                    <div class="relationship">{{ans.participant.relationship.relation}}</div>
+                                                </label>
+                                                <label class="edit" data="{{ans.id}}"><span><i class="fa fa-pencil" aria-hidden="true"></i></span></label> 
+                                                <label class="delete" data="{{ans.id}}"><span><i class="fa fa-trash" aria-hidden="true"></i></span></label>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %} 
+                                        {% endfor %}  
+                                    </div>  
+                                    {% endfor %}
+                                    {% else %}
+                                    <div class="answer_block">
+                                        <div class="wrap_cstm_head">
+                                       <div class="main _options">                                
+                                           <div class="response">Response</div>
+                                           <div class="particular">Participant Name</div>
+                                           <div class="relationship">Relationship</div>
+                                       </div>
+                                       <div class="actions">
+                                           <div class="action">Actions</div>
+                                       </div>
+                                       </div>
+                                   {% for ans, editedans in ansobjlist %}
+                                       {% if ans.answer != '' %}
+                                       <div class="lable-wrap">
+                                           <label class="main_response">
+                                               <input type="radio" name="a">
+                                               <div class="response myans" data="{{ans.id}}"><p  type="text" >{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</p></div>
+                                               <div class="particular" name="{{ans.participant.id}}">{{ans.participant.first_name}} {{ans.participant.last_name}}</div>
+                                               <div class="relationship">{{ans.participant.relationship.relation}}</div>
+                                           </label>
+                                           <label class="edit" data="{{ans.id}}"><span><i class="fa fa-pencil" aria-hidden="true"></i></span></label> 
+                                           <label class="delete" data="{{ans.id}}"><span><i class="fa fa-trash" aria-hidden="true"></i></span></label>
+                                       </div>
+                                       {% endif %}
+                                   {% endfor %}                                    
+                                    </div>
+                                    {% endif %}                                                       
+                                </div>
+                            {% endfor %}
+
+                            
+                            {% if confques %}
+                            
+                                <div class="questionare_block" id="questionare_block0">
+                                            
+                                            <div class="que_head_nd_com">
+                                                <h3 class="que_heading main_heaing conf_heaing">{% if confques.heading %} {{ confques.heading }} {% endif %}</h3>
+                                                <h6 class="comment main-comment conf-comment">{% if confques.comments %} {{ confques.comments }} {% endif %}</h6>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <h2 class="ques_heading">{{confques.question}}</h2> 
+                                                <div class="star d-flex align-items-center">
+                                                    <div class="dropdown-right dropleft">
+                                                        <span style="color:#ff0000;"><i class="mdi mdi-star confstar"></i></span>
+                                                        <button type="button" class="btn" data-toggle="dropdown"><i class="mdi mdi-dots-vertical confstar"></i></button>
+            
+                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" data="{{confques.id}}" id="{{confques.id}}">
+                                                            <a class="dropdown-item addHeadings" href="javascript:void()" data-toggle="modal" data-target="#addHeadings">Add Heading</a>
+                                                            <a class="dropdown-item addComments" href="javascript:void()" data-toggle="modal" data-target="#sumarytext">Add Comments</a>
+                                                        </div>
+                                                    </div>    
+                                                </div>
+                                                <!-- <span  style="color:#ff0000;"><i class="mdi mdi-star confstar"></i></span>                                                                             -->
+                                            </div>                                
+                                            {% if grps %}
+                                            {% for grp in grps %} 
+                                            {% for g in grp.relation.all %} {{g.relation}}{% if forloop.counter != grp.relation.all|length %},{% endif %} {% endfor %}        
+                                            <div class="answer_block">
+                                                        <div class="wrap_cstm_head">
+                                                    <div class="main _options">                                
+                                                        <div class="response">Response</div>
+                                                        <div class="particular">Participant Name</div>
+                                                        <div class="relationship">Relationship</div>
+                                                    </div>
+                                                    <div class="actions">
+                                                        <div class="action">Actions</div>
+                                                    </div>
+                                                    </div>
+                                                    {% for ans, editedans in confans %}
+                                                    {% for g in grp.relation.all %}
+                                                    {% if ans.participant.relationship.relation == g.relation and ans.answer != ''%}
+                                                    <div class="lable-wrap">
+                                                        <label class="main_response">
+                                                            <input type="radio" name="a">
+                                                            <div class="response myans" data="{{ans.id}}"><p type="text" > {% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</p></div>
+                                                            <div class="particular">{{ans.participant.first_name}} {{ans.participant.last_name}}</div>
+                                                            <div class="relationship">{{ans.participant.relationship.relation}}</div>
+                                                        </label>
+                                                        <label class="confedit" data="{{ans.id}}"><span><i class="fa fa-pencil" aria-hidden="true"></i></span></label> 
+                                                        <label class="confdelete" data="{{ans.id}}"><span><i class="fa fa-trash" aria-hidden="true"></i></span></label>
+                                                    </div>     
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    {% endfor %}
+                                            </div>   
+                                            {% endfor %}
+                                            {% else %}   
+                                            <div class="answer_block">
+                                                <div class="wrap_cstm_head">
+                                               <div class="main _options">                                
+                                                   <div class="response">Response</div>
+                                                   <div class="particular">Participant Name</div>
+                                                   <div class="relationship">Relationship</div>
+                                               </div>
+                                               <div class="actions">
+                                                   <div class="action">Actions</div>
+                                               </div>
+                                               </div>
+                                           {% for ans, editedans in confans %}
+                                           {% if ans.answer != '' %}
+                                               <div class="lable-wrap">
+                                                   <label class="main_response">
+                                                       <input type="radio" name="a">
+                                                       <div class="response myans" data="{{ans.id}}"><p  type="text" >{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</p></div>
+                                                       <div class="particular">{{ans.participant.first_name}} {{ans.participant.last_name}}</div>
+                                                       <div class="relationship">{{ans.participant.relationship.relation}}</div>
+                                                   </label>
+                                                   <label class="confedit" data="{{ans.id}}"><span><i class="fa fa-pencil" aria-hidden="true"></i></span></label> 
+                                                   <label class="confdelete" data="{{ans.id}}"><span><i class="fa fa-trash" aria-hidden="true"></i></span></label>
+                                               </div>
+                                               {% endif %}
+                                           {% endfor %}                                    
+                                            </div>
+                                            {% endif %}                                                      
+                                        </div>
+                            {% endif %}
+                                
+                </div>
+                <!-- <div class="cstm-btn-wrap">                 -->
+                    <input type="button" name="previous" class="previous action-button" value="Back" />
+                    <input type="button" name="next" class="next action-button" value="Save and Continue" />
+                    <input type="button" name="next" class="skip next action-button" value="Skip" />
+                <!-- </div> -->
+            </fieldset>
+            <fieldset class="f-set step-3" href='#step-3'>
+                <div class="lrc_content_step upload_complete">   
+                    <div class="prevs">
+                        <div class="d-flex">
+                            <h3>Customize Logo</h3>
+                            <div class="info-here">
+                                <i class="fa fa-info"></i>
+                                <div class="hover-text">Your logo will be saved and automatically set for your future reports. You will have the option to change this at any time.</div>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="logo-parent" >
+                        <!-- {% if report.logo %} 
+                        <div class="showuploadlogo" >
+                            <div class="showuploadlogoimgwrp">
+                                <img src='{{report.logo.url}}' alt="">
+                            </div>
+                            <div class="edit_delet_logo_wrp">
+                                <a href="javascript:;" class="editupdatedlogo sitebtn"></a>
+                                <a href="javascript:;" class="deleteupdatedlogo sitebtn"></a>
+                            </div>
+                        </div>   
+                        <br>                  
+                            <a href="javascript:;" class="upload_logo to_complete" ><i class="fa fa-check"></i> Completed</a>
+                        {% else %}
+                        <div class="survey_upload_inst_btn upload_logo_cta"> 
+                            <div class="alignright">
+                                <div class="alignright customleft">
+                                    <a href="javascript:;" class="upload_logo to_upload"><i class="fa fa-upload"></i> Upload Logo</a>                           
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} -->
+                        <div class="main_box">
+                            <div class="logo_container">
+                            {% if survey.creator.coaches.logo %}
+                            <div class=" intake-logo">
+                                <img class="main_intake_image"src="{{survey.creator.coaches.logo.url}}">
+                                <!-- <a href="javascript:;" class="editprofileimg"><img src="/static/images/theme/pen.svg"></a> -->
+                                <a href="javascript:;" class="remove_intake_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            </div>
+                            {% else %}
+                                <a href="javascript:;" class="upload_logo sitebtn ">Add logo</a>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- <div id="shwimg"></div>
+                <div class="lrc_content_step upload_complete">   
+                    <div class="prevs">
+                        <div class="d-flex">
+                            <h3>Customize Logo</h3>
+                            <div class="info-here">
+                                <i class="fa fa-info"></i>
+                                <div class="hover-text">Your logo will be saved and automatically set for your future reports. You will have the option to change this at any time.</div>
+                            </div>
+                        </div>
+                    </div>  
+                    <a href="javascript:;" class="upload_logo to_upload"><i class="fa fa-upload"></i> Upload Logo</a>
+                    <a href="javascript:;" class="upload_logo to_complete" style="display:none"><i class="fa fa-check"></i> Completed</a>
+                </div> -->
+
+                <input type="button" name="previous" class="previous action-button" value="Back" />
+                <input type="button" name="next" class="next action-button" id='shw_rep_gen_pop' value="Save and Continue" />
+                <input type="button" name="next" class="skip next action-button" value="Skip" />
+            </fieldset>
+            <fieldset class="f-set step-4" href='#step-4'>
+                <fieldset id="1">
+                <div class="lrc_content_step">
+                    <div class="prevs">
+                        <h3 class="font-weight-bold">Preview and Customize</h3>
+                        <p>You may customize the colors and footer to match your brand. Your look and feel will be saved for future reports and you will always have the option to change it.</p>
+                    </div>  
+
+                    <div class="pdf_parent cover-page">
+                        <div class="p-4">
+                            <div class="main_box">
+                                <div class="logo_container">
+                                {% if survey.creator.coaches.logo %}
+                                <div class=" intake-logo">
+                                    <img class="main_intake_image"src="{{survey.creator.coaches.logo.url}}">
+                                    <!-- <a href="javascript:;" class="editprofileimg"><img src="/static/images/theme/pen.svg"></a> -->
+                                    <a href="javascript:;" class="remove_intake_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                </div>
+                                {% else %}
+                                    <a href="javascript:;" class="upload_logo sitebtn ">Add logo</a>
+                                {% endif %}
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" class="staticimgpath" src="{% static 'images/theme/logo.png' %}">
+                            <div class="lrc_logo">
+                                <!-- <img src="{% static 'images/theme/lrc-logo.png' %}"> -->
+                                <h1>Creative Assessment Portal  <sup><i class="fa fa-registered" aria-hidden="true"></i></sup></h1>
+                                
+                            </div>
+                            <div class="pdf_content">
+                                    <div class="heading_wrap">
+                                        <h1 class="heading" contenteditable="true">{% if report.topic %}{{report.topic |title}} {% else %}Confidential Feedback Report for{% endif %}</h1>
+                                        <h2 class="name" contenteditable="true">{% if report.first_name %}{{report.first_name|title}} {{report.last_name|title}} {% else %}{{client.first_name}} {{client.last_name}} {% endif %}</h2>
+                                        <h3 class="titlle" contenteditable="true">{% if report.title %}{{report.title|safe}} {% else %}{% if client.title %} {{client.title|safe }} {% else %}<p class="placeholder_text_title">Enter title here</p>{% endif %}{% endif %}</h3>
+                                        <h4 class="company" contenteditable="true">{% if report.company_name %}{{report.company_name|safe}} {% else %}{% if client.company_name %} {{client.company_name|safe }} {% else %}<p class="placeholder_text_comp">Company Name</p>{% endif %}{% endif %}</h4>
+                                    </div>
+                               
+                                <p class="date">{{gennratedat}}</p>
+                            </div>
+                            <div class="botom_parent">
+                                <p class="coach">Prepared By <strong>{{survey.creator.coaches.first_name|title|capfirst}} {{survey.creator.coaches.last_name|title|capfirst}}</strong></p>
+                                <p class="toc"><strong>{% if not survey.creator.coaches.title == NONE %}{{survey.creator.coaches.title}}{% endif %}</strong></p>
+                            </div>
+                        </div>  
+                        {% if footer %}
+                        <div class="footer_parent_overview newfooter-parent">
+                            
+                            <div class="back-figure">
+                                <!-- <p class="edit-ball"></p> -->
+                                <div class="btnedit btnpens">
+                                    <button type="button" data-toggle="modal" data-target="#editbackfootercolor"><i class="fa fa-pencil"></i></button>
+                                </div>
+                                
+                                <svg class="yellow-wrap"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="403" viewBox="0 0 1920 403">
+                                    <defs>
+                                      <clipPath id="clip-path">
+                                        <rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px" fill="{{survey.creator.coaches.frontfootercolor}}" stroke="#707070" stroke-width="1"/>
+                                      </clipPath>
+                                    </defs>
+                                    <g id="Mask_Group_1" data-name="Mask Group 1" clip-path="url(#clip-path)">
+                                      <path id="Path_1" class="bc-color-styling" data-name="Path 1" d="M1964.89,173.333s-440-142.667-904-6.667-878.667,64-1018.667,0,0,352,0,352l1936-13.333,6.667-332Z" transform="translate(-44.89 -108.285)" fill="{{survey.creator.coaches.frontfootercolor}}"/>
+                                    </g>
+                                  </svg> 
+                                </div>
+                                <div class="front-figure">
+                                    <!-- <div class="btnedit btnpens d-flex"> -->
+                                        <!-- <button type="button" data-toggle="modal" data-target="#editfooter"><i class="fa fa-pencil"></i></button>
+                                    </div> -->
+                                    <svg class="blue-warp"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="403" viewBox="0 0 1920 403">
+                                        <defs>
+                                          <clipPath id="clip-path">
+                                            <rect class="color-styling" id="Rectangle_1" data-name="Rectangle 1"width="100%" height="440px" transform="translate(0 11)" fill="{{survey.creator.coaches.color}}" stroke="#707070" stroke-width="1"/>
+                                          </clipPath>
+                                          <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+                                            <stop offset="0" stop-color="#61c1b9"/>
+                                            <stop offset="1" stop-color="#4bb1a8"/>
+                                          </linearGradient>
+                                        </defs>
+                                        <g id="Mask_Group_1" data-name="Mask Group 1" transform="translate(0 -11)" clip-path="url(#clip-path)">
+                                          <path id="Path_1" class="color-styling" data-name="Path 1" d="M0,173.333s440-142.667,904-6.667,878.667,64,1018.667,0,0,352,0,352l-1936-13.333-6.667-332Z" transform="translate(0 -97.285)" fill="{{survey.creator.coaches.color}}"/>
+                                        </g>
+                                      </svg>
+                                </div>
+                                <div class="front-page-footer">
+                                    <div class="btnedit btnpens d-flex">
+                                    <p class="footer_text mr-2">{{footer.text}}</p>
+                                    <button type="button" id="edit_footer" data-toggle="modal" data-target="#editfooter"><i class="fa fa-pencil"></i></button>    
+                                </div>
+                                <!-- <div class="page-count"><p>1</p></div> -->
+                                </div>
+                        </div>
+
+                                    {% else %}
+                                    <div class="footer_parent_overview newfooter-parent">
+                                       
+                                        <div class="back-figure">
+                                            <!-- <p class="edit-ball"></p> -->
+                                            <div class="btnedit btnpens">
+                                                <button type="button" data-toggle="modal" data-target="#editbackfootercolor"><i class="fa fa-pencil"></i></button>
+                                            </div>
+                                            <svg class="yellow-wrap"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="403" viewBox="0 0 1920 403">
+                                                <defs>
+                                                <clipPath id="clip-path">
+                                                    <rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px" fill="#d7de68" stroke="#707070" stroke-width="1"/>
+                                                </clipPath>
+                                                </defs>
+                                                <g id="Mask_Group_1" data-name="Mask Group 1" clip-path="url(#clip-path)">
+                                                <path id="Path_1" class="bc-color-styling" data-name="Path 1" d="M1964.89,173.333s-440-142.667-904-6.667-878.667,64-1018.667,0,0,352,0,352l1936-13.333,6.667-332Z" transform="translate(-44.89 -108.285)" fill="{{survey.creator.coaches.frontfootercolor}}"/>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="front-figure">
+                                           
+                                            <svg class="blue-warp"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="403" viewBox="0 0 1920 403">
+                                                <defs>
+                                                  <clipPath id="clip-path">
+                                                    <rect id="Rectangle_1" data-name="Rectangle 1"width="100%" height="440px" transform="translate(0 11)" fill="#fff" stroke="#707070" stroke-width="1"/>
+                                                  </clipPath>
+                                                  <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+                                                    <stop offset="0" stop-color="#61c1b9"/>
+                                                    <stop offset="1" stop-color="#4bb1a8"/>
+                                                  </linearGradient>
+                                                </defs>
+                                                <g id="Mask_Group_1" data-name="Mask Group 1" transform="translate(0 -11)" clip-path="url(#clip-path)">
+                                                  <path class="color-styling" id="Path_1" data-name="Path 1" d="M0,173.333s440-142.667,904-6.667,878.667,64,1018.667,0,0,352,0,352l-1936-13.333-6.667-332Z" transform="translate(0 -97.285)" fill="{{survey.creator.coaches.color}}"/>
+                                                </g>
+                                              </svg>
+                                        </div>
+                                        <div class="front-page-footer">
+                                            <div class="btnedit btnpens d-flex">
+                                            <p class="footer_text mr-2">Creative Buffer Consultancy Private Limited| creativebuffer.com</p>
+                                            <button type="button" id="edit_footer" data-toggle="modal" data-target="#editfooter"><i class="fa fa-pencil"></i></button>
+                                            
+                                            </div>
+                                            <!-- <div class="page-count"><p>1</p></div> -->
+                                        </div>
+                                    </div>
+                                
+                                    {% endif %}                      
+                     
+                        </div>
+                                           
+                </div>                
+                </fieldset>
+                <fieldset id="2" class="min_height_wrap">
+                    <div class="lrc_content_step footer_btum">
+                        <div class="lrc_content_step">
+                            <div class="pdf_parent">
+                                <div class="p-4">
+                                    <div class="head_part">
+                                        <div class="logo surttl" style="font-weight: 700;font-size: 20px;font-size: 22.5px!important;display: block;width: 100%;"contenteditable="true">{% if report.heading %}{{report.heading|capfirst|unquote_new|safe}} {% else %}Overview  {% endif %}<br></div>
+                                        <!-- <div class="btnedit"><button type="button" id="addsurhead"><i class="fa fa-pencil"></i></button></div> -->
+                                    </div>
+                                    <div class="overview_contents">
+                                        <div>
+                                        <span class="surcomment" contenteditable="true">{% if report.comments %}{{report.comments|capfirst|unquote_new|safe}}{% else %}As part of your executive coaching engagement, {{survey.creator.coach_full_name}} conducted a feedback process to understand how others perceive your strengths as well as your learning and development opportunities.<br><br><strong>{{survey.creator.coaches.first_name}}</strong> gathered feedback data from {{survey.response_count}} participants with whom you have interfaced and have known for at least six months. All data was collected via an online questionnaire from {{survey.start_datetime|date:"F j"}} to {{survey.end_datetime|date:"F j"}}. The participants included:{% endif %} 
+                                        </span>
+                                        </div>
+                                        
+                                        <ol class="mt-3">{% for part in participant %}{% for sc in surcom %}{% if sc.participant == part %}
+                                            <li>{{part.first_name}} {{part.last_name}}, {{part.relationship.relation}}</li>
+                                            {% endif %}{% endfor %}{% endfor %}
+                                        </ol>
+
+                                        <div class="d-flex align-items-center mt-4 summary" contenteditable="true">{% if report.summary %}{{report.summary|capfirst}} {% else %}Participant Summary {% endif %}<br></div>
+                                        <div class="table-responsive mt-4">
+                                            <table class="table border-new" style="border: 1px solid #000;">
+                                                <tr>
+                                                    <th>Relationship</th>
+                                                    <th>Selected</th>
+                                                    <th>Participated</th>
+                                                    <th>Participation %</th>
+                                                </tr>
+                                                {% for rel in relationobj%}
+                                                {% for part in ansrecord %}
+                                                {% if part.rel == rel.relation %}
+                                                <tr>
+                                                    
+                                                    <td>{{ rel.relation }}</td>                     
+                                                    <td> {{part.sentto}}</td>           
+                                                    <td>{{part.count}}</td>
+                                                    <td>{{part.sur}} %</td>
+                                                                                                           
+                                                </tr>     
+                                                {% endif %}
+                                                {% endfor %}                                           
+                                                {% endfor %}                                               
+                                            </table>
+                                        </div>
+                                        <div><span class="summary-text m-1" contenteditable="true"><br>{% if report.text %}{{report.text|capfirst|unquote_new|safe}}{% else %}As is best practice, participants were given anonymity to engender trust and candor. Their anonymous direct quotes were aggregated by question and are included in the report.<br><br>When reviewing your report, please keep in mind that these are their perceptions of you, which may differ from how you see yourself.<br><br>During your coaching session with {{survey.creator.coaches.first_name}}, the report will be analyzed and key themes will be elicited. The purpose is to gain clarity and self-awareness to help refine your goals and determine the best path forward to achieve them.{% endif %} </span></div>
+                                    </div>
+                                </div>
+                                <div class="p-4 free-space"></div>
+                                    {% if footer %}
+                                <div class="footer_parent_overview color-styling" style="background: {{survey.creator.coaches.color}} !important;">
+                                    <p class="footer_text mb-0"> {{footer.text}}</p>
+                                    <div class="btnedit btnpens"><button type="button" id="edit_footer" data-toggle="modal" data-target="#editfooter" ><i class="fa fa-pencil"></i></button></div>
+                                <!-- <div class="page-count"><p>2</p></div> -->
+
+                                </div>
+                                    {% else %}
+                                <div class="footer_parent_overview color-styling" style="background: {{survey.creator.coaches.color}};">
+                                    <p class="footer_text mb-0"> Creative Buffer Consultancy Private Limited| creativebuffer.com</p>
+                                    <div class="btnedit btnpens"><button type="button" id="edit_footer"  data-toggle="modal" data-target="#editfooter" ><i class="fa fa-pencil"></i></button></div>
+                                <!-- <div class="page-count"><p>2</p></div> -->
+
+                                </div>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>                
+                
+                    <fieldset id=3>
+
+                        
+                        <p class="botw-text mb-2"><b>Please note: Sections with Headers will automatically be separated by page breaks in the generated final report.</b></p>
+                        {% for que, headcom, ansobjlist in randomquesanslist %}
+                        <div class="lrc_content_step">
+                            <div class="pdf_parent">
+                                <div class="p-4" >
+                                    <div class="head_part reprot_view_outer_wrap" data="{{que.id}}" id="heading{{forloop.counter}}">
+                                            <div class="heading_question_wrap">
+                                                <div class="logo que_heading{{forloop.counter}}">{% if headcom.heading != 'null' and headcom.heading is not None %} {{ headcom.heading|capfirst }} {% endif %}</div>
+
+                                                <div class="dropdown-right dropleft">
+                                                    <button type="button" class="btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i></button>                                            
+                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" data="{{que.id}}" id="{{que.id}}">
+                                                        <a class="dropdown-item addHeadings" href="javascript:void()" data-toggle="modal" data-target="#addHeadings">Add Heading</a>
+                                                        <a class="dropdown-item addComments" href="javascript:void()" data-toggle="modal" data-target="#sumarytext">Add Comments</a>
+                                                    </div>
+                                                </div> 
+                                            </div>
+        
+                                        <div class="overview_contents">
+                                            <p class="comment{{forloop.counter}}">{% if headcom.comments != 'null' and headcom.comments is not None %} {{ headcom.comments|capfirst }} {% endif %}</p>                                            
+                                            <h2>{{que|capfirst}}</h2>
+                                            {% if grps %}
+                                                {% Check_manager grps ansobjlist as has %}
+                                                    {% if has == False %}    
+                                                                                                       
+                                                        <h4 class="grp-name">Manager</h4>
+                                                        <ol class="bulletpoint">
+                                                           {% for ans, editedans in ansobjlist %}
+                                                                {% if ans.participant.relationship.relation == "Manager" and ans.answer != '' %}
+                                                                <div class="myans" data="{{ans.id}}">
+                                                                <li><div class="cstm-textarea" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</div></li>
+                                                                </div>                                                                
+                                                                {% endif %}
+                                                            {% endfor %}                                         
+                                                        </ol>  
+                                                        {% endif %}
+
+                                                        {% for grp in grps %} 
+
+                                                        <h4 class="grp-name test1" style="display:block;">{% for g in grp.relation.all %} {{g.relation}}{% if forloop.counter != grp.relation.all|length %},{% endif %} {% endfor %} </h4>
+                                                            
+                                            
+                                                                {% if forloop.parentloop.counter|divisibleby:stat_random_num %}                                                                    
+                                                                    {% for ans, editedans in ansobjlist reversed  %}                                                                    
+                                                                        {% for g in grp.relation.all %}
+                                                                        {% if ans.participant.relationship.relation == g.relation and ans.answer != '' %}
+                                                                        <ol class="bulletpoint">
+                                                                        <div class="myans" data="{{ans.id}}">
+                                                                        <li><div class="cstm-textarea" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</div></li>
+                                                                        </div></ol>
+                                                                        {% endif %}
+                                                                        {% endfor %}                                                                    
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    {% for ans, editedans in ansobjlist %}                                                                    
+                                                                    {% for g in grp.relation.all %}
+                                                                    {% if ans.participant.relationship.relation == g.relation and ans.answer != '' %}
+                                                                    <ol class="bulletpoint">
+                                                                    <div class="myans" data="{{ans.id}}">
+                                                                    <li><div class="cstm-textarea" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</div></li>
+                                                                    </div></ol>
+                                                                    {% endif %}
+                                                                    {% endfor %}                                                                    
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                             
+                                                            
+                                                        {% endfor %}
+                                            {% else %}
+                                                <ol class="bulletpoint">
+                                                    {% if forloop.counter|divisibleby:stat_random_num %} 
+                                                        {% for ans, editedans in ansobjlist reversed %}
+                                                            {% if ans.answer != '' %}
+                                                            <div class="myans" data="{{ans.id}}">                                 
+                                                            <li><div class="cstm-textarea" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</div></li>
+                                                        </div>
+                                                        {% endif %}                                                            
+                                                        {% endfor %} 
+                                                    {% else %}
+                                                        {% for ans, editedans in ansobjlist %}
+                                                        {% if ans.answer != '' %}
+                                                        <div class="myans" data="{{ans.id}}">                                 
+                                                            <li><div class="cstm-textarea" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{% if editedans.deleted == False and editedans.answer != '' %}{{ editedans.answer|safe }}{% endif %}{% endif %}</div></li>
+                                                        </div>
+                                                        {% endif %}                                                            
+                                                        {% endfor %} 
+                                                    {% endif %}
+                                                </ol>  
+                                            {% endif %}   
+
+                                        </div>
+                                        <div class="text-center"></div>
+                                    </div>
+                                </div>                                
+                                                      
+                        {% if quesanslist|length == forloop.counter %}  
+                            
+                            {% if confques %}
+                                    <div class="p-4" >
+                                    <div class="head_part reprot_view_outer_wrap" data="{{confques.id}}" id="{{confques.id}}">
+                                        <div class="heading_question_wrap">
+                                            <div class="logo conf_heaing">{% if confques.heading %} {{ confques.heading|capfirst }} {% endif %}                                
+                                            </div>                    
+                                            <div class="dropdown-right dropleft">
+                                                <button type="button" class="btn" data-toggle="dropdown"><i class="mdi mdi-dots-vertical confstar"></i></button>                                            
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" data="{{confques.id}}" id="{{confques.id}}">
+                                                    <a class="dropdown-item addHeadings" href="javascript:void()" data-toggle="modal" data-target="#addHeadings">Add Heading</a>
+                                                    <a class="dropdown-item addComments" href="javascript:void()" data-toggle="modal" data-target="#sumarytext">Add Comments</a>
+                                                </div>
+                                            </div> 
+                                        </div>
+                
+                                    <div class="overview_contents">
+                                        <p class="main-comment conf-comment">{% if confques.comments %} {{ confques.comments|capfirst }} {% endif %}</p>
+                                        <h2>{{confques.question|capfirst}}
+                                                <span  style="font-size:12px; color: #ff0000;"><i class="fa fa-star" aria-hidden="true"></i></span>
+                                            </h2>
+                                            {% if grps %}
+                                                {% for grp in grps %} <h4 class="grp-name test3" ></h4>
+                                                    {% for g in grp.relation.all %} {{g.relation}}{% if forloop.counter != grp.relation.all|length %},{% endif %}</h4> {% endfor %}        
+                                                    {% if grps|length == 1 %}     
+                                                        <ol class="bulletpoint">
+                                                            {% for ans, editedans in randomconfans reversed %}
+                                                            {% for g in grp.relation.all %}
+                                                            {% if ans.participant.relationship.relation == g.relation %}
+                                                            {% if ans.answer != '' %}
+                                                            <div class="myans" data="{{ans.id}}">
+                                                            <li><div class="cstm-textarea confedit" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{{ editedans.answer|safe }}{% endif %}</div></li>
+                                                            </div>
+                                                            {% endif %}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                            {% endfor %} 
+                                                        </ol> 
+                                                    {% else %}
+                                                    <ol class="bulletpoint">
+                                                        {% for ans, editedans in randomconfans %}
+                                                        {% for g in grp.relation.all %}
+                                                        {% if ans.participant.relationship.relation == g.relation %}
+                                                        {% if ans.answer != '' %}
+                                                        <div class="myans" data="{{ans.id}}">
+                                                        <li><div class="cstm-textarea confedit" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{{ editedans.answer|safe }}{% endif %}</div></li>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                        {% endfor %} 
+                                                    </ol> 
+                                                    {% endif %} 
+                                                {% endfor %}
+                                            {% else %}      
+                                            <ol class="bulletpoint">
+                                                {% for ans, editedans in randomconfans %}   
+                                                {% if ans.answer != '' %}                                   
+                                                <div class="myans" data="{{ans.id}}">
+                                                <li><div class="cstm-textarea confedit" contenteditable>{% if editedans == 'null' %}{{ans.answer|safe }}{% else %}{{ editedans.answer|safe }}{% endif %}</div></li>
+                                                </div>                     
+                                                {% endif %}                   
+                                                {% endfor %} 
+                                            </ol>
+                                            {% endif %}                            
+                                        </div>
+                                        <div class="text-center">
+                                        </div>
+                                    </div> 
+                                    </div>                               
+                                
+                            {% endif %}
+                            
+                                    <div  class="p-4 addnoteHeadings" style="margin-bottom: 5px;">
+                                        <div class="head_part" data="notehead" id="noteheading">
+                                            <div class="notes_wrap ">
+                                                <p class="add-head">Additional Notes<span></span></p>
+                                                <div class="d-flex flex-column">                                                    
+                                                    <h2 class="titlle note_heading_new"contenteditable="true" style="margin-bottom: 5px;">{% if report.noteheading %}{{report.noteheading|unquote_new|safe}}{% else %}<p class="placeholder_text_title">Enter note heading here</p>{% endif %}</h2>
+                                                    <h3 class="titlle note_comments_new" contenteditable="true">{% if report.notecomments %}{{report.notecomments|unquote_new|safe}}{% else %}<p class="placeholder_text_title">Enter note comment here</p>{% endif %}</h3>
+                                                </div>
+                                            </div>  
+                                        </div>                            
+                                    </div>
+                                <div class="p-4 free-space"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                            {% if footer %}
+                            <div class="footer_parent_overview color-styling" style="background: {{survey.creator.coaches.color}};">
+                                <p class="footer_text"> {{footer.text}}  </p>
+                                <div class="btnedit btnpens"><button type="button" id="edit_footer"  data-toggle="modal" data-target="#editfooter" ><i class="fa fa-pencil"></i></button></div>
+                                <!-- <div class="page-count"><p>3</p></div> -->
+                            </div>
+                            {% else %}
+                            <div class="footer_parent_overview color-styling" style="background: {{survey.creator.coaches.color}};">
+                                <p class="footer_text"> Creative Buffer Consultancy Private Limited| creativebuffer.com  </p>
+                                <div class="btnedit btnpens"><button type="button" id="edit_footer" data-toggle="modal" data-target="#editfooter" ><i class="fa fa-pencil"></i></button></div>
+                                <!-- <div class="page-count"><p>3</p></div> -->
+                            </div>
+                            {% endif %}
+                        
+                        {% endfor %}
+                    </fieldset>  
+            
+                <nav aria-label="Page navigation example">                  
+                    <ul class="buttons-nexts pagination paging">   
+                        <button type="button" name="prev" class="prevpg" onclick="gotoprvpage()" value="Previous" style="display: none;"><i class="fa fa-chevron-left fa-lg"></i></button>                        
+                        <li class="page-item">
+                            <a class="page_link page-link active_page" onclick="gotopage(1)">1</a> 
+                        </li>     
+                        <li class="page-item">
+                            <a class="page_link page-link" onclick="gotopage(2)">2</a> 
+                        </li>  
+                        <li class="page-item">
+                            <a class="page_link page-link" onclick="gotopage(3)">3</a> 
+                        </li>  
+                       
+                        <button type="button" name="nxt" class="nxtpg" onclick="gotonxtpage()" value="Next"><i class="fa fa-chevron-right fa-lg"></i></button>
+                    </ul>                    
+                </nav>
+                <input type="button" name="previous" class="previous action-button" value="Back" />
+                <a href="javascript:;" class="mt-3 next-compo next action-button save_report" name="next">Save and Generate Report</a>
+                <a href="javascript:void()" class="mt-3 next-compo action-button save_as_draft" data-toggle="modal" id="save_as_draft" >Save as Draft</a>
+            </fieldset>
+            <fieldset class="f-set step-5" href='#step-5'>
+                <div class="box_new_shadow">
+                    <div class="Headings_center">
+                        <!-- <h2>Congratulations!</h2> -->
+                        <div class="form-group text-center mt-4">
+                            <h2 class="mb-2">You have successfully generated your report. The report has been placed in your client's file.</h2>
+                        </div>
+                    </div>
+                    <input type="hidden" id="user_type" value="{{user_type}}">
+                    <div class="modal-buton">
+                        <!-- <a type="button" class="btn-modals mr-0" href="{% url 'download-user-pdf' survey_id user_type %}" target="_blank">Download</a> -->
+                        <!-- <a type="button" class="btn-modals mr-0" id="btn" target="_blank">Download</a> -->
+                        {% if user_type == 'Client' %}     
+                        
+                        <a class="btn-modals mr-0 mb-4" href="{% url 'download-user-pdf' survey.id user_type%}?random_num={{random_num}}&conf_random_num={{conf_random_num}}&stat_random_num={{stat_random_num}}" target="_blank">Download</a>
+                        <!-- <br>
+                        <br>
+                        <h4>or</h4>
+                        <br>
+                        <a class="btn-modals mr-2" href="{% url 'download-user-pdf' survey.id user_type%}?random_num={{random_num}}&conf_random_num={{conf_random_num}}&stat_random_num={{stat_random_num}}&send_report=client_report" target = "_blank" >Download & Send Report</a> -->
+                        {% else %}
+                        <a class="btn-modals mr-0" href="{% url 'download-user-pdf' survey.id user_type%}?random_num={{random_num}}&conf_random_num={{conf_random_num}}&stat_random_num={{stat_random_num}}" target="_blank">Download</a>
+                        {% endif %}                     
+                        <!-- <button type="button" class="btn-modals" data-dismiss="modal">Download</button> -->
+                        <!-- <button type="button" class="btn-modals" data-dismiss="modal">Print</button> -->
+                    </div>
+                    <input type="hidden" id="survey_id" value="{{survey_id}}">
+                    <div class="btc">
+                        <a class="client_box_new linkbtn" >
+                            <div class="d-flex align-items-center redirecttoclient" id="redirecttoclient">
+                                <div class="imgwrp"><i class="fa fa-user"></i></div>
+                                <u>Back To Client File</u>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!-- <div class="bottom"></div> -->
+            </fieldset>
+            
+            <input type='hidden' id="cliid" value="{{client.id}}">
+        </form>
+    </div>
+</div>
+<div class="parti_relation_type_popup cmn_sitepopup">
+    <div class="cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup" ></a>
+        <div class="cmn_sitepopup_scroll">
+            <p>This group has less than 3 participants. To ensure anonymity, it is best practice to have 3 or more participants in a group. You may go back to change your selection.</p>
+            <a href="javascript:;" class="sitebtn gobackbtn">Go back</a>
+            <a class="sitebtn continue_to_2step" style="color: #45a29e;">Continue Anyway</a>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of parti_relation_type_popup -->
+
+<div class="select_option_popup cmn_sitepopup">
+    <div class="cmn_site_inn_popup select-opt-popup">
+        <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+        <div class="cmn_sitepopup_scroll">
+            <p class="main_heading-select">Please Save and Generate report to proceed further.</p>
+            <!-- <a href="javascript:;" class="sitebtn save_report">Save and Generate Report</a> -->
+            <!-- <a href="javascript:;" class="sitebtn save_as_draft ml-2" id="save_as_draft" >Save as Draft</a> -->
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of parti_relation_type_popup -->
+
+<!-- logo-updated-modal -->
+<div class="modal fade border-modal common-modal-body" id="logo_updated">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="cmn_sitepopup_scroll">
+                <h2>Congratulations!</h2>
+                <div class="modal-body">
+                    <div class="Headings_center">
+                        <div class="form-group text-center mt-4">
+                            <h3 class="mb-2" style="line-height:normal">Your feedback report is being generated.</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- group-name-modal -->
+<div class="create_survay_popup cmn_sitepopup new_modal_design" id="grp_name">
+    <div class="create_survay_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+        <div class="cmn_sitepopup_scroll">               
+                <div class="cmn_field inputicon custom_input_icon ">
+                    <label>Enter Group Name</label>
+                    <input type="text" name="grpname" id="surveyname" placeholder="Eg: Personalized ">
+                    <span class="error" id="grpnameerr"></span>
+                </div>                
+                <div class="all_survey_btn">
+                    <div class="surveybtnwrp sub_field">
+                        <button type="button" id="save_grp_name" class="btn btn-default">Save and Continue</button>
+                    </div>
+                </div>              
+            </form>
+        </div>
+
+    </div>
+    <div class="whiteoverlay"></div>
+    
+</div>
+<!-- end of group-name-modal -->
+
+<!-- end -->
+
+<!-- modals-save-as-draft -->
+<div class="modal fade border-modal save_as_draft_modal" id="saveasdraft" >
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="Headings_center">
+                    <h2>Your report has been successfully saved as draft in the client's file</h2>
+                </div>
+
+                <div class="modal-buton">
+                    <!-- <button type="button" class="btn-modals" data-dismiss="modal">Ok</button> -->
+                    <div class="btc">
+                        <a class="client_box_new linkbtn" >
+                            <div class="d-flex align-items-center redirecttoclient" id="#redirecttoclient">
+                                <div class="imgwrp"><i class="fa fa-user"></i></div>
+                                <u>Back To Client File</u>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- modals-heading -->
+<div class="modal fade border-modal common-modal-body" id="addHeadings">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Add Heading</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter heading text here</label>
+                        <input type="text" class="form-control" placeholder="Heading">
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="heading">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- modals-notes-heading -->
+<div class="modal fade border-modal common-modal-body" id="addnotesHeadings">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Add Heading</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter notes heading text here</label>
+                        <input type="text" class="form-control Heading" placeholder="Heading">
+                    </div>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter notes comments text here</label>
+                        <input type="text" class="form-control Comments" placeholder="Comments">
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="savenotes">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- modals-subheading -->
+<div class="modal fade border-modal common-modal-body" id="subHeadings">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Add Subheading</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter subheading text here</label>
+                        <input type="text" class="form-control" >
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+<!-- edit title -->
+<div class="modal fade border-modal common-modal-body" id="edittitle">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Edit Title</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter title here</label>
+                        <input type="text" class="form-control" >
+                    </div>                    
+                </div>
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="savetitle">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- confirm to delete pop up -->
+<div class="delete_cnfm_popup cmn_sitepopup" >
+    <div class="delete_cnfm_inn cmn_site_inn_popup">
+       <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+       <div class="cmn_sitepopup_scroll">
+          <h2>Are you sure you want to delete response?</h2>
+          <div class="d-flex justify-content-center">
+             <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="delete_response">Yes</button>
+             <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">No</button>
+          </div>
+       </div>
+    </div>
+    <div class="whiteoverlay"></div>
+ </div>
+ <!-- end -->
+<!-- add survey heading -->
+<div class="modal fade border-modal common-modal-body" id="sur_head">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Edit Heading and Comments</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Edit Heading</label>
+                        <input type="text" class="form-control" >
+                    </div>               
+                    <div class="form-group">
+                        <label class="mb-2 font-weight-bold">Edit Text</label>
+                        <textarea class="form-control" rows="3"></textarea>
+                      </div>            
+                    <div class="modal-buton">
+                        <button type="button" class="btn-modals" id="savehead">Save</button>
+                        <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- add survey Summary -->
+<div class="modal fade border-modal common-modal-body" id="summary_head">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Edit Heading and Comments</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Edit your Summary Heading</label>
+                        <input type="text" class="form-control" >
+                    </div>               
+                    <div class="form-group">
+                        <label class="mb-2 font-weight-bold">Edit your Summary Comments</label>
+                        <textarea class="form-control" rows="3"></textarea>
+                      </div>            
+                    <div class="modal-buton">
+                        <button type="button" class="btn-modals" id="savesummaryhead">Save</button>
+                        <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- edit response -->
+<div class="modal fade border-modal common-modal-body" id="editresponse">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Edit Response</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter new response here</label>
+                        <input type="text" class="form-control" >
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="saveresp">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- edit footer -->
+<div class="modal fade border-modal common-modal-body" id="editfooter">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Edit Footer</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter footer text here</label>
+                        <input type="text" id="footer-text" class="form-control footertext" >
+                    </div>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Choose your footer Color</label>
+                        {% if footer.color %}
+                        <input type="color" id="favcolor" name="favcolor" value="{{survey.creator.coaches.color}}" class="form-control" >
+                        {% else %}
+                        <input type="color" id="favcolor" name="favcolor" value="{{survey.creator.coaches.color}}" class="form-control" >
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="savefooter">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- edit footer -->
+<div class="modal fade border-modal common-modal-body" id="editbackfootercolor">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">                   
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Choose your footer Color</label>
+                        {% if footer %}
+                        <input type="color" id="bccolor" name="bccolor" value="{{survey.creator.coaches.frontfootercolor}}" class="form-control" >
+                        {% else %}
+                        <input type="color" id="bccolor" name="bccolor" value="{{survey.creator.coaches.frontfootercolor}}" class="form-control" >
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="savebackfooter">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- edit group name -->
+<div class="modal fade border-modal common-modal-body" id="editgrpnm">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Edit Group Name</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter Group Name here</label>
+                        <input type="text" class="form-control" >
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<!-- modals-sumarytext -->
+<div class="modal fade border-modal common-modal-body" id="sumarytext">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close closepoup" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Add Comments</h2>
+
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter comments here</label>
+                        <textarea class="form-control" rows="5" placeholder="Comments will appear under the heading."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="save_comment">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+
+<input type="hidden" class="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}">
+<div class="upload_logo_popup cmn_sitepopup">
+    <div class="upload_logo_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Upload your logo</h2>
+            <!-- <p class="upload-note">Image size should be less than 1 MB.</p> -->
+            <input type="hidden" imgsrc="{% static 'images/theme/uploadimg.svg' %}" id="hiddendefuplimg">
+            <div class="upload_logo_wrp">
+                <div class="uploadimg"><img id="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}"></div>
+                <div class="uploadimgname">
+                    <p>Drag and drop a file here....</p>
+                    <p>You can also upload a file from your computer.</p>
+                </div>
+            </div>
+            <form name="uploadlogofrm" id="uploadlogofrm" method="post" action={% url 'survey-logo' report.id %} enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="uploadlogoreport" id="uploadlogo" accept="image/*"/>
+                <input type="hidden" name="deletelogo" id="deleterptlogo"  value= {% url 'delete-logo' report.id %}>
+                <div class="sub_field">
+                    <button type="button" id="uploadlogofrmsub" class="btn btn-default closepoup" >Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of upload_logo_popup -->
+
+<div class="recomm_survey_color_popup cmn_sitepopup" id="customheight">
+    <div class="recomm_survey_color_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Your Logo</h2> 
+            <div class="recomm_survey_col_box clearfix">
+                <div class="center">
+                    <!-- <h3>Your Logo</h3> -->
+                    <div class="your-logo" id="recom_survey_logo" >
+                        <div class="result" style="display: none;">
+                            <img src="data:image/png;base64,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">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="recomsurvybtn_wrp">
+                <a url="{{request.path}}" class="sitebtn" id="confirm-btn" style="display:none;">Save</a>
+                <button class="sitebtn" id="crop-btn" style="display:none;">Crop</button >
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of recomm_survey_color_popup -->
+<input type="hidden" id="reportid" value="{{report.id}}">
+
+<!-- select individual pop up -->
+<div class="default_survey_templ_popup cmn_sitepopup individual_pop_up">
+    <div class="create_survay_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <!-- <h2>Name your Survey</h2> -->
+                <div class="cmn_field inputicon usericon1">
+                    <select name="defsurveycat" id="indi_rel" style="padding-left: 51px;">
+                        <option value="1">Select Relationship </option>
+                        <option value="0">All Relationships</option>
+                        {% for rel in relationobj%}                           
+                            <option value={{ rel.id }}>{{ rel.relation }}</option>
+                        {% endfor %}
+                   </select>
+                    <span class="error" id="indi_relerr" style="display: none;">Please Select Relationship</span>
+                </div>
+
+                <!-- {% if client %} -->
+                <div class="cmn_field inputicon custom_input_icon usericon">
+                    <select name="surveycat" id="individual">
+                        <option value="">Select participant</option>                                     
+                    </select>
+                    <span class="error indiv_err" style="display: none;">Please Select Participant</span>
+                </div>
+                
+                <!-- {% endif %} -->
+                               
+                <div class="all_survey_btn">
+                    <div class="surveybtnwrp sub_field"><button type="button" class="btn btn-default" id="show_resp">See Response</button></div>
+                </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"> </div>
+</div><!-- end of select individual pop up -->
+
+<!-- question summary pop up -->
+<div class="default_survey_templ_popup cmn_sitepopup question_summary_pop_up">
+    <div class="create_survay_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+                <div class="cmn_field inputicon usericon1">
+                    <select name="defsurveycat" id="que_sum" style="padding-left: 51px;">
+                        <option value="1">Select Question </option>
+                        <option value="0">All Questions</option>
+                        {% for que in questionobj %}                           
+                            <option value={{ que.id }}>{{ que.question }}</option>
+                        {% endfor %}
+                        
+                        {% if confques %}
+                            <option value={{ confques.id }} class="cq">{{ confques.question }}</option>
+                        {% endif %}
+                            
+                   </select>
+                    <span class="error" id="que_sumerr" style="display: none;">Please Select Question</span>
+                </div>                               
+                <!-- <div class="all_survey_btn">
+                    <div class="surveybtnwrp sub_field"><button type="button" class="btn btn-default" id="show_resp">See Response</button></div>
+                </div> -->
+                <div class="questionreviewfrm"></div>
+        </div>
+    </div>
+    <div class="whiteoverlay"> </div>
+</div><!-- end of question summary pop up -->
+
+
+<!-- individual_response_popup  -->
+<div class="survey_preview_popup cmn_sitepopup individual_response_popup">
+    <div class="survey_preview_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+            <h2>Preview</h2>
+            <div class="surveypreviewfrm"> 
+            </div>
+            <div class="d-flex justify-content-center .create_sur_btn ">
+                <a class="newbtn pt-3 pb-3 text-white mb-3 " data-dismiss="modal">Done</a>
+                </div>           
+        </div>       
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of individual_response_popup -->
+
+
+
+<script type="text/javascript">
+    var url = window.location.href;
+        
+        if( url.search( 'step' ) > 0 ) {
+            $('.f-set').hide();
+            cls = url.substr(url.indexOf("#")).replace('#', '')
+            $('#'+cls.replace('-','')).addClass("active").prevAll().addClass('active');
+            $('.'+cls).show();   
+            if (cls == 'step-2'){
+                this_btn = ($('.f-set[style*="display: block;"]')).find('.action-button[value="Save and Continue"]')
+                current_fs = $(this_btn);
+                current_fs.show();
+                   
+            var show_per_page = 2; 
+            //getting the amount of elements inside pagingBox div
+            var number_of_items = $('.paging li').length
+            //calculate the number of pages we are going to have
+            var number_of_pages = Math.ceil(number_of_items/show_per_page);
+
+             //set the value of our hidden input fields
+                $('#current_page').val(0);
+                $('#show_per_page').val(show_per_page);
+                var navigation_html = '';
+                var navigation_html = '<button type="button" name="prev" class="prevpg1" onclick="prvpage()" value="Previous" style="display: none;"><i class="fa fa-chevron-left fa-lg"></i></button>';
+                var current_link = 0;
+                while(number_of_pages > current_link){
+                    navigation_html += '<li class="page-item"><a class="page_link page-link" href="javascript:go_to_page(' + current_link +')" longdesc="' + current_link +'">'+ (current_link + 1) +'</a></li>';
+                    current_link++;
+                }
+                navigation_html += '<button type="button" name="nxt" class="nxtpg1" onclick="nxtpage()" value="Next"><i class="fa fa-chevron-right fa-lg"></i></button>';
+                
+                // console.log($(this_btn).parent().next())
+                // if($(this_btn).parent().next().hasClass('prevndedit')){
+                    
+                    $('#page_navigation1').html(navigation_html);
+                
+                    //add active_page class to the first page link
+                    $('#page_navigation1 .page_link:first').addClass('active_page1');
+                    
+                    //hide all the elements inside pagingBox div
+                    $('#pagingBox1').children().css('display', 'none');
+                    
+                    //and show the first n (show_per_page) elements
+                    $('#pagingBox1').children().slice(0, show_per_page).css('display', 'block'); 
+                    
+                    if( url.search( 'modal=1' ) > 0 ) {
+                        $('.lrc_top_head .dropdown div').addClass('show')
+                        jQuery('.individual_pop_up').show();
+                        jQuery('.inlineRadio3').closest('.dropdown-menu').removeClass('show');
+                        jQuery('.inlineRadio3').closest('.dropdown-menu').css('display', 'none');
+                        jQuery('.inlineRadio3').closest('.dropdown-menu').stop();
+                    }
+                    
+                    if( url.search( 'modal=2' ) > 0 ) {
+                        $('.lrc_top_head .dropdown div').addClass('show')
+                        jQuery('.question_summary_pop_up').show();
+                        jQuery('.inlineRadio4').closest('.dropdown-menu').removeClass('show');
+                        jQuery('.inlineRadio4').closest('.dropdown-menu').css('display', 'none');
+                        jQuery('.inlineRadio4').closest('.dropdown-menu').stop();
+                    }
+                 }
+                // }         
+        }
+</script>
+<script type="text/javascript">
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var opacity; 
+    $(document).ready(function() {
+        var url = window.location.href;
+        if(url.search( 'step' ) == -1){
+          
+        window.location.href = "{{report.currentpage}}";
+        $("fieldset.f-set").css('display','none')
+        $('fieldset.f-set[href="{{report.currentpage}}"]').css('display','block')
+        $("#progressbar li").eq($('fieldset.f-set').index($('fieldset.f-set[href="{{report.currentpage}}"]'))).addClass("active").prevAll().addClass('active');
+        }
+        function save_stage(id, stage){
+			var endpoint = window.location.origin + "/survey/report-stage/";
+			token = document.getElementsByName("csrfmiddlewaretoken")[0].value	
+				$.ajax({
+					method: "put",
+					headers: {'X-CSRFToken': token},
+					url: endpoint,
+					data: id+','+stage,
+					processData: false,
+					contentType: false,
+					dataType: "json",
+					success:function(data) {	
+						console.log('updated')
+					}, 
+					error: function(data) {
+						console.log(data)
+					}
+				});
+			}
+            
+        $(document).on('click', '.next', function() {
+                    current_fs = $(this).parent();
+                    next_fs = $(this).parent().next();
+                    //Add Class Active
+                    $("#progressbar li").eq($("fieldset.f-set").index(next_fs)).addClass("active");
+                    window.location.href = $(this).closest("fieldset.f-set").next().attr('href');
+                    save_stage($('#reportid').val(), $(this).closest("fieldset.f-set").next().attr('href'))
+                    //show the next fieldset
+                    next_fs.show();
+                    //hide the current fieldset with style
+                    current_fs.animate({ opacity: 0 }, {
+                        step: function(now) {
+                            // for making fielset appear animation
+                            opacity = 1 - now;
+                            current_fs.css({
+                                'display': 'none',
+                                'position': 'relative'
+                            });
+                            next_fs.css({ 'opacity': opacity });
+                        },
+                        duration: 600
+                    });
+            
+            var show_per_page = 2; 
+            //getting the amount of elements inside pagingBox div
+            var number_of_items = $('.paging li').length
+            //calculate the number of pages we are going to have
+            var number_of_pages = Math.ceil(number_of_items/show_per_page);
+
+             //set the value of our hidden input fields
+                $('#current_page').val(0);
+                $('#show_per_page').val(show_per_page);
+                var navigation_html = '';
+                var navigation_html = '<button type="button" name="prev" class="prevpg1" onclick="prvpage()" value="Previous" style="display: none;"><i class="fa fa-chevron-left fa-lg"></i></button>';
+                var current_link = 0;
+                while(number_of_pages > current_link){
+                    navigation_html += '<li class="page-item"><a class="page_link page-link" href="javascript:go_to_page(' + current_link +')" longdesc="' + current_link +'">'+ (current_link + 1) +'</a></li>';
+                    current_link++;
+                }
+                navigation_html += '<button type="button" name="nxt" class="nxtpg1" onclick="nxtpage()" value="Next"><i class="fa fa-chevron-right fa-lg"></i></button>';
+                
+                if($(this).parent().next().hasClass('prevndedit')){
+                    
+                    $('#page_navigation1').html(navigation_html);
+                
+                    //add active_page class to the first page link
+                    $('#page_navigation1 .page_link:first').addClass('active_page1');
+                    
+                    //hide all the elements inside pagingBox div
+                    $('#pagingBox1').children().css('display', 'none');
+                    
+                    //and show the first n (show_per_page) elements
+                    $('#pagingBox1').children().slice(0, show_per_page).css('display', 'block');               
+                 }
+ 
+            });
+        });
+
+        function save_stage(id, stage){
+			var endpoint = window.location.origin + "/survey/report-stage/";
+			token = document.getElementsByName("csrfmiddlewaretoken")[0].value	
+				$.ajax({
+					method: "put",
+					headers: {'X-CSRFToken': token},
+					url: endpoint,
+					data: id+','+stage,
+					processData: false,
+					contentType: false,
+					dataType: "json",
+					success:function(data) {	
+						console.log('updated')
+					}, 
+					error: function(data) {
+						console.log(data)
+					}
+				});
+			}
+            
+        
+        $(document).on('click', '.previous', function() {
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+
+            //Remove class active
+            $("#progressbar li").eq($("fieldset.f-set").index(current_fs)).removeClass("active");
+            window.location.href = $(this).closest("fieldset.f-set").prev().attr('href');
+            save_stage($('#reportid').val(),$(this).closest("fieldset.f-set").prev().attr('href'))
+            //show the previous fieldset
+            previous_fs.show();
+
+            //hide the current fieldset with style
+            current_fs.animate({ opacity: 0 }, {
+                step: function(now) {
+                    // for making fielset appear animation
+                    opacity = 1 - now;
+
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    previous_fs.css({ 'opacity': opacity });
+                },
+                duration: 600
+            });
+
+            var show_per_page = 2; 
+            //getting the amount of elements inside pagingBox div
+            var number_of_items = $('.paging li').length
+            //calculate the number of pages we are going to have
+            var number_of_pages = Math.ceil(number_of_items/show_per_page);
+
+             //set the value of our hidden input fields
+                $('#current_page').val(0);
+                $('#show_per_page').val(show_per_page);
+                var navigation_html = '';
+                var navigation_html = '<button type="button" name="prev" class="prevpg1" onclick="prvpage()" value="Previous" style="display: none;"><i class="fa fa-chevron-left fa-lg"></i></button>';
+                var current_link = 0;
+                while(number_of_pages > current_link){
+                    navigation_html += '<li class="page-item"><a class="page_link page-link" href="javascript:go_to_page(' + current_link +')" longdesc="' + current_link +'">'+ (current_link + 1) +'</a></li>';
+                    current_link++;
+                }
+                navigation_html += '<button type="button" name="nxt" class="nxtpg1" onclick="nxtpage()" value="Next"><i class="fa fa-chevron-right fa-lg"></i></button>';
+                
+
+            if($(this).parent().prev().hasClass('prevndedit')){
+                    
+                    $('#page_navigation1').html(navigation_html);
+                
+                    //add active_page class to the first page link
+                    $('#page_navigation1 .page_link:first').addClass('active_page1');
+                    
+                    //hide all the elements inside pagingBox div
+                    $('#pagingBox1').children().css('display', 'none');
+                    
+                    //and show the first n (show_per_page) elements
+                    $('#pagingBox1').children().slice(0, show_per_page).css('display', 'block');               
+                 }
+        });
+
+        $(".submit").click(function() {
+            return false;
+        })
+       
+        function go_to_page(page_num){
+            
+        //get the number of items shown per page
+        var show_per_page = 2; // parseInt($('#show_per_page').val());
+        
+        //get the element number where to start the slice from
+        start_from = page_num * show_per_page;
+
+        end_on = start_from + show_per_page;
+        if ($('#pagingBox').parent().parent().parent().is(":visible")){
+        //hide all children elements of pagingBox div, get specific items and show them
+            $('#pagingBox').parent().find('.active_page1').removeClass('active_page1');
+            $('#pagingBox').children().css('display', 'none').slice(start_from, end_on).css('display', 'block');
+        }
+        else if($('#pagingBox1').parent().parent().parent().is(":visible") ){            
+            $('#pagingBox1').parent().find('.active_page1').removeClass('active_page1');
+            $('#pagingBox1').children().css('display', 'none').slice(start_from, end_on).css('display', 'block'); 
+        }
+
+        $('.page_link[longdesc=' + page_num +']').addClass('active_page1').parent('li').find('active_page1').removeClass('active_page1'); 
+        
+        //update the current page input field
+        $('#current_page').val(page_num);
+        hidebtn()
+        }
+
+
+        var current_rp, next_rp, previous_rp; //fieldsets
+        var nwopacity;
+
+        $(".nextpg").click(function() {
+
+            current_rp = $(this).parent();
+            next_rp = $(this).parent().next();
+
+
+            next_rp.show();
+            current_rp.animate({ nwopacity: 0 }, {
+                step: function(now) {
+                    nwopacity = 1 - now;
+
+                    current_rp.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    next_rp.css({ 'opacity': nwopacity });
+                },
+                duration: 600
+            });
+        });
+
+        $(".previouspg").click(function() {
+
+            current_rp = $(this).parent();
+            previous_rp = $(this).parent().prev();
+
+            previous_rp.show();
+
+
+            current_rp.animate({ nwopacity: 0 }, {
+                step: function(now) {
+                    nwopacity = 1 - now;
+
+                    current_rp.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    previous_rp.css({ 'opacity': nwopacity });
+                },
+                duration: 600
+            });
+        });
+
+        $('.radio-group .radio').click(function() {
+            $(this).parent().find('.radio').removeClass('selected');
+            $(this).addClass('selected');
+        });
+
+        $(".submit").click(function() {
+            return false;
+        })
+</script>
+<script>
+
+    $('.paging li a').click(function() {
+        $('.paging li a').removeClass('active_page');
+        $(this).addClass('active_page')
+        hidebtn()
+    });
+
+    $('#page_navigation1 li a').click(function() {
+        $('#page_navigation1 li a').removeClass('active_page1');
+        $(this).addClass('active_page1')
+        hidebtn()
+    });
+
+    function gotopage(page){
+       
+        for(let i=1; i<=$('.paging li').length; i++) {
+            if(i == page){
+                $('#'+page).addClass('active_page').show();
+            }
+            else{
+                $('#'+i).addClass('active_page').hide();
+            }
+        }  
+        hidebtn()         
+    };
+    $('#examptool').tooltip('show')
+
+    function gotonxtpage(){  
+        $('.active_page').removeClass('active_page').parent().next().find('a').addClass('active_page');       
+        
+        $( ".paging li a" ).each(function(i) {    
+            num = i+1            
+            if($(this).hasClass('active_page')){
+                $('#'+num).show();
+            }
+            else{
+                $('#'+num).hide();
+            }
+        });
+        hidebtn()
+    };
+
+    function gotoprvpage(){
+        $('.active_page').removeClass('active_page').parent().prev().find('a').addClass('active_page').show();
+
+        $( ".paging li a" ).each(function(i) {    
+            num = i+1            
+            if($(this).hasClass('active_page')){
+                $('#'+num).show();
+            }
+            else{
+                $('#'+num).hide();
+            }
+        });
+        hidebtn()
+    };
+    
+    function nxtpage(){  
+        $('.active_page1').removeClass('active_page1').parent().next().find('a').addClass('active_page1');     
+        $( "#page_navigation1 li a" ).each(function(i) { 
+            num = (i+1)*2
+            if ($('#questionare_block'+num).length == 0) {
+                n = num-1
+                console.log(n)
+                if($(this).hasClass('active_page1')){
+                    $('#questionare_block'+n).show();
+                }
+                else{
+                    $('#questionare_block'+n).hide();
+                }
+            }   
+            else{            
+                if($(this).hasClass('active_page1')){
+                    $('#questionare_block'+num).prev().show();
+                    $('#questionare_block'+num).show();
+                }
+                else{
+                    $('#questionare_block'+num).prev().hide();
+                    $('#questionare_block'+num).hide();
+                }
+            }
+        })
+        hidebtn()
+    };
+
+    function prvpage(){
+        $('.active_page1').removeClass('active_page1').parent().prev().find('a').addClass('active_page1').show();
+        $( "#page_navigation1 li a" ).each(function(i) { 
+            num = (i+1)*2
+            if ($('#questionare_block'+num).length == 0) {
+                n = num-1
+                console.log(n)
+                if($(this).hasClass('active_page1')){
+                    $('#questionare_block'+n).show();
+                }
+                else{
+                    $('#questionare_block'+n).hide();
+                }
+            }   
+            else{            
+                if($(this).hasClass('active_page1')){
+                    $('#questionare_block'+num).prev().show();
+                    $('#questionare_block'+num).show();
+                }
+                else{
+                    $('#questionare_block'+num).prev().hide();
+                    $('#questionare_block'+num).hide();
+                }
+            }
+        })
+        hidebtn()
+    };
+    
+    function hidebtn(){
+        if($('#1').is(':visible')){
+            $('.prevpg').hide();
+        }
+        else{
+            $('.prevpg').show();
+        }
+
+        if($('#questionare_block0').is(':visible')){
+            $('.prevpg1').hide();
+        }
+        else{
+            $('.prevpg1').show();
+        }
+
+        if($('#'+$('.paging li').length).is(':visible')){
+            $('.nxtpg').hide();
+        }
+        else{
+            $('.nxtpg').show();
+        }
+
+        if($('#questionare_block'+$('.paging li').length).is(':visible')){
+
+            $('.nxtpg1').hide();
+        }
+        else{
+            $('.nxtpg1').show();
+        }
+
+    }
+
+
+$(".js-select2").select2({
+        closeOnSelect : false,
+        placeholder : "Relationship Type",
+        // allowHtml: true,
+        allowClear: true,
+        tags: true // создает новые опции на лету
+    });
+    /*Dropdown Menu*/
+$('.dropdown').click(function () {
+    $(this).attr('tabindex', 1).focus();
+    $(this).toggleClass('active');
+    $(this).find('.dropdown-menu').slideToggle(300);
+});
+$('.dropdown').focusout(function () {
+    $(this).removeClass('active');
+    $(this).find('.dropdown-menu').slideUp(300);
+});
+$('.dropdown .dropdown-menu li').click(function () {
+    $(this).parents('.dropdown').find('span').text($(this).text());
+    $(this).parents('.dropdown').find('input').attr('value', $(this).attr('id'));
+});
+/*End Dropdown Menu*/
+
+
+$('.dropdown-menu li').click(function () {
+var input = '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s></s>trong>' + $(this).parents('.dropdown').find('input').val() + '</strong>',
+    msg = '<span class="msg">Hidden input value: ';
+$('.msg').html(msg + input + '</span>');
+});
+
+
+$('.select1').each(function () {
+    if ($(this).find('span').length == 0){
+        $(this).append('<span>Select Group</span>')
+    }
+})
+
+$('.btnpens #edit_footer').click(function(){
+    var edit_text = $(this).closest('.footer_parent_overview').find('.footer_text').text();
+    $('#footer-text').val(edit_text);
+})
+
+$('.closepoup').click(function(){
+    modalShow(false);
+ })
+</script>
+
+{% endblock content %}

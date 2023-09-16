@@ -1,0 +1,244 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/profile.css' %}">
+<script src="{% static 'js/theme/profile.js' %}" ></script>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+   {% if client.count == 0 %}
+        <div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+    {% else %}
+        <div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+    {% endif %}
+
+{% endblock createbutton %}
+
+
+{% block content %}
+<div class="coach_admin_profile_wrp clearfix w-100 mt-0">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-5 coach_admin_profile_left">
+                <div class="coach_admin_profile_details">
+                    <form method="post" id="coach_profile_form" class="profileupdatefrom" enctype="multipart/form-data">
+                        <div class="coach_admin_img">                            
+                            {% if request.user.has_profile_image %}
+                            <a class="remove_coach_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            <div class="uploaded_profile_img">                                
+                                    <img src= "{{ request.user.user_avatar.avatar.url }}" alt=""> 
+                            </div>
+                            {% else %}
+                            <a class="editprofileimg"><img src="{% static 'images/theme/pen.svg'%}"></a>
+                            <div class="uploaded_profile_img">                                
+                                <img src="{% static 'images/theme/default.png'%}" alt=""> 
+                            </div>
+                            {% endif %}
+                            <input type="file" accept="image/*" name="profilepict" id="profilepict" value="" >
+                        </div>  
+                        <!-- <p class="upload-note" >Image size should be less than 1 MB.</p>                       -->
+                        <h3>{{ request.user.coach_full_name }}</h3>
+
+                        <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>First Name</span>
+                                <p><input type="text" name="fname" id="profilefname" value="{{ request.user.coaches.first_name }}"><span class="error" id="profilefnmerr"></span></p>
+                            </a> 
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div>
+                         <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Last Name</span>
+                                <p><input type="text" name="lname" id="profilelname" value="{{ request.user.coaches.last_name }}"><span class="error" id="profilelnmerr"></span></p>
+                            </a> 
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div> 
+                        <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Username</span>
+                                <p><input type="text" name="username" id="profileuser" value="{{ request.user.username  }}"><span class="error" id="profileusererr"></span></p>
+                            </a> 
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div>
+
+                        <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Email</span>
+                                <p><input type="email" name="email" id="profileeamil" value={{ request.user.email }}><span class="error" id="profileemailerr"></span></p>
+                            </a>
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div>
+                        <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Title</span>
+                                <p><input type="text" name="title" id="profiletitle" value="{{ request.user.user_title  }}"><span class="error" id="profiletiterr"></span></p>
+                            </a> 
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div>
+                        <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Organization </span>
+                                <p><input type="text" name="companyname" id="companyname" value="{{ request.user.user_company }}"><span class="error" id="compnameerr"></span></p>
+                            </a> 
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div>
+                        <!-- <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Participant Invite link</span>
+                                <p><input type="text" name="referlink" id="referlink" value={{ referlink  }} readonly></p>
+                            </a>
+                            <a id="copylinkbtn" data-clipboard-text={{ referlink  }} onclick="Hello()" class="profediticon"><img src="{% static 'images/theme/copyicon.png'%}"></a>
+                        </div>                 -->
+                        <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Organization URL</span>
+                                <p><input type="text" name="companyurl" id="companyurl" value="{{ request.user.user_company_url  }}"><span class="error" id="compnayurlerr"></span></p>
+                            </a>
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div>
+                        <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Change Password</span>
+                                <p><input type="password" name="password" id="profilepass" value="1234444"><span class="error" id="changepasserr"></span></p>
+                            </a>
+                            <a class="profediticon pass-input"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div>
+                        <!-- <div class="coach_admin_det_wrp">
+                            <a class="profeditinfo">
+                                <span>Archived Clients</span>
+                                <p><input type="text" name="" id="archivedclient" placeholder="archived client"><span class="error" id="archiveclient"></span></p>
+                            </a>
+                            <a class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                        </div> -->
+                        <!-- <div class="togglebtn_wrp">                         
+                            <span>Turn email notification on/off</span>
+                            <label class="switch">
+                                <input type="checkbox" name="togglecheck" value={% if  request.user.user_email_notify %} on {% else %} off {% endif %} {% if  request.user.user_email_notify %} checked  {% endif %}>
+                                
+                                <span class="slider round"></span>
+                            </label>
+                            <input type="hidden" value="" name="emailnotify" id="emailnotify"/>
+                        </div> -->
+                        <input type="hidden" id="profileurl" value="{% url 'profile-update-image' request.user.id %}">
+                        <input type="hidden" id="profiledataurl" value={% url 'user-profile-data' request.user.id %}>
+                        <div class="coach_admin_sub sub_field">
+                            <button type="button" id="updatecoachprofsub" class="updateprofsubbtn btn btn-default">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-7 coach_admin_profile_right">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm -6 col-12 single_box">
+                        <a href="{% url 'my-account' %}" class="client_detail_box lightgreencolwrp">
+                            <h4>My Account</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/credit-card-green.svg'%}" ></div>
+                        </a>
+                    </div>
+                    <!-- <div class="col-md-6 single_box">
+                        <a href="{% url 'feedback-report' %}" class="client_detail_box lightgreencolwrp">
+                            <h4>Generate Feedback Report</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/credit-card-green.svg'%}" ></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'all-surveys-list' %}" class="client_detail_box lightpinkcolwrp">
+                            <h4>All Surveys</h4>
+                            <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconlightpink.svg'%}"></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'completed-surveys-list' %}" class="client_detail_box lightbluecolwrp">
+                            <h4>Completed Surveys</h4>
+                            <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconlightblue.svg'%}" ></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'active-surveys-list' %}" class="client_detail_box redcolwrp">
+                            <h4>Active Surveys</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg'%}"></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'unsent-surveys-list' %}" class="client_detail_box orangecolwrp">
+                            <h4>Unsent Surveys</h4>
+                            <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconorg.svg'%}" ></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'clientlist' %}" class="client_detail_box greencolwrp">
+                            <h4>All Clients</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/allclienticon.svg'%}"></div>
+                        </a>
+                    </div> -->
+                    <div class="col-lg-6 col-md-6 col-sm -6 col-12 single_box">
+                        <a href="{% url 'archived-client' %}" class="client_detail_box greencolwrp">
+                            <h4>Archived Clients</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/allclienticon.svg'%}"></div>
+                        </a>
+                    </div>
+                    <!-- <div class="col-md-6 single_box">
+                        <a href="{% url 'change-password' %}" class="client_detail_box greencolwrp">
+                            <h4>Change Password</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/allclienticon.svg'%}"></div>
+                        </a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="profile_update_popup cmn_sitepopup">
+    <div class="profile_update_inn_popup cmn_site_inn_popup">
+        <a class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Congratulations!</h2>
+            <p>You have successfully updated your profile</p>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+
+<div class="password_popup cmn_sitepopup">
+    <div class="password_popup_inn_popup cmn_site_inn_popup">
+        <a class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <div class="login-form">
+                <h3>Change Password</h3>
+                <form method="post" action="{% url 'change-password' %}">
+                    {% csrf_token %}
+                    <div class="cmn_field inputicon keyicon">
+                        <input type="password" name="old_password" placeholder="Current Password" required="true">							
+                    </div>
+                    <div class="cmn_field inputicon keyicon">
+                        <input type="password" name="new_password" placeholder="New Password" required="true" >							
+                    </div>
+                    <div class="cmn_field inputicon keyicon">
+                        <input  type="password" name="confirm_new_password" placeholder="Confirm New password" required="true" >							
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="sitebtn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<script>
+  function Hello() {
+  var copyText = document.getElementById('referlink')
+  copyText.select();
+  document.execCommand('copy')
+  alert('Copied Text')
+}
+</script>
+{% endblock content %}

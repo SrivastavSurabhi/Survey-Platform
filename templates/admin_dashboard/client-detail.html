@@ -1,0 +1,433 @@
+{% extends "core/theme/base_theme.html" %} 
+{% load static i18n %} 
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+{% endblock extrastyle %}
+<title></title>
+{% block content %}
+<div class="personal-dtl">
+   <div class="row">
+      <div class="col-lg-2 padd-10 profile-box">
+         <div class="client-profile-wrap outer_cstm_box profile_info">
+            <div class="uploaded_client_img">
+               <img src="{{client.profile_img.url}}">
+            </div>
+            <ul class="info-list pl-0">
+               <li>
+                  <h5>{{client.first_name}} {{client.last_name}}</h5>
+               </li>
+               <li>
+                  <p class="email_text">{{client.email}}</p>
+               </li>
+               <li>
+                  <span>{% if client.phone %}{{client.phone}}{% endif %}</span>
+               </li>
+            </ul>
+         </div>
+      </div>
+      <div class="col-lg-5 padd-10 personal-box">
+         <div class="outer_cstm_box">
+            <div class="row">
+               <div class="col-lg-12 ">
+                  <h4 class="text-secondary font-weight-bold mb-4 text-center text-md-left">Personal Detail</h4>
+               </div>
+               <div class="col-lg-6 ">
+                  <div class="client_admin_det_wrp">
+                     <span>Title</span>
+                     <p>{{client.title}}</p>
+                  </div>
+               </div>
+               <div class="col-lg-6 ">
+                  <div class="client_admin_det_wrp">
+                     <span>Coach</span>
+                     <p>{{client.coach.user}}</p>
+                  </div>
+               </div>
+               <div class="col-lg-12 ">
+                  <div class="client_admin_det_wrp">
+                     <span>Address</span>
+                     <p>{{client.address}}</p>
+                  </div>
+               </div>
+               <div class="col-lg-6 ">
+                  <div class="client_admin_det_wrp">
+                     <span>City</span>
+                     <p>{{client.city}}</p>
+                  </div>
+               </div>
+               <div class="col-lg-6 ">
+                  <div class="client_admin_det_wrp">
+                     <span>State</span>
+                     <p>{{client.state}}</p>
+                  </div>
+               </div>
+               <div class="col-lg-6 ">
+                  <div class="client_admin_det_wrp">
+                     <span>Country</span>
+                     <p>{{client.country}}</p>
+                  </div>
+               </div>
+               <div class="col-lg-6 ">
+                  <div class="client_admin_det_wrp">
+                     <span>Zip</span>
+                     <p>{{client.zip}}</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-lg-5 padd-10 organisation-box">
+         <div class="outer_cstm_box">
+            <div class="row">
+               <div class="col-lg-12">
+                  <h4 class="text-secondary font-weight-bold mb-4 text-center text-md-left">Organization Detail</h4>
+               </div>
+               <div class="col-lg-12">
+                  <div class="client_admin_det_wrp">
+                     <span>Organization Name</span>
+                     <p>{{client.company_name}}</p>
+                  </div>
+               </div>
+               <div class="col-lg-12">
+                  <div class="client_admin_det_wrp">
+                     <span>Organization URL</span>
+                     <p>{{client.company_url}}</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="d-block client_table mb-2 mb-lg-4">
+      <div class="row align-items-center">
+         <div class="col-12 col-sm-12 col-md-12">
+            <div class="d-md-flex align-items-center justify-content-between">
+               <div class="table-title recent-survey-wrap" >
+                  <h4 class="text-secondary font-weight-bold mt-3 mb-3 text-center text-md-left">
+                     Recent Surveys
+                  </h4>
+                  <div class="right survey_right_wrp alignright  ">
+                  
+                     <div class="sort-view">
+                        <a href="{% url 'clientsurveys' client.id %}" class="main-btn viewall-btn">view all</a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-12 col-md-12">
+            <div class="cust-responsive global_table all-doc coach-dt">
+              
+               <table class="table table_design " id="mytable">
+                  <thead>
+                     <tr>
+                        <th>Sr.No.</th>
+                        <th>Coach Name</th>
+                        <th>Title</th>
+                        <th>Total Sent</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Download Report</th>
+                        <th>Action</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for sur in survey %}
+                     <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{client.coach.user}}</td>
+                        <td>{{sur.title}}</td>
+                        <td>{{sur.total_sent}}</td>
+                        <td>{{sur.start_datetime}}</td>
+                        <td>{{sur.end_datetime}}</td>
+                        <td>{% if sur.has_related_feedbackreport %}<a href="{% url 'download-user-pdf' sur.id  'Client' %}" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a>{% else %}-{% endif %}</td>
+                        <td><a href="{% url 'show-survey' sur.id %}" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     {% endfor %}
+                     <!-- <tr>
+                        <td>1</td>
+                        <td>Jim</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>2</td>
+                        <td>Riri</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>3</td>
+                        <td>Mark</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td>Draft</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>4</td>
+                        <td>Perry</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>5</td>
+                        <td>Rose</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td>Draft</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>6</td>
+                        <td>Smith</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>7</td>
+                        <td>Jameson</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>8</td>
+                        <td>Dominic</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>9</td>
+                        <td>Bela</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td>Draft</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>10</td>
+                        <td>Anee</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>  -->
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div> 
+   </div> 
+  
+</div>
+
+<div class="modal fade" id="edit-part" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h3 class="text-dark font-weight-bold">Edit Participant</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="addmodal">
+               <!--form-->
+               <div class="add_partici_wrp">
+                  <div class="client_intake_form mt-3">
+                     <form name="editparticipantfrm" class="commnewfrmdesign" id="editparticipantfrm"
+                        method="post">
+                        {% csrf_token %}
+                        <div class="add_participant_data overflow-auto col-sm-12 h-auto ">
+                           <div class="d-block client-info mb-0 mb-lg-0" id="block-1">
+                              <div class="row mt-2 mt-lg-4">
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="text" name="fname"
+                                             class="form-control cutome-input" id="efname"
+                                             placeholder="First Name">
+                                          <span class="error" id="fnameerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="text" name="lname"
+                                             class="form-control cutome-input" id="elname"
+                                             placeholder="Last Name">
+                                          <span class="error" id="lnameerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="email" name="email"
+                                             class="form-control cutome-input" id="eemail"
+                                             placeholder="Email">
+                                          <span class="error" id="eemailerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <select name="relationship" class="form-control cutome-input"
+                                             id="erelationship">
+                                             <option value="demo">Select Relationship</option>
+                                             {% for r in relation %}
+                                             <option value={{ r.id }}>{{ r.relation }}</option>
+                                             {% endfor %}
+                                          </select>
+                                          <span class="error" id="relationshiperr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-md-12 alignright savecanquestbtnwrp">
+                              </div>
+                           </div>
+                        </div>
+                        <input type="hidden" id="id" value="#id" name="id">
+                        <div class="sub_field mt-0 mb-3">
+                           <a class="savequestbtn sitebtn m-0" id="edit" data-toggle="modal">Save</a>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+               <!--form-end-->
+            </div>
+            <div class="modal-footer pt-1 pb-1">
+               <div class="sub_field">
+                  <a class="savequestbtn sitebtn" data-dismiss="modal"> Cancel</a></a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>  
+</div>
+
+<div class="delete_cnfm_popup cmn_sitepopup" id="del_particip">
+   <div class="delete_cnfm_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll">
+         <h2>Are you sure you want to delete Participant?</h2>
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="delete_participant">Yes</button>
+            <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+
+<input type="hidden" id="curr_survey_id">
+<script>
+
+   $(document).ready( function () {     
+      
+  
+   $('#mytable').DataTable({searching: false,paging: false,info: false,"processing": true,
+   oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},})
+
+       $('#myTable-1').DataTable({
+       
+            responsive: true,    
+            searching: false,
+            serverSide: true,
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+            ajax: window.location.origin + "/super_admin/clientsurveylist/" + {{client.id}} ,
+            columns: [    
+               { "data": "id", render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }}, 
+               { "data": "creator", },
+               { "data": "title"},
+               { "data": "total_sent" },
+               { "data": "start_datetime", "render": function (data) {
+                  if (data){
+                        var date = new Date(data);
+                        var month = date.toLocaleString('default', { month: 'short' });
+                        return (month.toString().length > 1 ? month : "0" + month) + " " + date.getDate() + "," + date.getFullYear();
+                     }
+                     else{ return "-"}
+                  }},
+               { "data": "end_datetime", "render": function (data) {
+                     if (data){
+                        var date = new Date(data);
+                        var month = date.toLocaleString('default', { month: 'short' });
+                        return (month.toString().length > 1 ? month : "0" + month) + " " + date.getDate() + "," + date.getFullYear();
+                     }
+                     else{ return "-"}
+                     } },
+               { "data": "has_related_feedbackreport",
+                  "render": function(data, type, row, meta) {   
+                  if (data){   
+                  link = document.location.origin+'/survey/download/'+data+'/Client'  
+                  return '<a href="'+link+'" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a>';}
+                  else{
+                     return '-'
+                  }
+               },         
+               },
+               { "data": "id", "render": function(data) {   
+                  link = document.location.origin+'/survey/show_survey/'+data                      
+                  return '<a href="'+link+'" class="d-inline-block view vd-btn">View Detail</a>';}},         
+                     ],
+               } );   
+      
+   } );
+          
+</script>
+{% endblock content %}

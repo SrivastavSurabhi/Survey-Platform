@@ -1,0 +1,130 @@
+/* Common Table List */
+table.cmn_table_wrp {
+    font-size: 14px;
+    color: #3B3B3B;
+    line-height: 20px;
+    text-align: left;
+    width: 100%;
+    display: block;
+    margin: 20px auto;
+}
+.cmn_table_wrp thead, .cmn_table_wrp tbody {
+    display: block;
+}
+table.cmn_table_wrp tr td, table.cmn_table_wrp tr th {
+    padding: 10px;
+    font-weight: 600;
+    display: inline-block;
+    vertical-align: middle;
+}
+table.cmn_table_wrp tr {
+    border: 1px solid #D5D5D5;
+    border-radius: 8px;
+    display: block;
+    margin: 10px 0;
+}
+.dashb_survey_list_wrp h3.common-head {
+    text-align: left;
+}
+.cmn_table_wrp tbody tr:hover {
+    box-shadow: 0px 10px 20px #67c5bd59;
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    color: #fff;
+}
+table.cmn_table_wrp .fourth-col svg .a,.active_survey_list table.cmn_table_wrp .five-col svg .a {
+    fill: #3b3b3b;
+}
+.cmn_table_wrp tbody tr:hover svg .a,.active_survey_list .cmn_table_wrp tbody tr:hover svg .a {
+    fill: #fff;
+}
+table.cmn_table_wrp .fourth-col svg,.active_survey_list table.cmn_table_wrp .five-col svg {
+    width: 5px;
+}
+table.cmn_table_wrp .fourth-col {
+    width: 7%;
+    /* padding-right: 35px; */
+}
+table.cmn_table_wrp .third-col {
+    width: 14%;
+}
+table.cmn_table_wrp .second-col {
+    width: 25%;
+}
+table.cmn_table_wrp .first-col {
+    width: 52%;
+    /* padding-left: 40px; */
+}
+.survey_paginat {
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    display: inline-block;
+    width: 90px;
+    border-radius: 30px;
+    padding: 4px 10px;
+    box-shadow: 0px 10px 20px #67c5bd59;
+}
+.survey_paginat a svg {
+    width: 9px;
+}
+.survey_paginat_wrp {
+    margin-top: 50px;
+}
+.survey_paginat a {
+    display: inline-block;
+    vertical-align: middle;
+    width: 47%;
+}
+a.prevpagination.disable svg .a {
+    fill: #efeeee;
+}
+.survey_list_page_wrp {
+    margin-top: 10px;
+}
+/* End */
+/* Common Survey Sort CSS */
+.survey_right_wrp {
+    width: 14%;
+    position: relative;
+    box-shadow: 0px 8px 8px #dfdfdf59;
+    padding: 10px 15px;
+}
+.survey_left_head {
+    width: 80%;
+}
+.survey_right_wrp a.sortbydropdowm {
+    color: #3B3B3B;
+    display: block;
+    background-image: url(../Images/down-arrow.svg);
+    background-repeat: no-repeat;
+    background-size: 10px 10px;
+    background-position: right center;
+}
+.survey_right_wrp ul {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0px 8px 8px #dfdfdf59;
+    padding: 5px 18px;
+    z-index: 2;
+    top: 100%;
+}
+.survey_right_wrp ul li {
+    margin-bottom: 10px;
+}
+.survey_right_wrp a, .survey_right_wrp ul li {
+    font-size: 14px;
+    line-height: 20px;
+}
+table.cmn_table_wrp tr th {
+    font-weight: bold;
+}
+@media all and (max-width:768px){
+    .cmn_table_wrp {
+        width: 768px !important;
+    }
+    /*.cmn_table_wrp tr td, .cmn_table_wrp tr th {
+        padding: 14px !important;
+        width: auto !important;
+    }*/
+}
+/* End */

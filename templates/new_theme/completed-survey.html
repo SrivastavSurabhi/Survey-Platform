@@ -1,0 +1,62 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-sm-12 plans_pricing mt-3">
+                <div class="row">
+
+                    <div class="col-lg-12 single_block mb-4">
+                        <div class="shadow_box">
+                            <div class="page_title with_go_back">
+                                <a onclick="history.back()"><img src="{% static 'new_theme/images/go-back.svg' %}" alt="go-back /"></a>
+                                <h4>Completed Survey</h4>
+                            </div>
+                           
+
+                            <div class="table_design">
+                                <div class="sort_by">
+                                    <select id="sort_by">
+                                        <option disabled selected>Sort by</option>
+                                        <option value="1">New Entries</option>
+                                        <option value="2">Old Entries</option>
+                                    </select>
+                                </div>
+                                <table class="tableLayout responsive nowrap" id="completedSurveyDatatable">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr. No</th>
+                                            <th>Survey Name</th>
+                                            <th>Survey Coach</th>
+                                            <th>Survey Client</th>
+                                            <th>Survey Created Date</th>
+                                            <th>Participants</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock content %}    
+
+{% block extrajs %}
+<script>
+    user_type = {{request.user.user_type}}
+</script>
+<script src="{% static 'new_theme/appScript/completed-survey.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs%}

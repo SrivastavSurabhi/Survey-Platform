@@ -1,0 +1,207 @@
+{% extends "core/theme/base_theme.html" %} 
+{% load static i18n %} 
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+{% endblock extrastyle %}
+<title></title>
+{% block content %}
+<div class="personal-dtl">
+   <div class="d-block client_table mb-2 mb-lg-4">
+      <div class="row align-items-center">
+         <div class="col-12 col-sm-12 col-md-12">
+            <div class="d-md-flex align-items-center justify-content-between">
+               <div class="table-title">
+                  <h4 class="text-secondary font-weight-bold mt-4 mb-4 text-center text-md-left">
+                     All Surveys for {{client.first_name}} {{client.last_name}}
+                  </h4>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row mt-2 mt-lg-3">
+         <div class="col-12 col-md-12">
+            <div class="cust-responsive global_table all-doc coach-dt">
+               <div class="right survey_right_wrp alignright  global_table coach-dt">
+                  
+<!--                  <div class="sort-view">-->
+<!--                     <a href="javascript:;" class="main-btn viewall-btn">view all</a>-->
+<!--                  </div>-->
+               </div>
+               <table class="table table_design " id="myTable-1">
+                  <thead>
+                     <tr>
+                        <th>Sr.No.</th>
+                        <th>Coach Name</th>
+                        <th>Title</th>
+                        <th>Total Sent</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Download Report</th>
+                        <th>Action</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <!-- <tr>
+                        <td>1</td>
+                        <td>Jim</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>2</td>
+                        <td>Riri</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>3</td>
+                        <td>Mark</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td>Draft</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>4</td>
+                        <td>Perry</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>5</td>
+                        <td>Rose</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td>Draft</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>6</td>
+                        <td>Smith</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>7</td>
+                        <td>Jameson</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>8</td>
+                        <td>Dominic</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>9</td>
+                        <td>Bela</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td>Draft</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>
+                     <tr>
+                        <td>10</td>
+                        <td>Anee</td>
+                        <td>Winnter camp Survey</td>
+                        <td>5</td>
+                        <td>22-08-2022</td>
+                        <td>02-09-2022</td>
+                        <td><a href="avascript:void(0);" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a></td>
+                        <td><a href="avascript:void(0);" class="d-inline-block view vd-btn">View Detail</a></td>
+                     </tr>  -->
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div> 
+   </div> 
+  
+</div>
+
+
+<input type="hidden" id="curr_survey_id">
+<script>
+   $(document).ready( function () {     
+
+       $('#myTable-1').DataTable({
+            responsive: true,    
+            searching: false,
+            serverSide: true,
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+            ajax: window.location.origin + "/super_admin/clientsurveylist/" + {{client.id}} ,
+            columns: [    
+               { "data": "id", render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }}, 
+               { "data": "creator", },
+               { "data": "title"},
+               { "data": "total_sent" },
+               { "data": "start_datetime", "render": function (data) {
+                  if (data){
+                        var date = new Date(data);
+                        var month = date.toLocaleString('default', { month: 'short' });
+                        return (month.toString().length > 1 ? month : "0" + month) + " " + date.getDate() + "," + date.getFullYear();
+                     }
+                     else{ return "-"}
+                  }},
+               { "data": "end_datetime", "render": function (data) {
+                     if (data){
+                        var date = new Date(data);
+                        var month = date.toLocaleString('default', { month: 'short' });
+                        return (month.toString().length > 1 ? month : "0" + month) + " " + date.getDate() + "," + date.getFullYear();
+                     }
+                     else{ return "-"}
+                     } },
+               { "data": "has_related_feedbackreport",
+                  "render": function(data, type, row, meta) {   
+                  if (data){                      
+                  link = document.location.origin+'/survey/download/'+row['id']+'/Client'  
+                  return '<a href="'+link+'" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a>';}
+                  else{
+                     return '-'
+                  }
+               },         
+               },
+               { "data": "id", "render": function(data) {   
+                  link = document.location.origin+'/survey/show_survey/'+data                      
+                  return '<a href="'+link+'" class="d-inline-block view vd-btn">View Detail</a>';}},         
+                     ],
+               } );   
+      
+   } );
+          
+</script>
+{% endblock content %}

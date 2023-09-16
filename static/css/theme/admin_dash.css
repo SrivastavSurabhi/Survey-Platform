@@ -1,0 +1,35 @@
+.admin_dash_prog_wrp > div {
+    display: inline-block;
+    vertical-align: middle;
+    width: 48%;
+}
+.admin_dash_prog_wrp .prog_count_right .progress-bar {
+	float: right;
+}
+.admin_dash_prog_wrp {
+    margin-top: 20px;
+}
+.admin_dash_info_wrp .all_surveybox h4 {
+    margin-bottom: 15px;
+}
+.admin_dash_info_wrp .client_detail_box h4 {
+	font-weight: 500;
+}
+.admin_dash_info_wrp .clientimages {
+    margin-top: 35px;
+}
+.admin_dash_info_wrp .client_detail_box {
+    min-height: 182px;
+}
+.survey_compl_mark_popup a.sitebtn, .survey_compl_mark_popup .sub_field button {
+    width: auto;
+    padding: 7px 30px !important;
+    font-size: 15px !important;
+    line-height: 20px !important;
+    margin: 0 10px !important;
+}
+.survey_compl_mark_popup a.sitebtn,.survey_compl_mark_popup .sub_field {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}

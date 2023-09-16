@@ -1,0 +1,81 @@
+.custom-file-upload figure, .custom-file-upload span {
+    display: inline-block;
+    vertical-align: middle;
+}
+.custom-file-upload span.uploadspan {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 400;
+    margin-left: 15px;
+}
+.custom-file-upload figure {
+    padding: 10px;
+    width: 50px;
+    background-color: #38A59C;
+    border-radius: 7px;
+    margin: 0px;
+}
+.custom-file-upload {
+    background: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    display: inline-block;
+    border-radius: 7px;
+    color: #fff;
+    font-size: 0;
+    min-width: 170px;
+    margin: 0px;
+}
+.fileupload_wrp .sub_field button {
+    width: 165px;
+    margin-top: 0;
+    font-size: 15px;
+    line-height: 16px;
+}
+.fileupload_wrp form {
+    margin:0 0 30px;
+}
+.uploaded_file_table svg {
+    width: 40px;
+    height: 40px;
+}
+.uploaded_file_table i.fa.fa-file {
+    font-size: 25px;
+    color: #000;
+}
+.uploaded_file_table tbody tr:hover i.fa.fa-file {
+    color: #fff;
+}
+
+
+.uploaded_file_table td .sub_field button,.uploaded_file_table .fourth-col a.sitebtn {
+    width: auto;
+    padding: 8px 20px;
+    margin: 0;
+}
+.uploaded_file_table tbody tr:hover .sub_field button,.uploaded_file_table td .sub_field button:hover,.uploaded_file_table tr:hover a.sitebtn {
+    background-color: #fff;
+    color: #45A29E;
+}
+.fileupload_wrp .uploaded_file_table form {
+    margin: 0px;
+}
+.delete_file_popup a.sitebtn, .delete_file_popup .sub_field {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+.delete_file_popup a.sitebtn, .delete_file_popup .sub_field button {
+    width: auto !important;
+    padding: 7px 30px !important;
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0 10px !important;
+}
+.delete_file_popup h2 {
+    font-size: 25px;
+    line-height: 30px;
+}
+h4#fileuploadnametit {
+    margin: 10px 10px 0px;
+    font-size: 14px;
+    line-height: 20px;
+}

@@ -1,0 +1,37 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}" ></script>
+<script src="{% static 'js/theme/survey_list.js' %}" ></script>
+<script src="{% static 'js/theme/progress-custom.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+
+
+
+
+
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<div class="survey_list_page_wrp active_survey_list">
+    <div class="clearfix">
+        <div class="left survey_left_head">
+            <h3 class="common-head">Coming Soon..</h3>
+        </div>
+       
+    </div> 
+    
+{% endblock content %}

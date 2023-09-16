@@ -1,0 +1,190 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="{% static 'js/theme/coach_dashboard.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/coach_dashboard.css' %}">
+
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}" ></script>
+<script src="{% static 'js/theme/progress-custom.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/admin_dash.css' %}">
+
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+{% if not user.is_admin  %} 
+<div class="client_detail_wrp client_dash_survey_wrp">
+    <h3>Active Clients</h3>
+    
+    <div class="all_client_details">
+       
+        <a href="{% url 'unsent-surveys' %}" class="client_detail_box orangecolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg'%}"></div>
+            <h4>Unsent Surveys</h4>
+            <span class="count">10</span>
+        </a>
+
+        <a href="{% url 'active-surveys' %}" class="client_detail_box redcolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconorg.svg'%}"></div>
+            <h4>Active Surveys</h4>
+            <span class="count">10</span>
+        </a>
+
+        <a href="{% url 'completed-surveys' %}" class="client_detail_box greencolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyicongreen.svg'%}"></div>
+            <h4>Completed Surveys</h4>
+            <span class="count">10</span>
+        </a>
+
+       
+        <a href="{% url 'all-surveys' %}" class="client_detail_box bluecolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconblue.svg'%}"></div>
+            <h4>All Surveys</h4>
+            <span class="count">10</span>
+        </a>
+
+        <div class="client_detail_box">
+            <a href="" > <h4>All Clients</h4> </a>
+            <span class="count">50 +</span>
+            <div class="clientimages">
+                <ul>
+            
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li class="total_count"><a href="javascript:;">+44</a></li>
+                </ul>
+            </div>
+        </div>
+      
+    </div>
+</div>
+{% endif %}
+{% if user.is_admin is True%} 
+<div class="admin_dash_info_wrp">
+    <h3 class="common-head">Dashboard</h3>
+    <div class="all_client_details">
+        <a href="{% url 'active-surveys' %}" class="client_detail_box redcolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg'%}"></div>
+            <h4>Active Surveys </h4>
+            <div class="admin_dash_prog_wrp">
+                <div class="prog_count_left alignleft">
+                    <span class="count">10/100</span>
+                </div>
+                <div class="prog_count_right alignright">
+                    <div class="progress-bar" data-percent="10" data-duration="1000" data-color="#fff,#EB5A4F"></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="{% url 'unsent-surveys' %}" class="client_detail_box orangecolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconorg.svg'%}"></div>
+            <h4>Unsent Surveys</h4>
+            <div class="admin_dash_prog_wrp">
+                <div class="prog_count_left alignleft">
+                    <span class="count">20/100</span>
+                </div>
+                <div class="prog_count_right alignright">
+                    <div class="progress-bar" data-percent="20" data-duration="1000" data-color="#fff,#FDCB06"></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="{% url 'completed-surveys' %}" class="client_detail_box lightbluecolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyicongreen.svg'%}"></div>
+            <h4>Completed Surveys</h4>
+            <div class="admin_dash_prog_wrp">
+                <div class="prog_count_left alignleft">
+                    <span class="count">70/100</span>
+                </div>
+                <div class="prog_count_right alignright">
+                    <div class="progress-bar" data-percent="70" data-duration="1000" data-color="#fff,#7DBEBB"></div>
+                </div>
+            </div>
+        </a>
+        
+       
+        <a href="{% url 'all-surveys' %}" class="client_detail_box all_surveybox">
+            <h4>All<br/> Surveys</h4>
+            <span class="count">100+</span>
+        
+        </a>
+      
+        <a href="" class="client_detail_box">
+            <h4>My Clients</h4>
+            <span class="count">50 +</span>
+            <div class="clientimages">
+                <ul>
+                  
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li class="total_count"><span>+4444</span></li>
+                </ul>
+            </div>
+        </a>
+        <a href="{% url 'participant-response' %}" class="client_detail_box">
+            <h4>Subscribers</h4>
+            <span class="count">500 +</span>
+            <div class="clientimages">
+                <ul>
+                    
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li><img src="{% static 'images/theme/clientimg1.png'%}"></li>
+                    <li class="total_count"><span>+4444</span></li>
+                </ul>
+            </div>
+        </a>
+    </div>
+</div>
+{% endif %}
+<div class="dashb_survey_list_wrp survey_list_page_wrp" style="display: block;">
+    <h3 class="common-head">Completed Surveys</h3>
+    <table class="cmn_table_wrp dashb_survey_table_wrp">
+        <thead>
+            <tr>
+                <th class="first-col">No.</th>
+                <th class="second-col">Survey Title</th>
+                <th class="third-col">Survey Period</th>
+                <th class="fourth-col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sur in survey %}
+            <tr>
+                <td class="first-col">{{ sur.id }}</td>
+                <td class="second-col">{{ sur.title }}</td>
+                <td class="third-col">{% if sur.start_datetime %}{{ sur.start_datetime|date:"m/d/Y"  }} - {{ sur.end_datetime|date:"m/d/Y"  }} {% endif %}</td>
+                <td class="fourth-col"><a href="javascript:;"><svg xmlns="http://www.w3.org/2000/svg" width="6.8" height="27.2" viewBox="0 0 6.8 27.2"><defs><style>.a{fill:#3b3b3b;}</style></defs><path class="a" d="M6.8,195.4A3.4,3.4,0,1,1,3.4,192,3.4,3.4,0,0,1,6.8,195.4Zm0,0" transform="translate(0 -181.8)"/><path class="a" d="M6.8,3.4A3.4,3.4,0,1,1,3.4,0,3.4,3.4,0,0,1,6.8,3.4Zm0,0"/><path class="a" d="M6.8,387.4A3.4,3.4,0,1,1,3.4,384,3.4,3.4,0,0,1,6.8,387.4Zm0,0" transform="translate(0 -363.6)"/></svg></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'completed-surveys-list' %}" class="sitebtn">Show More</a>
+</div>
+{% endblock content %}

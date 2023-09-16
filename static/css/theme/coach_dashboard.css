@@ -1,0 +1,25 @@
+table.dashb_survey_table_wrp .fourth-col {
+    width: 6%;
+    padding-right: 35px;
+}
+table.dashb_survey_table_wrp .third-col {
+    width: 27%;
+}
+table.dashb_survey_table_wrp .second-col {
+    width: 55%;
+    padding-left: 45px;
+}
+table.dashb_survey_table_wrp .first-col {
+    width: 10%;
+    padding-left: 35px;
+}
+table.dashb_survey_table_wrp .fourth-col a svg {
+    width: 5px;
+}
+.dashb_survey_list_wrp {
+    margin-top: 30px;
+    text-align: center;
+}
+.prog_count_center .progress-bar {
+    margin: 10px auto 0;
+}

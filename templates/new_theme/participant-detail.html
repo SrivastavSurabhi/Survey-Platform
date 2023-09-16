@@ -1,0 +1,114 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+
+
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-lg-12 single_block participant_detail_area mt-3 mb-4">
+                <div class="shadow_box">
+
+                    <div class="page_title with_go_back">
+                        <a onclick="history.back()"><img src="{% static 'new_theme/images/go-back.svg' %}" alt="go-back /"></a>
+                        <h4>Participant Detail</h4>
+                    </div>
+
+                    <!-- detail section -->
+                    <div class="row">
+                        <div class="col-lg-4 mt-4 center_block client_view_center">
+                            <div class="headline">{{participant.first_name}} {{participant.last_name}}</div>
+                            <div class="detail_list">
+                                <ul>
+                                    <li>
+                                        <span>Email</span>
+                                        <p>{{participant.email}}</p>
+                                    </li>
+                                    <li>
+                                        <span>Relationship</span>
+                                        <p>{{participant.relationship.relation}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mt-4 right_block">
+                            <div class="coach_area">
+                                <div class="data">
+                                    <div class="name">{{participant.client.coach.first_name}} {{participant.client.coach.last_name}}</div>
+                                    <div class="email">{{participant.client.coach.user.email}}</div>
+                                    <div class="title"><a href="/new_theme/coach-detail/{{participant.client.coach.id}}" style="color:white;">coach</a></div>
+                                </div>
+                                <div class="image">
+                                    {% if participant.client.coach.user.user_avatar %}
+                                        <img src="{{participant.client.coach.user.user_avatar.avatar.url}}">
+                                    {% else %}
+                                        <img src="{% static 'images/theme/default.png' %}">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mt-4 right_block">
+                            <div class="coach_area">
+                                <div class="data">
+                                    <div class="name">{{participant.client.first_name}} {{participant.client.last_name}}</div>
+                                    <div class="email">{{participant.client.email}}</div>
+                                    <div class="title"><a href="/new_theme/client-detail/{{participant.client.id}}" style="color:white;">Client</a></div>
+                                </div>
+                                <div class="image">
+                                    {% if participant.client.user.profile_img %}
+                                        <img src="{{participant.client.profile_img.url}}">
+                                    {% else %}
+                                        <img src="{% static 'images/theme/default.png' %}">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <!-- all listings -->
+                    <div class="below-title"><h4>All Surveys</h4></div>
+                    <div class="table_design">
+                        <div class="sort_by">
+                            <select id="sort_by">
+                                <option disabled selected>Sort by</option>
+                                <option value="1">New Entries</option>
+                                <option value="2">Old Entries</option>
+                            </select>
+                        </div>
+                        <table class="tableLayout responsive nowrap" id="participantSurveyDatatable">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Survey Name</th>
+                                    <th>Survey Sent Date</th>
+                                    {% comment %} <th>Participants</th> {% endcomment %}
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    
+{% endblock content %}
+ 
+{% block extrajs %}
+<script>
+    participant_id = {{participant.id}}
+    user_type =  {{request.user.user_type}}
+</script>
+<script src="{% static 'new_theme/appScript/participant-detail.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs%}

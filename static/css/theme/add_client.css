@@ -1,0 +1,113 @@
+/* option disable css  */
+select#relationship  option:disabled {  
+    background: #ced4da;
+}
+.reminder_email_preview_popup .cst-input-group .input-group-prepend .input-group-text {
+    color: #555;
+    font-size: 1rem;
+}
+
+form#sendmailform textarea {
+    margin: 0;
+}
+.one_block.grey-disable input {
+    pointer-events: none;
+    background: #eee;
+    border-color: #eee;
+}
+.add_client_wrp .open_menu.parent_wrp>a::before {
+    content: "\f0d8";
+}
+.add_client_wrp .client_dash_wrp.parent_wrp ul.child_menu a {
+    padding: 4px 0;
+}
+.add_client_details .all_client_details .client_detail_box:nth-child(3n+2) {
+    margin-left: 90px;
+    margin-right: 90px;
+}
+.client_profile_table {
+    text-align: center;
+}
+.addclient_prof_detail .addclientprf_cmn {
+    display: inline-block;
+    vertical-align: middle;
+}
+.addclient_prof_detail .addclientprf_cmn:nth-child(1) {
+    width: 9%;
+}
+.addclient_prof_detail .addclientprf_cmn:nth-child(2) {
+    width: 80%;
+    padding-left: 10px;
+}
+.addclientprf_cmn .addclientprf_img_wrp {
+    box-shadow: 3px 10px 10px #bbbbbb59;
+    width: 70px;
+    height: 70px;
+    position: relative;
+    border-radius: 50%;
+}
+.addclientprf_cmn figure img {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position:center;
+}
+.addclientprf_cmn p {
+    font-size: 14px;
+    line-height: 20px;
+    margin: 5px 0;
+    font-weight: 600;
+}
+.addclientprf_cmn h4 {
+    font-size: 17px;
+    line-height: 25px;
+    margin: 0;
+}
+.addclient_prof_detail {
+    margin: 15px 0 10px;
+}
+.all_client_details h3 {
+    margin: 20px 0 5px;
+}
+.addclientprf_img_wrp a {
+    position: absolute;
+    right: 0;
+    top: 0;
+    box-shadow: 0px 3px 15px #00000029;
+    border-radius: 50%;
+    padding: 5px;
+    width: 22px;
+    height: 22px;
+    line-height: 11px;
+    background-color: #fff;
+}
+.addclientprf_img_wrp figure {
+    width: 100%;
+    height: 100%;
+}
+.addclientprf_cmn input#addclientprofilepict {
+    display: none;
+}
+.addclientprf_cmn .addclientprf_img_wrp:hover {
+    box-shadow: 3px 10px 10px #67c5bd59;
+}
+.addclientprf_img_wrp::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(125,190,187,0.35);
+    border-radius: 50%;
+}
+.one_block {
+    display: flex;
+    align-items: flex-start;
+    display: -webkit-flex;
+    -webkit-align-items: flex-start;
+}
+.one_block label {
+    margin-left: 10px;
+}

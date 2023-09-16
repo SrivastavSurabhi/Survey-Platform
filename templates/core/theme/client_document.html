@@ -1,0 +1,117 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="{% static 'js/theme/file-upload.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/file-upload.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}">
+
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="fileupload_wrp">
+        <form method="post" name="fileuploadfrm" id="fileuploadfrm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row align-items-center">
+                <div class="col-md-12 file-input d-flex">
+                    <label for="fileupload" class="custom-file-upload">
+                        <figure><img  src="{% static 'images/theme/cloud-computing.svg' %}" alt=""></figure>
+                        <span class="uploadspan">Select File</span>
+                    </label>
+                    <input type="file" name="fileupload" id="fileupload" style="display: none;">
+                    <input type="hidden" name="fileuploadname" id="fileuploadname" value="">
+                    <div class="sub_field ml-3"><button type="submit" id="subuploadfilefrm" class="btn btn-default">Upload</button></div>
+                    <h4 id="fileuploadnametit"></h4>
+                </div>
+            </div>
+        </form>
+        <div class="row mt-2 mt-lg-4">
+            <div class="col-12 col-md-12">
+                <div class="cust-responsive global_table all-doc">
+        <table class="table table_design uploaded_file_table mt-0" id="myTable">
+            
+            <thead>
+                <tr>  
+                    <th >No.</th>
+                    <th >File Name</th>
+                    <th >File Path</th>
+                    <th>Delete File</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%  for cd in clientobj %}
+                <tr data-url="">
+                    <td >{{ forloop.counter }}</td>
+                    <td >{{ cd.filename }}</td>
+                    <td ><a href={{ cd.document.url  }}><i class="fa fa-file" aria-hidden="true"></i></a>
+                    </td>
+                    <td >
+                    <a href="javascript:;" class="sitebtn deletefilebtn">Delete</a>
+                    <div class="delete_file_popup cmn_sitepopup">
+                            <div class="cmn_site_inn_popup">
+                                <a href="javascript:;" class="closepoup"></a>
+                                <div class="cmn_sitepopup_scroll">
+                                    <h2>Are you sure you want to delete file?</h2>
+                                    <form name="deletefilefrm" id="deletefilefrm" method="post" action="{% url 'delete-doc' cd.id %}" >
+                                        {% csrf_token %}
+                                        <div class="sub_field">
+                                            <button type="submit" id="subdeletefilefrm" class="btn btn-default">Yes</button>
+                                        </div>
+                                        <a href="javascript:;" class="sitebtn canceldeletefile">No</a>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="whiteoverlay"></div>
+                        </div><!-- end of delete_file_popup -->
+
+                    </td>
+                </tr>
+                {%  endfor %}
+            </tbody>
+            {% if messages %}
+                    {% for message in messages %}
+                        <p class="failsmsg"> {{ message  }}</p>
+                    {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+    </div>
+    </div>
+
+        {% if clientobj|length > 10 %}
+        <!-- <div class="survey_paginat_wrp d-block text-center mt-3 mt-lg-4">
+            <div class="survey_pagination">
+                <a {% if clientobj.has_previous %} href="?page={{ clientobj.previous_page_number }}" {% else %} href="" {% endif %}  class="prevpagination  alignleft"><svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#e0e0e0;}</style></defs><path class="a" d="M82.826,11.233,93.455.619a2.048,2.048,0,0,1,2.935,0l1.239,1.223a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L89.705,12.7l7.923,7.923a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L96.39,24.8a2.086,2.086,0,0,1-2.935,0L82.826,14.184a2.087,2.087,0,0,1-.6-1.484A2,2,0,0,1,82.826,11.233Z" transform="translate(-82.222 0)"/></svg></a>
+                <a {% if clientobj.has_next %} href="?page={{ clientobj.next_page_number }}" {% else %} href="" {% endif %}  class="nextpagination alignright"><svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#fff;}</style></defs><g transform="translate(0 0)"><path class="a" d="M97.628,11.233,87,.619a2.048,2.048,0,0,0-2.935,0L82.826,1.842a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L90.749,12.7l-7.923,7.923a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L84.064,24.8A2.086,2.086,0,0,0,87,24.8L97.628,14.184a2.087,2.087,0,0,0,.6-1.484A2,2,0,0,0,97.628,11.233Z" transform="translate(-82.222 0)"/></g></svg></a>
+            </div>
+        </div> -->
+        {% endif %}
+    </div>
+</div>
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable({
+            responsive: true,           
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+        });
+    
+} );
+</script>
+{% endblock content %}
+

@@ -1,0 +1,248 @@
+
+.coach_admin_img {
+    width: 140px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 50%;
+}
+
+.coach_admin_img a{
+    position: absolute;
+    right: 0px;
+    top: 0;
+    box-shadow: 0px 3px 15px #00000029;
+    border-radius: 50%;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    line-height: 15px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: -webkit-flex;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
+    color: #56b8b0;
+}
+.coach_admin_img a:hover
+{
+    text-decoration:none;
+}
+.coach_admin_img a  img  
+{
+  height:16px;
+  width:16px;
+}
+.coach_admin_profile_left h3 {
+    font-size: 24px;
+    line-height: 30px;
+    margin: 16px 0;
+    text-transform: capitalize;
+    text-align: center;
+    font-weight: 700;
+}
+.coach_admin_profile_details .coach_admin_det_wrp {
+    text-align: left;
+    border-radius: 10px;
+    background-color: #C3C3C31C;
+    padding: 10px 15px;
+    margin: 0 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    display: -webkit-flex;
+    -webkit-align-items: center;
+    -webkit-justify-content: space-between;
+}
+.coach_admin_det_wrp span {
+    color: #3B3B3B;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+}
+.coach_admin_det_wrp p,
+.coach_admin_det_wrp input {
+    font-size: 13px;
+    color: #7C7C7C;
+    line-height: 18px;
+    margin: 2px 0 0;
+}
+.coach_admin_det_wrp input {
+    border: 0;
+    background-color: transparent;
+    width: 100%;
+    font-size: 16px;
+}
+.coach_admin_img input {
+    display: none;
+}
+.uploaded_profile_img img {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 3px 25px #a7a7a759;
+    object-fit: cover;
+    object-position:center;
+}
+
+
+.coach_admin_det_wrp p {
+    position: relative;
+}
+.coach_admin_det_wrp span.error {
+    font-size: 13px;
+    color: #f51212;
+    bottom: -26px;
+}
+.coach_admin_det_wrp a {
+    display: inline-block;
+    vertical-align: middle;
+    text-decoration: none;
+}
+.coach_admin_det_wrp a.profeditinfo {
+    width: 85%;
+}
+.coach_admin_det_wrp a.profediticon {
+    width: auto;
+    margin-left: 0;
+    max-width: 26px;
+}
+.coach_admin_sub.sub_field button {
+    font-size: 15px;
+    width: 180px;
+    padding: 8px;
+}
+.coach_admin_sub.sub_field {
+    margin-top: 20px;
+}
+.coach_admin_profile_wrp {
+    margin-top: 40px;
+}
+.profile_update_inn_popup h2 {
+    margin: 0 0 10px;
+}
+.profile_update_inn_popup p {
+    margin: 10px 0;
+    text-align: center;
+}
+.profile_update_inn_popup.cmn_site_inn_popup {
+    width: 400px;
+    padding: 30px 30px 25px;
+}
+
+.uploaded_profile_img {
+    width: 140px;
+    height: 140px;
+}
+
+/* The switch - the box around the slider */
+.togglebtn_wrp .switch {
+    position: relative;
+    display: inline-block;
+    width: 65px;
+    height: 28px;
+}
+
+/* Hide default HTML checkbox */
+.togglebtn_wrp .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.togglebtn_wrp .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.togglebtn_wrp .slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.togglebtn_wrp input:checked + .slider {
+  background-color: #45A29E;
+}
+
+.togglebtn_wrp input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+.togglebtn_wrp input:checked + .slider:before {
+    -webkit-transform: translateX(35px);
+    -ms-transform: translateX(35px);
+    transform: translateX(35px);
+}
+
+/* Rounded sliders */
+.togglebtn_wrp .slider.round {
+  border-radius: 34px;
+}
+
+.togglebtn_wrp .slider.round:before {
+  border-radius: 50%;
+}
+/* End Switch css */
+.togglebtn_wrp span {
+    padding-bottom: 10px;
+    display: block;
+}
+.coach_admin_profile_right .single_box a {
+    width: 100%;
+    border: 1px solid #e2e2e2;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    align-content: center;
+    -webkit-align-content: center;
+    text-decoration: none;
+    vertical-align: top;
+    box-shadow: 5px 20px 30px #dfdfdf59;
+    border-radius: 20px;
+    text-align: center;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    min-height: 140px;
+    color: #545454;
+}
+.coach_admin_profile_right .single_box a h4 {
+    width: 100%;
+    font-size:20px;
+    line-height:30px;
+    color: #3B3B3B;
+    margin: 0 0 8px;
+    font-weight: 600;
+    margin: 15px 0;
+}
+.coach_admin_profile_right .single_box a .imgwrp {
+    width: 50px;
+    margin: 0 auto 15px;
+}
+
+
+@media all and (max-width:991px){
+    .coach_admin_profile_left {
+        margin-bottom: 30px;
+    }
+}

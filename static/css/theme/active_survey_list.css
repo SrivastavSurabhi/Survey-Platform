@@ -1,0 +1,16 @@
+.active_survey_list td .sub_field button,.active_survey_list td a.sitebtn {
+    width: auto;
+    padding: 7px 30px;
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0 10px;
+}
+.active_survey_list  a.sitebtn, .active_survey_list .sub_field {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+.survey_compl_mark_popup a.sitebtn:hover, .survey_compl_mark_popup button:hover {
+    background-color: #45A29E !important;
+    color: #fff !important;
+}

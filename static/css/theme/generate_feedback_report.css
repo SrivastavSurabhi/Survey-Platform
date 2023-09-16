@@ -1,0 +1,39 @@
+.generate_feed_rep_wrp p {
+    font-size: 14px;
+    line-height: 20px;
+    margin: 10px 0;
+    color: #3B3B3B;
+}
+.generate_feed_rep_wrp form .cmn_field {
+    margin: 30px 0 10px;
+}
+.generate_feed_rep_wrp form .cmn_field label {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: block;
+}
+.generate_feed_rep_wrp form .cmn_field select {
+    border: 1px solid #DBDBDB;
+    padding: 9px 24px;
+    background-image: url(../Images/lightdownarrow.svg);
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
+    background-position: right 20px center;
+    appearance: auto;
+}
+.generate_feed_rep_wrp form p {
+    text-align: center;
+    color: #B8B8B8;
+}
+.generate_feed_rep_wrp form .sub_field button {
+    width: auto;
+    padding: 7px 35px 7px;
+}
+.generate_feed_rep_wrp form .sub_field {
+    text-align: center;
+    margin-top: 40px;
+}
+.generate_feed_rep_wrp form .cmn_field span.error {
+    font-size: 12px;
+}

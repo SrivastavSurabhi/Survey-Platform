@@ -1,0 +1,672 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/client-intake-form.css' %}">
+<script src="{% static 'js/theme/client-intake-form.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/step.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/profile.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<style>
+    .multiplefileinput .survey_upload_inst_btn.upload_logo_cta {
+    width: 100%;
+}
+.multiplefileinput .dz-clickable {
+    width: 100%;
+    border: 1px solid #ccc;
+    min-height: 80px;
+    line-height: 70px;
+    cursor:pointer;
+    padding: 20px;
+    position: relative;
+}
+.multiplefileinput .dz-clickable::after {
+    content: "upload files";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+}
+.multiplefileinput .dz-clickable.dz-started::after{
+    display:none;
+}
+.multiplefileinput .dz-clickable .dz-preview {
+    width: auto;
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    position:relative;
+}
+.multiplefileinput .dz-clickable .dz-preview .dz-image {
+    width:150px;
+}
+.multiplefileinput .dz-clickable .dz-preview .dz-image img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+.multiplefileinput .dz-clickable .dz-details{
+    margin-top: 20px;
+}
+.multiplefileinput .dz-clickable .dz-details > div {
+    line-height: initial !important;
+}
+.multiplefileinput .dz-clickable .dz-preview .dz-success-mark {
+    /* position: absolute;
+    top: 40px;
+    left: 35px; */
+    display:none;
+}
+/* .multiplefileinput .dz-clickable .dz-preview .dz-success-mark svg {
+    width: 33px;
+} */
+.multiplefileinput .dz-clickable .dz-preview  .dz-error-mark {
+    /* position: absolute;
+    top: 40px;
+    left: 82px; */
+    display:none;
+}
+#dz:empty:before {
+  content:attr(data-placeholder);
+  color:gray
+}
+/* .multiplefileinput .dz-clickable .dz-preview  .dz-error-mark svg {
+    width: 33px;
+} */
+</style>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabeld">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<form id="client_intake_form">
+<div class="main-edit-client page-title-text mb-sm-4 mb-lg-0">
+    <div id="wrapper">
+        <div class="scrollbar">
+            <div class="force-overflow">
+                <div class="inner-cont-wrap" id="style-2">
+                    <div class="main_box">
+                        <div class="logo_container">
+                        {% if request.user.coaches.logo %}
+                        <div class=" intake-logo">
+                            <img class="main_intake_image"src="{{request.user.coaches.logo.url}}">
+                            <a href="javascript:;" class="remove_intake_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                        </div>
+                        {% else %}
+                            <a href="javascript:;" class="upload_logo sitebtn ">Add logo</a>
+                        {% endif %}
+                        </div>
+                        
+                        <div class="content-box">
+                            {% if clientobj.intake_status == False %}
+                            <div contenteditable id="inst" class='cstm-textarea'>
+                                {% if clientintake.instructions %}
+                                    {{clientintake.instructions|unquote_new|safe}}
+                                {% else %}
+                                <p>Welcome and congratulations on taking a step towards achieving your desired outcomes!</p>
+
+                                <p>The following questions will help me get to know you and support you the best way possible. The questions are intended to set a good foundation to begin the process of inquiry, learning and forward movement.</p>
+
+                                <p>Please submit this at least two business days before our coaching session. You may skip questions and upload any documents as you see fit. As always, your information will be kept confidential.</p>
+
+                                <p>Best,</p>
+                                {% endif %}
+                            </div>
+                            <p class="coach-name">{{request.user.coach_full_name}}</p>
+                            <p class="coach-title">{{request.user.user_title}}</p>
+                            <p class="coach-comp">{{request.user.user_company}}</p>
+                            <div class="logo-parent">
+                                {% if request.user.has_profile_image %}
+                                <div class="survey_upload_inst_btn upload_logo_cta">
+                                    <a href="javascript:;" class="upload-doc-here" style="display: none;">
+                                        <i><img src="/static/images/theme/uploadimg.svg"></i> Upload
+                                        Image</a>
+
+                                    <div class="showuploadlogo" >
+                                        <div class="showuploadlogoimgwrp" style="position: relative;">
+                                            <img src="{{ request.user.user_avatar.avatar.url }}" alt=""> 
+                                                                         
+                                            <span class="edit_icon remove_image_btn" ><i class="fa fa-trash"
+                                                 aria-hidden="true"></i></span>
+                                          
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                {% else %}
+                                <div class="survey_upload_inst_btn upload_logo_cta">
+                                    <a href="javascript:;" class="upload-doc-here"><i><img src="/static/images/theme/uploadimg.svg"></i> Upload
+                                        image</a>
+
+                                    <div class="showuploadlogo" style="display: none;">
+                                        <div class="showuploadlogoimgwrp" style="position: relative;">
+                                            <img src="" alt="">
+                                           
+                                        <span class="edit_icon remove_image_btn" ><i class="fa fa-trash"
+                                             aria-hidden="true"></i></span>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                            <div id="inst" class='cstm-textarea'>
+                                {% if clientintake.instructions %}
+                                    {{clientintake.instructions|unquote_new|safe}}
+                                {% else %}
+                                <p>Welcome and congratulations on taking a step towards achieving your desired outcomes!</p>
+
+                                <p>The following questions will help me get to know you and support you the best way possible. The questions are intended to set a good foundation to begin the process of inquiry, learning and forward movement.</p>
+
+                                <p>Please submit this at least two business days before our coaching session. You may skip questions and upload any documents as you see fit. As always, your information will be kept confidential.</p>
+
+                                <p>Best,</p>
+                                {% endif %}
+                            </div>
+                            <p class="coach-name">{{request.user.coach_full_name}}</p>
+                            <p class="coach-title">{{request.user.user_title}}</p>
+                            <p class="coach-comp">{{request.user.user_company}}</p>
+                            {% if clientintake.coachimg %}
+                            <div class="logo-parent">                                
+                                <div class="showuploadlogo" >
+                                    <div class="showuploadlogoimgwrp" style="position: relative;">
+                                        <img src="{{ clientintake.coachimg.url }}" alt="">                                         
+                                    </div>
+                                </div>                                
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                           
+                        </div>
+                    </div>
+                    <input type="hidden" value="{{clientobj.id}}" name="cli_id">
+                    <div class="basic-info-form">
+                        <div class="row mt-2 mt-lg-4">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="text" name="fname" class="form-control cutome-input" id="fname"
+                                            value="{{clientobj.first_name}}" placeholder="First Name">
+                                        <div class="input-group-append"></div>
+                                        <span class="error" id="fnameerr"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="text" name="lname" class="form-control cutome-input" id="lname"
+                                            value="{{clientobj.last_name}}" placeholder="Last Name">
+                                        <div class="input-group-append"></div>
+                                        <span class="error" id="lnameerr"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="text" name="title" class="form-control cutome-input" id="title"
+                                            value="{% if clientobj.title != None %}{{clientobj.title}}{% endif %}" placeholder="Title">
+                                        <div class="input-group-append"></div>
+                                        <span class="error" id="titleerr"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="text" name="compname" id="compname"
+                                            class="form-control cutome-input" value="{% if clientobj.company_name != None %} {{clientobj.company_name}} {% endif %}" placeholder="Organization Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="text" name="compurl" id="compurl"
+                                            class="form-control cutome-input" value="{% if clientobj.company_url != None %} {{clientobj.company_url}} {% endif %}" placeholder="Organization URL">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-12 col-lg-12">
+                                <div class="cstm-sub-heading">
+                                    <h4>Contact Info</h4>
+                                </div> 
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="email" name="email" class="form-control cutome-input" id="email"
+                                            value="{{clientobj.email}}" placeholder="Email">
+                                            <span class="error" id="emailerr"></span>
+                                        <div class="input-group-append"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="tel" name="phone" pattern="[0-9]{10}" value="{% if clientobj.phone != None %}{{clientobj.phone}}{% endif %}"
+                                            class="form-control cutome-input" id="phone" maxlength="10"
+                                            placeholder="Phone">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <!-- <select class="form-control cutome-input">
+                                            <option>City</option>
+                                            <option>a</option>
+                                            <option>b</option>
+                                            <option>c</option>
+                                        </select> -->
+                                        <input type="text" name="city" class="form-control cutome-input" id="city"
+                                        value="{% if clientobj.city != None %} {{clientobj.city}} {% endif %}" placeholder="City">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <!-- <select class="form-control cutome-input">
+                                            <option>State</option>
+                                            <option>a</option>
+                                            <option>b</option>
+                                            <option>c</option>
+                                        </select> -->
+                                        <!-- <div class="input-group-append"><span class="input-group-text requird-field asterisk-sign">&#42;</span></div> -->
+                                        <input type="text" name="state"class="form-control cutome-input" id="state"
+                                         value="{% if clientobj.state != None %} {{clientobj.state}} {% endif %}" placeholder="State">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                        <input type="text" name="zip" class="form-control cutome-input" id="zip"
+                                            value="{% if clientobj.zip != None %}{{clientobj.zip}}{% endif %}" placeholder="Zipcode">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                       <input type="text" name="address" class="form-control cutome-input" id="address"
+                                        value="{% if clientobj.address != None %} {{clientobj.address}} {% endif %}" placeholder="Address">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <div class="input-group cst-input-group mb-3">
+                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                       <input type="text" name="country" class="form-control cutome-input" id="country"
+                                         value="{% if clientobj.country != None %} {{clientobj.country}} {% endif %}" placeholder="Country">
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                    <ul class="ques-list intake-ques-list ">
+                        <li>
+                        <div id="ques_block_main" class="custom_made_question mb-3">
+                        {% for que in questions %}                           
+                                <div id="ques_block{{forloop.counter}}" class=" ques_block mb-3"><span class="custom_number_width">Q{{forloop.counter}}</span>
+                                    {% if clientobj.intake_status == True %}
+                                    <textarea class="form-control border border-dark" name="que{{forloop.counter}}" type="text" data-type="{{que.id}}" readonly>{{que.question}}</textarea>
+                                    <button type="button" class="sitebtn cstm-disable" url="{{que.id}}" data-type="{{que.id}}" disabled><i class="fa fa-trash"></i></button>
+                                    {% else %}
+                                    <textarea class="form-control border border-dark" name="que{{forloop.counter}}" type="text" data-type="{{que.id}}" >{{que.question}}</textarea>
+                                    <button type="button" class="sitebtn" url="{{que.id}}" data-type="{{que.id}}"><i class="fa fa-trash"></i></button>
+                                    {% endif %}
+                                </div>
+                                <div class="answer_wrap  mb-3"> 
+                                    <span class="custom_number_width"></span>
+                                    <div class="form-control border border-dark ml-2" readonly="">
+                                        {% if client_camp.status == True %} {% if ans %} {% for ansr in ans %} {% if ansr.question == que %}  {{ansr.answer|safe }}  {% endif %} {% endfor %} {% endif %}{% endif %}
+                                    </div>
+                                    <button type="button" class="sitebtn hide-btn"><i class="fa fa-trash"></i></button>              
+                                </div>                           
+                        {% endfor %}
+
+                    </div>
+                </li>
+                    </ul>
+                    {% if clientobj.intake_status == False %}<button type="button" id="add_ques" class="sitebtn add_question pl-4 pr-4 mr-2">+ Add More</button>{% endif %}
+                    <div class="cstm_upload_file">
+                        <!-- <p>It has roots in a piece of classical Latin literture from 45 BC, making it over
+                            2000 your
+                            old.</p> -->
+                        <div class="logo-parent multiplefileinput">
+                            <div class="survey_upload_inst_btn upload_logo_cta">
+                                <!-- <a href="javascript:;" class="upload_logo to_upload hidedisbtn" ><i><img src="/static/images/theme/uploadimg.svg"></i>
+                                    Upload File</a> -->
+
+                                    <!-- <input type="file" name="file" multiple> -->
+                                    <!-- {% if clientobj.intake_status == False %}
+                                        <input type="file" id="file" name="file" multiple>
+                                        <label for="file" class="btn-2 multiple-upload">
+                                        <i><img src="/static/images/theme/uploadimg.svg"></i>Upload File</label>
+                                    {% endif %} -->
+                                            <!-- <p class="upload-note">Each file size should be less than 1 MB.</p> -->
+                                    <div id="shwfiles">
+                                        {% if clientintakefiles %}
+                                         {% for cli in clientintakefiles %} 
+                                         <div class="multiple-file-wrap">
+                                            <a href="{{cli.file.url}}"><img src="{{cli.file.url}}" style="height: 100px; width: 100px;"></a>
+                                          {% if clientobj.intake_status == False %}<button type="button" class="sitebtn add_question" id="{{cli.id}}">Remove File</button>{% endif %}
+                                        </div>
+                                         {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <!-- <div id="dz"></div> -->
+
+                                    <!-- <form enctype='multipart/form-data' action="{% url 'edit-client-intake' id %}" method='POST' class="dropzone dz" id="my-dropzone" > -->
+                                        <!-- {% csrf_token %} -->
+                                        <!-- <div class="fallback"> -->
+                                        <!-- </div> -->
+                                    <!-- </form> -->
+
+                                <a href="javascript:;" class="upload_logo to_complete" style="display: none;"><i class="fa fa-check"></i> Completed</a>
+                            </div>
+                        </div>
+                        <!-- {% if clientobj.intake_status == False %}
+                        <a href="javascript:;" class="upload_logo sitebtn submit_intake_form">Save</a>
+                        <a href="javascript:;" class="upload_logo sitebtn submit_intake_form show_intake_form_preview">Send Form to Client</a>
+                        {% else %}
+                            {% if not client_camp %}
+                            <a href="javascript:;" class="upload_logo sitebtn submit_intake_form show_intake_form_preview">Send Form to Client</a>  
+                            {% endif %}
+                        {% endif %} -->
+                        {% if not client_camp %}
+                            {% if clientobj.intake_status == True %}
+                            <a href="javascript:;" class="upload_logo sitebtn submit_intake_form show_intake_form_preview">Send Form to Client</a>                            
+                            {% else %}
+                            <a href="javascript:;" class="upload_logo sitebtn submit_intake_form">Save</a>
+                            <a href="javascript:;" class="upload_logo sitebtn submit_intake_form show_intake_form_preview">Send Form to Client</a>                            
+                            {% endif %}                          
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</form>
+<!-- <div class="footer-text">
+                <p>© Creative Assessment Portal  powered by Back Bay Executive Coaching</p>
+            </div> -->
+</div>
+<input type="hidden" class="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}">
+
+<div class="upload_logo_popup cmn_sitepopup">
+    <div class="upload_logo_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Upload your logo</h2>
+            <!-- <p class="upload-note">Image size should be less than 1 MB.</p> -->
+            <input type="hidden" imgsrc="" id="hiddendefuplimg">
+            <div class="upload_logo_wrp">
+                <div class="uploadimg"><img id="uploadlogoimgs" src=""></div>
+                <div class="uploadimgname">
+                    <p>Drag and drop a file here....</p>
+                    <p>You can also upload a file from your computer.</p>
+                </div>
+            </div>
+            <form name="uploadlogofrm" id="uploadlogofrm" method="post" action='' enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="uploadlogoreport" id="uploadlogo" accept="image/*" />
+                <input type="hidden" name="deletelogo" id="deleterptlogo" value=''>
+                <div class="sub_field">
+                    <button type="button" id="uploadlogofrmsub" class="btn btn-default closepoup">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of upload_logo_popup -->
+
+
+<div class="intake_preview_popup cmn_sitepopup">
+    <div class="intake_preview_inn cmn_site_inn_popup">
+       <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+       <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+          <h2>Preview</h2>
+          <div class="intake_preview content-box"> 
+            <form id="clientintakemail">
+                <input type="hidden" name="client" value="{{clientobj.id}}">
+                <div class="modal-body">
+                    <div class="row mt-2 mt-lg-4">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                    From
+                                    </span></div>
+                                    <input type="text" name="cname" class="form-control cutome-input" value="{{request.user.coach_full_name}}" id="cname1" readonly="">
+                                    <span class="error" id="cnameerr"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                    To
+                                    </span></div>
+                                    <input type="email" name="email" class="form-control cutome-input" value="{{clientobj.email}}" id="previewemail" readonly="">
+                                    <span class="error" id="emailerr"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                    Subject
+                                    </span></div>
+                                    <input type="text" name="subject" class="form-control cutome-input" value="Coaching Intake Form" id="subject" placeholder="Subject">
+                                    <span class="error" id="subjecterr"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-12">
+
+                            <div class="form-group box_cont_wrap" style="white-space: pre-line;">
+                                <div class="border_wrap input-group cst-input-group mb-3" style="width: 100%;border: 1px solid #45A29E;">
+                                    <p style="width: 100%;white-space: initial;font-size:14px;color: #3b3b3b; font-weight:400;margin:10px;line-height:20px; ">Dear
+                                        {{clientobj.first_name}},</p>                                       
+                                    <div id="upper-text" contenteditable="true">
+                                        <p style="margin:0px;font-size:14px;color: #3b3b3b; font-weight:400;line-height:20px; "><span class="first-text">In order to help me get to know you and support you the best way possible, please complete the intake form before our next meeting. Click the button below to get started.</span></p>
+                                    </div>                            
+                                    <p style="margin: 0 auto;display: block;width: 100%;text-align: center; "><button type="button" class="sitebtn" style="text-decoration: none;text-transform: capitalize;pointer-events: none;color: #fff;box-shadow: 3px 10px 10px #67c5bd59;border-radius: 30px;font-size: 16px;line-height: 18px;border: none!important;font-weight:700;padding: 12px 24px;background: #45a29e; margin: 0; display: inline-block;"> START INTAKE </button>
+                                    </p>                                    
+                                    <div id="bottom-text" contenteditable="" style="margin-left:10px;padding:0px;">
+                                        <p style="margin:0px;font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;"> As always, please reach out with any questions.</p><br><p style="margin:0px; font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;">Best regards,</p>
+                                    </div>
+                                    <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 10px 10px;line-height:20px; ">{{request.user.coach_full_name}}</p>
+                                    <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 10px 10px;line-height:20px;">{{request.user.user_title}} </p>
+                                    <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 10px 10px;line-height:20px;">{{request.user.user_company}}</p>
+                                    <p style="font-size:14px;color: #3b3b3b;display: block;width: 100%; font-weight:400;margin:0 10px 10px 10px;line-height:20px;">{{request.user.email}}</p>
+                                    <p style="margin: 0 0 10px 15px;"></p>
+                                    <figure style="width: 100px;" class="coach_img"><img >
+                                        <p></p>                            
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </form>
+            </div>
+          <div class="d-flex justify-content-center create_sur_btn mr-0 ">
+              <a class="upload_logo sitebtn mr-2"  data-dismiss="modal">Go Back & Edit</a>
+              <a class="upload_logo sitebtn"  id="send_client_form" url="{% url 'email_client_intake' %}">Send</a>
+          </div>
+       </div>
+    </div>
+    <div class="whiteoverlay"></div>
+ </div>
+<!-- <div class="upload_logo_popup_ci cmn_sitepopup">
+    <div class="upload_logo_popup_inn_ci cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Upload your logo</h2>
+            <input type="hidden" imgsrc="" id="hiddendefuplimg">
+            <div class="upload_logo_wrp_ci">
+                <div class="uploadimg"><img id="uploadlogoimgs" src=""></div>
+                <div class="uploadimgname">
+                    <p>Drag and drop a file here....</p>
+                    <p>You can also upload a file from your computer.</p>
+                </div>
+            </div>
+            <form name="uploadlogofrm" id="uploadlogofrm" method="post" action='' enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="uploadlogoreport" id="uploadlogo_ci" accept="image/*" />
+                <input type="hidden" name="deletelogo" id="deleterptlogo" value=''>
+                <div class="sub_field">
+                    <button type="button" id="uploadlogofrmsub" class="btn btn-default closepoup">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div> -->
+<!-- </div> -->
+<!-- end of upload_logo_popup -->
+
+<div class="submited_form_popup cmn_sitepopup">
+    <div class="submited_form_inn_popup cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Congratulations!</h2>
+            <p>You have successfully submited your form.</p>
+        </div>
+        <div class="sub_field mt-4 mb-4">
+            <button type="button" class="btn btn-default show_intake_form_preview">Send Form to Client</button>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<div class="recomm_survey_color_popup cmn_sitepopup" id="customheight">
+    <div class="recomm_survey_color_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Your Logo</h2>
+            <div class="recomm_survey_col_box clearfix">
+                <div class="center">
+                    <!-- <h3>Your Logo</h3> -->
+                    <div class="your-logo" id="recom_survey_logo">
+                    </div>
+                </div>
+            </div>
+
+            <div class="recomsurvybtn_wrp">
+                <a href="#" class="sitebtn" id="confirm-btn" style="display:none;">Save</a>
+<button class="sitebtn" id="crop-btn" style="display:none;">Crop</button >
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of recomm_survey_color_popup -->
+
+{% endblock content %}
+
+{% block extrajs %}
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+<script>
+    var ms = "{{ suc|safe }}"
+    if (ms) {
+        jQuery('.intakeformsuccpopup').fadeIn();
+    }
+    //   scroll js
+
+    $(document).ready(function () {
+        if (!$.browser.webkit) {
+            $('.wrapper').html('<p>Sorry! Non webkit users. :(</p>');
+        }
+    });
+    window.addEventListener('load', function () {
+            $('textarea').each(function () {
+                $(this).val($(this).val().trim());
+            }
+            );            
+        })
+</script>
+
+
+<!-- {% if clientintakefiles %}
+{% for cli in clientintakefiles %} 
+<img src="{{cli.file.url}}" >
+{% endfor %}
+{% endif %} -->
+
+<!-- <script>
+    token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+    const myDropzone= new Dropzone('#dz',{
+        addRemoveLinks: true, 
+        url:'{% url "edit-client-intake" id %}',
+        method: 'POST',
+        maxFiles:5,
+        maxFilesize:2,
+        acceptedFiles:'.jpg',
+        headers: {
+            'X-CSRFToken': token
+        }
+    })
+
+    
+</script> -->
+
+{% endblock extrajs %}

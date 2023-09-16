@@ -1,0 +1,99 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-sm-12 plans_pricing mt-3">
+                <div class="row">
+
+                    <div class="col-lg-12 single_block mb-4">
+                        <div class="shadow_box">
+                            <div class="page_title">
+                                <h4>All Clients</h4>
+                                <div class="right_area">
+                                    <a href="/new_theme/addclient">Add Client</a>
+                                    <button class="page_filter client"><img src="{% static 'new_theme/images/filter.png' %}" alt="filter"></button>
+                                </div>
+                            </div>
+                            <div class="page_filter_part">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-lg-3 mb-2"><input type="text" id="name" class="form-control client_name" placeholder="Name" /></div>
+                                        <div class="col-lg-3 mb-2"><input type="email" id="email" class="form-control client_email" placeholder="Email" /></div>
+                                        <div class="col-lg-3 mb-2" >
+                                            <select class="form-control organisations" id="organization">   
+                                                                                         
+                                            </select>
+                                        </div>
+                                        {% if request.user.is_admin %}
+                                        <div class="col-lg-3 mb-2">
+                                            <select class="form-control client_coach" id="coach" placeholder="Select Coach">   
+                                                                                            
+                                            </select>
+                                        </div>
+                                       {% endif %}
+                                        <div class="col-sm-12"><button type="button" class="apply_filter client submit">Apply Filter</button></div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="table_design">
+                                <div class="sort_by">
+                                    <select id="sort_by">
+                                        <option disabled selected>Sort by</option>
+                                        <option value="1">New Entries</option>
+                                        <option value="2" >Old Entries</option>
+                                    </select>
+                                </div>
+                                <table class="tableLayout responsive nowrap " id="clientDatatable">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr. No</th>
+                                            <th>Profile</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Organization</th>
+                                            <th>Coach</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Modal -->
+<div class="modal fade" id="deleteData">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content confirmation_modal">
+        <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h2>Are you sure you want to delete the user ?</h2>
+            <div class="confirmation">
+                <button data-dismiss="modal" class="delete">Yes</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}    
+
+
+{% block extrajs %}
+<script>user_type = {{request.user.user_type}}</script>
+<script src="{% static 'new_theme/appScript/clients.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs %}

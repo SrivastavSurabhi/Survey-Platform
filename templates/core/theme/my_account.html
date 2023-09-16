@@ -1,0 +1,332 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% load mathfilters %}
+{% load customtags %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/profile.css' %}">
+<script src="{% static 'js/theme/profile.js' %}"></script>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+{% block content %}
+
+<div class="coach_admin_profile_wrp clearfix w-100 mt-0">
+    <div class="content-wrapper my-account">
+    {% if userplan %}
+    {% if upinfo %}
+    
+      <div class="welcome-dash bg-transparent">
+          <div class="row mb-3 align-items-baseline">
+            <div class="col-12 col-md-12 col-lg-12">              
+              <!-- <h2 class="text-dark"> {{upinfo.title}} </h2> -->
+              <div class="d-flex justify-content-between d-flex align-items-baseline position-relative">
+                <div class="accordion plan-info-accordion w-100" id="accordionExample">
+                  <div class="card">
+                    <div class="card-header" id="headingOne">
+                      <!-- <h2> {{upinfo.title}}</h2> -->
+                      <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        {{upinfo.title}}
+                        </button>
+                      </h2>
+                    </div>
+                
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                      <div class="card-body">
+                        <div class="plan-history">
+                  
+                          <div class="row all_plan_wrp  mb-2">
+                              
+                              <div class=" offset-md-4 col-md-4 col-12">
+                                
+                                  <div class="plan_inn_wrp individ_plan_wrp w-100">
+                                      <div class="plan_tit_wp text-center"  style="background-color: {{upinfo.uplan.plan.color}};">
+                                          <h3 class="title">{{upinfo.title}}</h3>
+                                         <span class="prize"> ${{upinfo.persurveyprize}}/ survey</span> ,
+                                         <h5>starting with pack of <span class="surveycount">{{upinfo.noofsurvey}}</span><br> $<span class="annualfee"> {% if upinfo.type == 'yearly' %}{{upinfo.annuallicencefee}}{% else %} {{upinfo.annuallicencefee|mul:12}}{% endif %} </span> Annual license fee. Pay annually or monthy
+                                         </h5>
+                                          
+                                      </div>
+                                      <div class="plan_detail_wrp servicesinclude">
+                                        {{upinfo.servicesinclude|safe}}
+                                      </div>
+                                  </div>
+                              </div>
+                                </div>                          
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="despoit-wrap d-flex justify-content-between align-items-center ">
+                  <h3 class="mb-0">Auto Deposit</h3>
+                  <label class="custom_checkbox">
+                    <input name="mode_of_payment" type="checkbox">
+                    <span class="design_check"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+           
+          </div>
+          <div class="row">
+              <div class="col-12 col-md-12 col-lg-12">
+                  <div class="welcome-text">
+                      <h4 class="text-green mb-3">
+                        Surveys Remaining:
+                          <span >{{upinfo.surveyleft}}</span>
+                      </h4>
+                  </div>  
+                  <div class="purchase-action">
+                    <a class="btn them-outline-btn purchase_btn">Purchase Surveys</a>
+                  </div>                 
+              </div>
+          </div>
+      </div>  
+      {% else %}
+      <div class="welcome-dash bg-transparent">
+        <div class="row mb-3">
+          <div class="col-12 col-md-6 col-lg-6">     
+            <h2 class="text-dark"> No Active Plan </h2>
+          </div>
+          <div class="col-12 col-md-6 col-lg-6 d-flex align-items-center justify-content-sm-center justify-content-lg-end">
+            <h3 class="mb-0">Auto Deposit</h3>
+            <label class="custom_checkbox">
+              <input name="mode_of_payment" type="checkbox">
+              <span class="design_check"></span>
+            </label>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="purchase-action">
+                  <a href="{% url 'plan' 'myaccount' %}" class="btn them-outline-btn ">Purchase Plan</a>
+                </div>                 
+            </div>
+        </div>
+      </div>  
+      {% endif %} 
+      <div class="row mt-4">
+        <div class="col-12">
+          <h4 class="mb-3 font-weight-bold ">
+              Transaction History
+          </h4>
+        </div>
+      </div>  
+      <div class="table-responsive">
+        <table class="table table-bordered current-plans">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Number of Surveys</th>
+              <th>Paid</th>
+              <th>Date</th>
+              <th>License Fee Renewal</th>
+          </tr>
+          </thead>
+          <tbody>         
+            {% if upinfo %}
+            {% for addedsurvey in upinfo.addedsurvey.all|dictsortreversed:"created_ts"%}    
+            <tr>
+              <td>Surveys Purchased</td>
+              <td>{{addedsurvey.noofsurvey}}</td >
+              <td>${% widthratio addedsurvey.persurveyprize 1 addedsurvey.noofsurvey %} </td>
+              <td>{{addedsurvey.created_ts|date:"F d, Y"}}</td>
+              <td></td>
+            </tr> 
+            {% endfor %}
+            <tr>
+              <td>Surveys Purchased</td>
+              <td>{{upinfo.noofsurvey}}</td >
+              <td>${% widthratio upinfo.persurveyprize 1 upinfo.noofsurvey %}</td>
+              <td>{{upinfo.created_ts|date:"F d, Y"}}</td>
+              <td></td>
+            </tr>        
+            <tr>
+              <td> {% if upinfo.type == 'yearly' %}Annual License Fee{% else %} Monthly License Fee{% endif %}</td>
+              <td ></td>
+              <td >${{upinfo.annuallicencefee}}</td>
+              <td >{{upinfo.uplan.created_ts|date:"F d, Y"}}</td>
+              <td >{{upinfo.valid|date:"F d, Y"}}(active)
+                <!-- {% now "F d, Y" as todays_date %}
+                {% with d=upinfo.valid|date:"F d, Y" %}
+                {% if todays_date <= d %}(active){% else %}({% countdays d todays_date %} days late){% endif %} 
+                {% endwith %} -->
+              </td>            
+            </tr>        
+            <tr>
+              <td>{{upinfo.title}}</td>
+              <td ></td>
+              <td ></td>
+              <td >{{upinfo.uplan.created_ts|date:"F d, Y"}}</td>
+              <td ></td>
+            </tr>
+            {% endif %}
+
+            {% if allplaninfo %}
+            {% for allpln in allplaninfo %}
+            <tr>
+              <td style="width:22%">Surveys Purchased</td>
+              <td>{{allpln.noofsurvey}}</td >
+              <td>${% widthratio allpln.persurveyprize 1 allpln.noofsurvey %}</td>
+              <td>{{allpln.uplan.created_ts|date:"F d, Y"}}</td>
+              <td></td>
+            </tr>        
+            <tr>
+              <td> {% if allpln.type == 'yearly' %}Annual License Fee{% else %} Monthly License Fee{% endif %}</td>
+              <td ></td>
+              <td >${{allpln.annuallicencefee}}</td>
+              <td >{{allpln.uplan.created_ts|date:"F d, Y"}}</td>
+              <td >{{allpln.valid|date:"F d, Y"}}
+                {% if not upinfo %}
+                {% now "F d, Y" as todays_date %}
+                {% with d=allpln.valid|date:"F d, Y" %}
+                {% if forloop.last %}({% countdays d todays_date %} days late){% endif %} 
+                {% endwith %}
+                {% endif %}
+              </td>            
+            </tr>       
+            <tr>
+              <td>{{allpln.title}}</td>
+              <td ></td>
+              <td ></td>
+              <td >{{allpln.uplan.created_ts|date:"F d, Y"}}</td>
+              <td ></td>
+            </tr>
+            {% endfor %}  
+          {% endif %}
+          </tbody>
+        </table> 
+      </div>
+     
+    {% else %}
+    
+      <div class="welcome-dash bg-transparent">
+        <div class="row">
+            <div class="col-8 col-md-8 col-lg-8 p-0"> 
+            </div>
+            <div class="col-4 col-md-4 col-lg-4 p-0">
+              <div class="col-md-12 d-md-flex align-items-center justify-content-end p-0">
+                  <!-- <a class="btn them-outline-btn purchase_btn">Purchase Surveys</a> -->
+                  <a href="{% url 'plan' 'myaccount' %}" class="btn them-outline-btn ">Purchase Plan</a>
+              </div>                       
+            </div>
+          </div>
+      </div>      
+    {% endif %}
+    </div>
+</div>
+
+<div class="no_of_sur_popup cmn_sitepopup">
+    <div class="no_of_sur_inn cmn_site_inn_popup">
+       <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+       <div class="cmn_sitepopup_scroll">          
+          <h2>No of surveys to be Purchased</h2>
+          <div class="container">        
+          
+            <div class="quantity-control" data-quantity="">
+              <button class="quantity-btn" data-quantity-minus=""><svg viewBox="0 0 409.6 409.6">
+                  <g>
+                    <g>
+                      <path d="M392.533,187.733H17.067C7.641,187.733,0,195.374,0,204.8s7.641,17.067,17.067,17.067h375.467 c9.426,0,17.067-7.641,17.067-17.067S401.959,187.733,392.533,187.733z" />
+                    </g>
+                  </g>
+                </svg></button>
+              <input type="number" class="quantity-input" data-quantity-target="" value="1" step="0.1" min="1" max="" name="quantity">
+              <button class="quantity-btn" data-quantity-plus=""><svg viewBox="0 0 426.66667 426.66667">
+                  <path d="m405.332031 192h-170.664062v-170.667969c0-11.773437-9.558594-21.332031-21.335938-21.332031-11.773437 0-21.332031 9.558594-21.332031 21.332031v170.667969h-170.667969c-11.773437 0-21.332031 9.558594-21.332031 21.332031 0 11.777344 9.558594 21.335938 21.332031 21.335938h170.667969v170.664062c0 11.777344 9.558594 21.335938 21.332031 21.335938 11.777344 0 21.335938-9.558594 21.335938-21.335938v-170.664062h170.664062c11.777344 0 21.335938-9.558594 21.335938-21.335938 0-11.773437-9.558594-21.332031-21.335938-21.332031zm0 0" /></svg>
+              </button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+             <button type="button" class="site_btn sitebtn pl-5 pr-5" id="sur_pur_info">Continue</button>
+          </div>
+       </div>
+    </div>
+    <div class="whiteoverlay"></div>
+ </div>
+
+ <input type="hidden" class="persurveyprize" value="{{upinfo.uplan.plan.prizepersurvey}}">
+
+ <div class="sur_pur_popup cmn_sitepopup">
+    <div class="sur_pur_inn cmn_site_inn_popup">
+       <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+       <form action="{% url 'buy-survey' %}" method="post">
+        {% csrf_token %}
+       <div class="cmn_sitepopup_scroll">          
+            <p class="no_of_survey">No of Surveys purchased = <span>3</span></p>
+            <p class="total_cost_per_survey">No of Surveys purchased = $ <span>150 * 3</span></p>
+            <p class="total_cost">Total cost = $ <span>450</span></p>
+            <input type="hidden" name="survey_buy" class="survey_buy">
+            <input type="hidden" name="total_sur_cost" class="total_sur_cost">
+          <div class="d-flex justify-content-center">
+            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+													data-key="{{ key }}"
+													data-description="Survey"
+                          data-email="{{request.user.email}}"s													
+													data-locale="auto">
+												</script>
+          </div>
+       </div>
+      </form>
+    </div>
+    <div class="whiteoverlay"></div>
+ </div>
+
+<script>
+    (function () {
+  "use strict";
+  var jQueryPlugin = (window.jQueryPlugin = function (ident, func) {
+    return function (arg) {
+      if (this.length > 1) {
+        this.each(function () {
+          var $this = $(this);
+
+          if (!$this.data(ident)) {
+            $this.data(ident, func($this, arg));
+          }
+        });
+
+        return this;
+      } else if (this.length === 1) {
+        if (!this.data(ident)) {
+          this.data(ident, func(this, arg));
+        }
+
+        return this.data(ident);
+      }
+    };
+  });
+})();
+
+(function () {
+  "use strict";
+  function Guantity($root) {
+    const element = $root;
+    const quantity = $root.first("data-quantity");
+    const quantity_target = $root.find("[data-quantity-target]");
+    const quantity_minus = $root.find("[data-quantity-minus]");
+    const quantity_plus = $root.find("[data-quantity-plus]");
+    var quantity_ = quantity_target.val();
+    $(quantity_minus).click(function () {
+      quantity_target.val(--quantity_);
+    });
+    $(quantity_plus).click(function () {
+      quantity_target.val(++quantity_);
+    });
+  }
+  $.fn.Guantity = jQueryPlugin("Guantity", Guantity);
+  $("[data-quantity]").Guantity();
+})();
+
+</script>
+{% endblock content %}

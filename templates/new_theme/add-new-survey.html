@@ -1,0 +1,251 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'new_theme/css/survey-style.css' %}?v={{CACHE_VERSION}}">
+{% endblock extrastyle %}
+
+{% block content %}
+
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-sm-12 plans_pricing mt-3">
+                <div class="row">
+
+                    <div class="col-lg-12 single_block mb-4">
+                        <div class="shadow_box">
+                            <div class="page_title with_go_back">
+                                <a onclick="history.back()"><img src="{% static 'new_theme/images/go-back.svg' %}" alt="go-back /"></a>
+                                <h4 id="page_title">Add New Survey</h4>
+                            </div>
+                           <div class="form_data surveydetailblock">
+                            <!-- SmartWizard html -->
+                            <div id="smartwizard">
+                                <ul class="nav">
+                                    <li class="nav-item">
+                                    <a class="nav-link" >
+                                        <div class="num">1</div>
+                                        <h5>Basic Details</h5>
+                                    </a>
+                                    </li>
+                                    <li class="nav-item">
+                                    <a class="nav-link">
+                                        <span class="num">2</span>
+                                        <h5>Instruction</h5>
+                                    </a>
+                                    </li>
+                                    <li class="nav-item">
+                                    <a class="nav-link ">
+                                        <span class="num">3</span>
+                                        <h5>Questions</h5>
+                                    </a>
+                                    </li>
+                                </ul>
+                            
+                            <div class="tab-content" style="height:500px; overflow-y:auto;">
+                                <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                    <form  id="add_survey" >
+                                        {% csrf_token %}
+                                            {% comment %} <div class="title"><h2>Survey Details</h2></div> {% endcomment %}
+                                            <div class="row" >
+                                                <input type="text" id="survey_id" class="form-control" value="" hidden/>
+                                                <div class="col-md-6 col-lg-6 mb-3" >
+                                                    <div class="form-group">
+                                                        <label>Survey Name<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                        <input type="text" id = "survey_name" name="survey_name" class="form-control" required/>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                        
+                                            <div class="row">
+                                                <div class="col-md-12 col-lg-12 mb-3" >
+                                                    <div class="form-group">
+                                                        <label>Description<span class="disableMe">(Optional)</span></label>
+                                                        <textarea type="text" id = "description" name="description" class="form-control" ></textarea>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                           
+                                            
+                                            <div class="row" >
+                                                {% if coaches %}
+                                                    <div class="col-md-6 col-lg-6 mb-3">
+                                                        <div class="form-group">
+                                                            <label>Assign Coach<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                            <select id="coach" class="form-control" name="coach" required/ >
+                                                                <option value="">Select Coach</option>
+                                                                {% for coach in coaches %}
+                                                                    <option value="{{coach.id}}">{{coach.first_name}} {{coach.last_name}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <span class="error" id="coacherr"></span>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if not request.user.user_type == 3 %}
+                                                <div class="col-md-6 col-lg-6 mb-3">
+                                                    <div class="form-group">
+                                                        <label>Assign Client<span class="requird-field asterisk-sign">&#42;</span></label>
+                                                        <select id="client" class="form-control" name="client" required/>
+                                                            <option value="">Select Client</option>
+                                                            {% for client in clients %}
+                                                                <option value="{{client.id}}">{{client.first_name}} {{client.last_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <span class="error" id="clienterr"></span>
+                                                    </div>
+                                                </div>
+                                                {% else %}
+                                                <input type="hidden" value="{{request.user.clients.id}}" id="client_id">
+                                                {% endif %}  
+                                            </div>    
+                                    </form>                                     
+                                </div>
+                                <div id="step-2" class="tab-pane cmn_field " role="tabpanel" aria-labelledby="step-2" style="height:500px;">
+                                        <textarea id="instructions" class="p-3"> 
+                                            <div >Please be as open and candid as possible to the benefit of your colleague. Your answers will remain anonymous.</div>
+                                            <ul class="bullets mt-2 ml-4" >                      
+                                            <li> May type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>                                  
+                                            <li>Your direct quotes may be included in an anonymous aggregated report from all participants. Be aware that if there is something that only you would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                                            <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>                                            
+                                            <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                                            </ul>
+                                        </textarea>
+                                </div>
+                                <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3" style="height:500px;">
+                                    <div class="question-answer-block">      
+                                            <div class="survey-type col-8" hidden/>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="scratch" name="customRadioInline1" class="custom-control-input" checked>
+                                                    <label class="custom-control-label" for="scratch">Start from scratch</label>
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="copy" name="customRadioInline1" class="custom-control-input">
+                                                    <label class="custom-control-label" for="copy">Copy a past survey</label>
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" id="template" name="customRadioInline1" class="custom-control-input">
+                                                    <label class="custom-control-label" for="template">Start from template</label>
+                                                </div>
+                                            </div>
+                                        <div class="edit-block queansblock d-none" >
+                                            <div class="queanswrap d-none">
+                                                <div class="row my-3">
+                                                    <div class="col-1"><span class="question-number"></span></div>
+                                                    <div class="col-9 m-0 ques area-wrap">
+                                                            <textarea type="text" class="form-control" readonly></textarea>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <div class="cstm-flex">
+                                                            <button class="deletebtn"><i class="fa fa-trash"></i></button>
+                                                            <button class="editbtn d-none"><i class="fa fa-edit"></i></button>
+                                                            <button class="savebtn"><i class="fa fa-save"></i></button>
+                                                            <button class="undobtn d-none"><i class="fa fa-undo"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>                                       
+                                            </div>         
+                                        </div>
+                                        <div class="scratch-block queansblock">
+                                            <div class="queanswrap d-none">
+                                                <div class="row my-3">
+                                                    <div class="col-1"><span class="question-number"></span></div>
+                                                    <div class="area-wrap col-9 m-0">
+                                                        <textarea type="text" class="form-control" readonly></textarea>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <div class="cstm-flex">
+                                                            <button class="deletebtn"><i class="fa fa-trash"></i></button>
+                                                            <button class="editbtn d-none"><i class="fa fa-edit"></i></button>
+                                                            <button class="savebtn"><i class="fa fa-save"></i></button>
+                                                            <button class="undobtn d-none"><i class="fa fa-undo"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>                                       
+                                            </div>   
+                                        </div>
+                                        <div class="copy-block queansblock d-none" >
+                                            <div class="queanswrap d-none">
+                                                <div class="row my-3">
+                                                    <div class="col-1"><span class="question-number"></span></div>
+                                                    <div class="area-wrap col-9 m-0">
+                                                        <textarea type="text" class="form-control" readonly></textarea>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <div class="cstm-flex">
+                                                            <button class="deletebtn"><i class="fa fa-trash"></i></button>
+                                                            <button class="editbtn d-none"><i class="fa fa-edit"></i></button>
+                                                            <button class="savebtn"><i class="fa fa-save"></i></button>
+                                                            <button class="undobtn d-none"><i class="fa fa-undo"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>                                
+                                            </div>      
+                                        </div>
+                                        <div class="template-block queansblock d-none" >
+                                            <div class="queanswrap d-none">
+                                                <div class="row my-3">
+                                                    <div class="col-1"><span class="question-number"></span></div>
+                                                    <div class="area-wrap col-9 m-0">
+                                                        <textarea type="text" class="form-control" readonly></textarea>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <div class="cstm-flex">
+                                                            <button class="deletebtn"><i class="fa fa-trash"></i></button>
+                                                            <button class="editbtn d-none"><i class="fa fa-edit"></i></button>
+                                                            <button class="savebtn"><i class="fa fa-save"></i></button>
+                                                            <button class="undobtn d-none"><i class="fa fa-undo"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>                           
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="conf-ques-block confqueansblock d-none" id="confqueansblock" >
+                                        <div class="queanswrap d-none">
+                                            <div class="row my-3">
+                                                <div class="col-1"><span class="question-number"></span></div>
+                                                <div class="area-wrap col-9 m-0">
+                                                    <textarea type="text" class="form-control"  ></textarea>
+                                                <span class="conf-icon" style="font-size:20px"><i class='fa fa-star'></i></span>
+                                                </div>
+                                                <div class="col-2">
+                                                    <div class="cstm-flex">
+                                                        <button class="deletebtn"><i class="fa fa-trash"></i></button>
+                                                        <button class="editbtn d-none"><i class="fa fa-edit"></i></button>
+                                                        <button class="savebtn"><i class="fa fa-save"></i></button>
+                                                        <button class="undobtn d-none"><i class="fa fa-undo"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>                           
+                                        </div> 
+                                    </div>
+                                    <div class="add-question-btn-block mb-3">
+                                        <div class="col-sm-12 d-flex justify-content-center form_buttons mt-2">
+                                            <button class="add-questions">Add More</button>
+                                            <button class="add-conf-questions">Add Confidential Question</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}
+{% block extrajs%}
+<script>
+surveyData = `{{survey|safe}}`
+surveyQuesData = `{{survey_ques|safe}}`
+instructions = `{{instructions|safe}}`
+</script>
+<script src="{% static 'new_theme/appScript/survey-question-crud.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/appScript/add-new-survey.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock %}

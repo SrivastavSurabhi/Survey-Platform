@@ -1,0 +1,326 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+
+    <section class="display_section">
+        <div class="inside">
+            <div class="col-sm-12 coach_client">
+                <div class="row">
+                    {% if request.user.is_admin or request.user.is_superuser %}
+                    <div class="col-lg-6 block">
+                        <div class="shadow_box">
+                            <div class="client_block">
+                                <div class="left">
+                                    <span>Coaches :</span>
+                                    <h2>{{coachescount}}</h2>
+                                </div>
+                                <div class="users">
+                                    <ul>
+                                        {% if coachescount > 5 %}
+                                            {% for obj in coaches|slice:":6"%}
+                                            {% if obj.logo %}
+                                            <li><img src="{{ obj.logo.url}}" alt="user"> </li>
+                                            {% else %}
+                                            <li><img src="{% static 'images/theme/default.png' %}" alt="profile"> </li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for obj in coaches%}
+                                            <li>{{obj.logo}}</li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                    {% if coachescount > 6 %}
+                                    <div class="user_count">+ {{coachescount|add:"-6"}}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if request.user.user_type == 2 or request.user.is_admin or request.user.is_superuser %}
+                    <div class="col-lg-6 block">
+                        <div class="shadow_box">
+                            <div class="client_block">
+                                <div class="left">
+                                    <span>Clients :</span>
+                                    <h2>{{clientscount}}</h2>
+                                </div>
+                                <div class="users">
+                                    <ul>
+                                        {% if clientscount > 5 %}
+                                            {% for obj in clients|slice:":6"%}
+                                                {% if obj.profile_img == 'static/images/theme/default.png' %}
+                                                    <li><img src="{% static 'images/theme/default.png' %}" alt="profile"></li>
+                                                {% else %}
+                                                    <li><img src="{{ obj.profile_img.url}}" alt="profile"></li>
+                                                {% endif%}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for obj in clients%}
+                                            <li>{{obj.logo}}</li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                    {% if clientscount > 6 %}
+                                    <div class="user_count">+ {{clientscount|add:"-6"}}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-sm-12 features_block mt-2">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 single_block mb-4">
+                        <div class="shadow_box">
+                            <h4>Draft Survey</h4>
+                            <div class="num">{{pending.count}}</div>
+                            <div id="chart2"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 single_block mb-4">
+                        <div class="shadow_box">
+                            <h4>Active Survey</h4>
+                            <div class="num">{{active_survey.count}}</div>
+                            <div class="pic"><img src="{% static 'new_theme/images/upcoming-survey.png' %}" alt="survey-icon" /></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 single_block mb-4">
+                        <div class="shadow_box">
+                            <h4>Completed Survey</h4>
+                            <div class="num">{{completed.count}}</div>
+                            <div id="chart"></div>
+                        </div>
+                    </div>                    
+                    <div class="col-lg-3 col-md-6 single_block mb-4">
+                        <div class="shadow_box">
+                            <h4>Total Survey</h4>
+                            <div class="num">{{survey.count}}</div>
+                            <div class="pic"><img src="{% static 'new_theme/images/survey-icon.png' %}" alt="survey-icon" /></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if request.user.is_admin or request.user.is_superuser %}
+            <div class="col-sm-12 total_revenue mt-2">
+                <div class="row">
+                    <div class="col-lg-12 single_block mb-4">
+                        <div class="shadow_box pt-4">
+                            <div id="revenueChart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-sm-12 plans_pricing mt-2">
+                <div class="row">
+                    <div class="col-lg-6 single_block mb-4">
+                        <div class="shadow_box pt-3">
+                            <div class="mb-4">
+                                <select class="individual form-control" onchange="individualChartChange()">
+                                    <option disabled>Select Your Plan Duration</option>
+                                    <option selected>Monthly</option>
+                                    <option>Yearly</option>
+                                </select>
+                            </div>
+                            <div id="individualPlan"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 single_block mb-4">
+                        <div class="shadow_box pt-3">
+                            <div class="mb-4">
+                                <select class="enterprise form-control" onchange="EnterpriseChartChange()">
+                                    <option disabled>Select Your Plan Duration</option>
+                                    <option selected>Monthly</option>
+                                    <option>Yearly</option>
+                                </select>
+                            </div>
+                            <div id="EnterprisePlan"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="col-sm-12 recent_users mt-2">
+                <div class="row">
+                    <div class="col-lg-6 single_block mb-4">
+                        <div class="shadow_box">
+                            <div class="title_part">
+                                <h4>Recent Users</h4>
+                                <ul class="nav nav-pills">
+                                    {% if request.user.is_admin or request.user.is_superuser %}
+                                    <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#coachesList">coaches</a></li>
+                                    {% endif %}
+                                    {% if request.user.user_type == 2 or request.user.is_admin or request.user.user_type == 1 %}
+                                    <li class="nav-item"><a class="nav-link {% if request.user.user_type == 2 %}active{% endif %}" data-toggle="pill" href="#clientsList">clients</a></li>
+                                    {% endif %}
+                                    <li class="nav-item"><a class="nav-link {% if request.user.user_type == 3 %}active{% endif %}" data-toggle="pill" href="#particiPants">participants</a></li>
+                                </ul>
+                            </div>
+                            <div class="tab-content">
+                                {% if request.user.is_admin or request.user.is_superuser %}
+                                <div class="tab-pane fade show active" id="coachesList">
+                                <div class="all_list_data">
+                                    <ul>
+                                        {% for i in coaches|slice:":11" %}
+                                        <li>
+                                            <div class="user_data">
+                                                <div class="pic_and_name">
+                                                    <div class="image">{% if i.logo %}
+                                                        <img src="{{ i.logo.url}}" alt="user">
+                                                        {% else %}
+                                                        <img src="{% static 'images/theme/default.png' %}" alt="profile">
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="data">
+                                                        <h6>{{i.first_name}} {{i.last_name}}</h6>
+                                                        <p>{{i.company_name}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="view_user"><a href="/new_theme/coach-detail/{{i.id}}">View</a></div>
+                                            </div>
+                                        </li>
+                                      {% endfor %}
+                                       
+                                    </ul>
+                                </div>
+                            </div>
+                                {% endif %}
+                            
+                                <div class="tab-pane fade {% if request.user.user_type == 2 %}show active{% endif %}" id="clientsList">
+                                    <div class="all_list_data">
+                                        <ul>
+                                            {% for i in clients|slice:":11"%}
+                                            <li>
+                                                <div class="user_data">
+                                                    <div class="pic_and_name">
+                                                        <div class="image">
+                                                            {% if i.profile_img %}
+                                                                {% if i.profile_img == 'static/images/theme/default.png' %}
+                                                                    <img src="{% static 'images/theme/default.png' %}" alt="profile">
+                                                                {% else %}
+                                                                    <img src="{{ i.profile_img.url}}" alt="profile">
+                                                                {% endif%}
+                                                            {% else %}
+                                                            <img src="{% static 'images/theme/default.png' %}" alt="profile">
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="data">
+                                                            <h6>{{i.first_name}} {{i.last_name}}</h6>
+                                                            <p>{{i.company_name}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="view_user"><a href="/new_theme/client-detail/{{i.id}}">View</a></div>
+                                                </div>
+                                            </li>
+                                          {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                
+                                <div class="tab-pane fade {% if request.user.user_type == 3 %}show active{% endif %}" id="particiPants">
+                                    <div class="all_list_data">
+                                        <ul>
+                                            {% for i in participants|slice:":11" %}
+                                            <li>
+                                                <div class="user_data">
+                                                    <div class="pic_and_name">
+                                                        {% comment %} <div class="image"><img src="{% static '{{i.logo}}' %}" alt="user" /></div> {% endcomment %}
+                                                        <div class="data">
+                                                            <h6>{{i.first_name}} {{i.last_name}}</h6>
+                                                            <p>{{i.relationship.relation}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="view_user"><a href="/new_theme/participant-detail/{{i.id}}">View</a></div>
+                                                </div>
+                                            </li>
+                                          {% endfor %}
+                                           
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 single_block mb-4">
+                        <div class="shadow_box">
+                            <div class="title_part">
+                                <h4>All Reports</h4>
+                                <div class="recent_filter"><img src="{% static 'new_theme/images/filter.png'%}" alt="filter"></div>
+                            </div>
+                            <div class="recent_filter_part">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-2"><input type="text" class="form-control" placeholder="Coach Name" /></div>
+                                        <div class="col-lg-6 mb-2">
+                                            <select class="form-control">
+                                                <option>Select Categories</option>
+                                                <option>WholeFoods</option>
+                                                <option>US Airlines</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-12"><button class="apply_filter report submit">Apply Filter</button></div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="all_list_data">
+                                <ul>
+                                    {% for i in coach_report|slice:":11" %}
+                                    <li>
+                                        <div class="user_data">
+                                            <div class="pic_and_name">
+                                                <div class="image">
+                                                    {% if i.survey.Survey_client.coaches.logo %}
+                                                        <img src="{{i.survey.Survey_client.coaches.logo.url}}">
+                                                    {% else %}
+                                                        <img src="{% static 'images/theme/default.png' %}">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="data">
+                                                    <h6>{{i.survey.Survey_client.coach.first_name}} {{i.survey.Survey_client.coach.last_name}}</h6>
+                                                    <p>{{i.survey.title}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="view_user">
+                                                <a href="/new_theme/survey-detail/{{ i.survey.id}} ">View</a>
+                                                <a href="{% url 'download-user-pdf' i.survey.id 'Client' %}#step-2"><img src="{% static 'new_theme/images/download-ico.svg' %}" alt="icon" /></a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                  {% endfor %}
+                                   
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}    
+
+
+{% block extrajs %}    
+
+<script>
+    completed_survey = {{completed_survey}}
+    pending_per = {{pending_per}}
+</script>
+<script src="{% static 'new_theme/appScript/index.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs %}

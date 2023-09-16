@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% csrf_token %}
+{% load static i18n %}
+<html lang="en">
+<head>
+<title>{{ title }}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="{% static 'js/theme/jquery.actual.min.js' %}" ></script>
+<script src="{% static 'js/theme/jquery.mCustomScrollbar.js' %}" ></script>
+<script src="{% static 'js/theme/custom.js' %}" ></script>
+
+<link rel="stylesheet" type="text/css" 
+href="{% static 'css/theme/jquery.mCustomScrollbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+{% block extrastyle %}
+{% endblock extrastyle %}
+</head>
+<body>
+        <div class="coach_dash_page">
+            <section class="coach_dash_sect">
+                <div>
+                    
+                    <!-- New header start-->
+
+                    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+                        <div class="navbar-brand-wrapper d-flex justify-content-center">
+                            <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">  
+                                <a class="navbar-brand brand-logo"  href="{% url 'dashboard' %}">
+                                    <img src="{% static 'images/theme/logo.png' %}">
+                                </a>
+                                <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}">
+                                    <img src="{% static 'images/theme/logo-min.png' %}" alt="logo">
+                                </a>
+                            </div>  
+                        </div>
+
+                        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                            <div class="cstm-toggle"><i class="fa fa-bars"></i></div>
+                            <ul class="navbar-nav mr-lg-2 w-100">
+                                <li class="nav-item nav-search w-100">
+                                    <div class="input-group" id="srch">
+                                            <div class="input-group-prepend"><span class="input-group-text" id="search"><i class="mdi mdi-magnify"></i></span></div>
+                                            <input type="search" class="form-control" name="seach" id="global_search" placeholder="Search here" aria-label="search" aria-describedby="search">
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <!-- <div class="home-icon-menu">
+                                <a href="{% url 'dashboard' %}" class="home-icon"><img src="{% static 'images/theme/homeicon.svg'%}" ></a>
+                            </div> -->
+
+                            <!-- {% block createbutton %}
+                            {% endblock createbutton %} -->
+
+                            <ul class="navbar-nav navbar-nav-right">
+                                <li class="nav-item dropdown notification-link mr-4">
+                                    <a class="nav-link  count-indicator dropdown-toggle d-flex align-items-center justify-content-center notification-dropdown" id="notificationDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="{% static 'images/theme/bellicon.svg'%}" alt="bellicon">                                        
+                                            {% if request.session.has_notification|escape == 'True'  %}
+                                            <span class="noticount"></span>
+                                            {% endif %}
+                                           
+                                    </a>
+                                    <div class="notification-box" style="display:none;">
+                                        <ul class="notification-list"></ul>
+                                    </div>
+                                </li>
+                                
+                                <li class="nav-item nav-profile dropdown">
+                                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown" id="profileDropdown" aria-expanded="false">
+                                        {% if request.user.has_profile_image %} <img src= "{{ request.user.user_avatar.avatar.url }}" alt="">  {% else %} <img src="{% static 'images/theme/default.png'%}" alt=""> {% endif %}
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                                        <a class="dropdown-item"  href="{% url 'profile' %}">Profile</a>
+
+                                        <a class="dropdown-item"  href="{% url 'logout' %}?next=/login">Sign Out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                                <span class="mdi mdi-menu"></span>
+                            </button>
+                        </div>
+                    </nav>
+                    <!-- New header end -->
+
+                    <!-- <div class="container-fluid page-body-wrapper">
+                    <div class="row notification">
+                        <div class="col">
+                            {% for ntfctn in notification %}
+                                <div>
+                                    <a href="{% url 'my-account' %}">{{ntfctn.title}}</a>
+                                    <h6>{{ntfctn.description}}</h6>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    </div> -->
+
+                   
+                    <div class="container-fluid page-body-wrapper">
+                        {% if messages %}
+                        {% for message in messages %}
+                         {% if message.tags %}  
+                         
+                            <div class="row alert-cstm-msg ">
+                                <div class="col-12 col-md-12 col-lg-12 p-0 "> 
+                                <div class="alert alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    <strong>{{ message|safe }}</strong>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                         <script>
+
+                         $('.row.alert-cstm-msg').parent().addClass('alertmsg');
+
+                         $('.row.alert-cstm-msg button').click(function(){
+                             $('.row.alert-cstm-msg').parent().removeClass('alertmsg')
+                         })
+
+                        </script>
+                         {% endif %}
+                        {% endfor %}
+                        {% endif %}
+
+
+                        {% block content %}
+                        {% endblock content %}
+              
+                        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                            <ul class="nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'dashboard' %}">
+                                        <i class="mdi mdi-account-outline menu-icon"></i>
+                                        <span class="menu-title">My Dashboard</span>
+                                    </a>
+                                </li>
+                          
+                            </ul>
+                        </nav>
+                        
+                                      
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        
+        </div>
+
+</body>
+<script>
+
+    // toggle header click
+$('.cstm-toggle').click(function(){
+    $('.main_area').toggleClass('hide_dividers')
+});
+</script>
+
+{% block extrajs %}
+{% endblock extrajs %}
+</html>
+

@@ -1,0 +1,10 @@
+.client_coach_list_table .img_wrp {
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+}
+.client_coach_list_table .img_wrp img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+}

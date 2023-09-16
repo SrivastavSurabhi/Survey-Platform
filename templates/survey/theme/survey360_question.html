@@ -1,0 +1,695 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="{% static 'js/theme/jquery.richtext.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/richtext.min.css' %}">
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}" ></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+
+
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+{% block content %}
+
+
+<div class="content-wrapper">
+    <div class="survey_quest_wrp mt-0">
+        <div class="dash_instr_help_icon create_question">
+            <div class="main_title">
+                <h3 class="common-head surveymaintit">{{ surveyobj.title }}</h3>
+            </div>
+        </div>
+        <div class="survey_upload_inst_btn upload_logo_cta">
+            <div class="alignright">
+                <!-- {% if not surveyobj.company_logo   %}
+                <div class="alignright">
+                    <a href="javascript:;" class="upload_logo sitebtn">Upload Logo</a>
+                   
+                </div>
+            </div>
+                {% endif %}
+
+                {% if surveyobj.company_logo   %}
+                <div class="showuploadlogo" >
+                    <div class="showuploadlogoimgwrp">
+                        <img src={{ surveyobj.company_logo.url }} alt="">
+                    </div>
+                    <div class="edit_delet_logo_wrp">
+                        <a href="javascript:;" class="editupdatedlogo sitebtn">Edit</a>
+                        <a href="javascript:;" class="deleteupdatedlogo sitebtn">Delete</a>
+                    </div>
+                </div>
+                {% endif %} -->
+                <div class="main_box">
+                    <div class="logo_container">
+                    {% if request.user.coaches.logo %}
+                    <div class=" intake-logo">
+                        <img class="main_intake_image"src="{{request.user.coaches.logo.url}}">
+                        <a href="javascript:;" class="remove_intake_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                    </div>
+                    {% else %}
+                        <a href="javascript:;" class="upload_logo sitebtn ">Add logo</a>
+                    {% endif %}
+                    </div>
+                    </div>
+
+            </div>
+        </div>
+
+        <!-- <div class="survey_questions_block">
+            <div class="surveyinst_cnt">
+            </div>
+            <form name="surveyquestfrm" id="surveyquestfrm"  class="surveycmnquestfrm">
+                <input type="hidden" class="hiddensurveyquest"  id="surveyqsurl"  value="{% url 'survey-question' surveyobj.pk %}" >
+                <div class="all_enter_quest_wrp questions_lists">
+                    <div class="quest_ans_wrp" id="1">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">1</span> <span>What are the things that make this person most effective?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest" name="surveyquestno_1" value="What are the things that make this person most effective?">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_1">
+                    <input type="hidden" name="surveyanstype_1" value="SingleTextboxQuestion" class="hiddensurveyanstype">
+                    </div>
+                    <div class="quest_ans_wrp" id="2">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">2</span> <span>What other strengths do you see in this person?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest" name="surveyquestno_2" value="What other strengths do you see in this person?">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_2">	
+                    <input type="hidden" name="surveyanstype_2" value="SingleTextboxQuestion" class="hiddensurveyanstype">					
+                    </div>
+                    <div class="quest_ans_wrp" id="3">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">3</span> <span>What new skills or behaviors would make this person even more effective?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest" name="surveyquestno_3" value="What new skills or behaviors would make this person even more effective?">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_3">
+                    <input type="hidden" name="surveyanstype_3" value="SingleTextboxQuestion" class="hiddensurveyanstype">						
+                    </div>
+                    <div class="quest_ans_wrp" id="4">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">4</span> <span>How else could this person continue to improve?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest" name="surveyquestno_4" value="How else could this person continue to improve?">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_4">	
+                    <input type="hidden" name="surveyanstype_4" value="SingleTextboxQuestion" class="hiddensurveyanstype">					
+                    </div>
+                    <div class="quest_ans_wrp" id="5">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">5</span> <span>In just a few words, what should this person start doing immediately?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest"  name="surveyquestno_5" value="In just a few words, what should this person start doing immediately?">
+                            </div> -->
+                            <!-- <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_5">
+                    <input type="hidden" name="surveyanstype_5" value="SingleTextboxQuestion" class="hiddensurveyanstype">						
+                    </div>
+                    <div class="quest_ans_wrp" id="6">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">6</span> <span>In just a few words, what should this person stop doing immediately?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest"  name="surveyquestno_6" value="In just a few words, what should this person stop doing immediately?">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_6">
+                    <input type="hidden" name="surveyanstype_6" value="SingleTextboxQuestion" class="hiddensurveyanstype">						
+                    </div>
+                    <div class="quest_ans_wrp" id="7">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">7</span> <span>In just a few words, what should this person continue doing?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest"  name="surveyquestno_7" value="In just a few words, what should this person continue doing?">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_7">					<input type="hidden" name="surveyanstype_7" value="SingleTextboxQuestion" class="hiddensurveyanstype">
+                    </div>
+                    <div class="quest_ans_wrp" id="8">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">8</span> <span>What final comments do you have that would aid in this person's development?</span></h3>
+                                <input type="hidden" class="hiddensurveyquest"  name="surveyquestno_8" value="What final comments do you have that would aid in this person's development?">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_8">
+                    <input type="hidden" name="surveyanstype_8" value="SingleTextboxQuestion" class="hiddensurveyanstype">						
+                    </div>
+                    <div class="quest_ans_wrp" id="9">
+                        <div class="clearfix survey_prevquest_block">
+                            <div class="left">
+                                <h3>Q<span class="questno">9</span> <span>Please share anything that you wish to tell the coach but you do not want to share with this person. Please note that this answer will be kept strictly confidential between you and the coach.</span></h3>
+                                <input type="hidden" class="hiddensurveyquest" name="surveyquestno_9" value="Please share anything that you wish to tell the coach but you do not want to share with this person. Please note that this answer will be kept strictly confidential between you and the coach.">
+                            </div>
+                            <div class="right alignright">
+                                <a href="javascript:;" class="sitebtn editbtn">Edit</a><a href="javascript:;" class="sitebtn deletebtn">Delete</a>
+                            </div>
+                        </div>
+                        <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                        <div class="answrp"></div>
+                    </div>
+                    <input type="hidden" class="hiddensurveyans" name="surveyansno_9">	
+                    <input type="hidden" name="surveyanstype_9" value="SingleTextboxQuestion" class="hiddensurveyanstype">					
+                    </div>									
+                </div>
+                <div class="quest_field_clone_wrp">
+                    <div class="quest_field_wrp" ansnumb="9" questnumb="10">
+                        <div class="cmn_field quest_field">
+                            <label>Q<span>10</span>.</label>
+                            <input type="text" name="questionfirst" class="mainquestfield" placeholder="Enter Question">
+                            <span class="error questerr"></span>
+                        </div>
+                        <div class="cmn_field multichoice">
+                            <div id="multichoice">
+                                <span class="qType" value="MultipleChoiceQuestion">Multiple Choice</span>
+                            </div>
+                            <div class="answertype_option_list">
+                                <ul class="option-menu long add-q-menu" view-role="actionMenuView">
+                                    <li class="add-q-menu-container">
+                                        <ul class="add-q-menu-left">
+                                            <li class="q-item">
+                                                <div class="q-item-contents">
+                                                    <div class="q-item-icon" data-help="qmc"></div>
+                                                    <a class="option add-q-item selected" data-action="MultipleChoiceQuestion" data-chatmode-support="true" data-help="qmc" href="javascript:;">
+                                                        <span class="listText">Multiple Choice</span>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        
+                                            <li class="q-item">
+                                                <div class="q-item-contents">
+                                                    <div class="q-item-icon" data-help="qsr"></div>
+                                                    <a class="option add-q-item" data-action="StarRatingQuestion" data-chatmode-support="true" data-help="qsr" href="javascript:;">
+                                                        <span class="listText">Star Rating</span>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <ul class="add-q-menu-right">
+
+                                            <li class="q-item">
+                                                <div class="q-item-contents">
+                                                    <div class="q-item-icon" data-help="qst"></div>
+                                                    <a class="option add-q-item" data-action="SingleTextboxQuestion" data-chatmode-support="true" data-help="qst" href="javascript:;">
+                                                        <span class="listText">Single Textbox</span>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div><!-- end of answertype_option_list -->
+                        <!-- </div>
+                        <div id="MultipleChoiceQuestion" class="oneofanstypeoptwrp">
+                            <div class="multichoice_field">
+                                <div class="multichoiceinn_row">
+                                    <div class="q-ans-input">
+                                        <label><input type="radio" name="your_selection"> </label>
+                                        <div class="answer-wrp">
+                                            <textarea placeholder="Enter an answer choice"></textarea>
+                                            <span class="error" id="multichoiceerr"></span>
+                                        </div>
+                                        <div class="add_remove_ansrow_icon_wrp">
+                                            <a href="javascript:;" class="addansrow">+</a>
+                                            <a href="javascript:;" class="removeansrow">-</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="multichoiceinn_row">
+                                    <div class="q-ans-input">
+                                        <label><input type="radio" name="your_selection"> </label>
+                                        <div class="answer-wrp">
+                                            <textarea placeholder="Enter an answer choice"></textarea>
+                                        </div>
+                                        <div class="add_remove_ansrow_icon_wrp">
+                                            <a href="javascript:;" class="addansrow">+</a>
+                                            <a href="javascript:;" class="removeansrow">-</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="multichoiceinn_row">
+                                    <div class="q-ans-input">
+                                        <label><input type="radio" name="your_selection"></label>
+                                        <div class="answer-wrp">
+                                            <textarea placeholder="Enter an answer choice"></textarea>
+                                        </div>
+                                        <div class="add_remove_ansrow_icon_wrp">
+                                            <a href="javascript:;" class="addansrow">+</a>
+                                            <a href="javascript:;" class="removeansrow">-</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="StarRatingQuestion" class="starRatingquest oneofanstypeoptwrp">
+                            <div class="rating_scale_options">
+                                <h4>Scale</h4>
+                                <select>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                            <div class="star_option">
+                                <h4>Color</h4>
+                                <div class="color_box_wrp">
+                                    <div class="black colrshow"><span></span></div>
+                                    <ul>
+                                        <li currcolr="black" class="black selectedcolr"></li>
+                                        <li currcolr="yellow" class="yellow"></li>
+                                        <li currcolr="red" class="red"></li>
+                                        <li currcolr="blue" class="blue"></li>
+                                        <li currcolr="green" class="green"></li>
+                                    </ul>
+                                </div>
+                                <div class="star_wrp black">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                </div>
+                            </div> -->
+                        <!-- </div>end of StarRatingQuestion -->
+                        <!-- <div id="SingleTextboxQuestion" class="singletextboxquest oneofanstypeoptwrp">
+                            <div class="multichoice_field">
+                                <div class="multichoiceinn_row">
+                                    <div class="q-ans-input">
+                                        <label><span></span></label>
+                                        <div class="answer-wrp">
+                                            <textarea placeholder="Enter an answer "></textarea>
+                                            <span class="error" id="multichoiceerr"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>	 -->
+                        <!-- </div>end of SingleTextboxQuestion -->
+                        <!-- <div class="alignright savecanquestbtnwrp">
+                            <a href="javascript:;" class="savequestbtn sitebtn" data-type="save">Save</a>
+                            <a href="javascript:;" class="cancelquetbtn sitebtn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="add_new_quest_block" style="display: none;">
+                    <a href="javascript:;" class="sitebtn addnewquestbtn">New Question</a> --> 
+                    <!-- <p>or <a href="javascript:;" class="importquestlink">Import Questions</a></p> -->
+
+                <!-- </div>
+
+                <input type="hidden" id="totalsurquestcount" name="totalsurquestcount" value="">
+                
+            </form>
+        </div> -->
+        <input type="hidden" class="hiddensurveyquest"  id="surveyqsurl"  value="{% url 'survey-question' surveyobj.pk %}">
+
+        <div id="ques_block_main" class="custom_made_question "> 
+            {% for que in ques %}
+            <div id="ques_block{{forloop.counter}}" class=" mb-3"><span class="custom_number_width">Q{{forloop.counter}}</span>
+                <textarea class="form-control border border-dark" type="text" data-type={{que.id}}>{{que}}</textarea>
+                <!-- <button class="sitebtn speech" id="speech" name="record" ><i class="fa fa-microphone" aria-hidden="true"></i></button> -->
+                <button class="sitebtn" url="{% url 'delete_que' que.id %}" data-type={{que.id}}>
+                    <i class="fa fa-trash"></i>
+                    <!-- delete -->
+                </button>
+            </div>
+            <div class="ans_block mb-3"> 
+                <span class="custom_number_width"></span>
+                <div class="form-control border border-dark ml-2" readonly=""></div>   
+                <button class="sitebtn hide-btn"><i class="fa fa-trash"></i></button>       
+              </div>
+            {% endfor %}
+            {% if conque %}                    
+                    <div id="conf_que_block" class="input_custom_wrap mb-3"><span class="custom_number_width">Q{{ques|length|add:1}}</span>
+                        <textarea class="form-control confidentional-input border border-dark" type="text" data-type={{conque.id}}>{{conque.question}}</textarea>
+                        <span class="conf-icon"><i class="mdi mdi-star"></i></span>
+                        <button class="sitebtn" url="{% url 'deleteconf_que' conque.id %}" data-type={{conque.id}}>
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="ans_block mb-3"> 
+                        <span class="custom_number_width"></span>
+                        <div class="form-control border border-dark ml-2" readonly=""></div>
+                        <button class="sitebtn hide-btn"><i class="fa fa-trash"></i></button>                  
+                      </div>
+                    {% endif %}
+        </div>
+        <div class="custom_question_cta mt-4 d-flex justify-content-center">
+            <button type="button" class="sitebtn pl-4 pr-4 mr-2" onClick="javascript:history.go(-1);">Go Back</button> 
+            <button type="button" id='add_ques' class="sitebtn pl-4 pr-4 mr-2">+ Add More</button> 
+            <button type="button" id="createsurveysub" class="sitebtn pl-4 pr-4 ml-2">Save & Continue</button>
+            <a role="button" class="linkbtn ml-3" url="#" id="conf_que">Add Confidential Question
+                <div class="info-here">
+                    <i class="fa fa-info"></i>
+                    <div class="hover-text">You may add a confidential question that will only appear in the feedback report for the coach. This question and its responses will not appear in the feedback report for client or manager.</div>
+                </div></a>
+        </div>
+
+        
+        
+        <div class="survey_preview_popup cmn_sitepopup">
+            <div class="survey_preview_inn cmn_site_inn_popup">
+                <a href="javascript:;" class="closepoup"></a>
+                <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+                    <h2>Preview</h2>
+                    <!-- <h3 class="alignleft" id="title">{{ surveyobj.title }}</h3> -->
+                    <div class="surveypreviewfrm mail-preview-wrap">                
+                    </div>
+                    <div class="progress">
+                        <h4 class="progress-text"></h4>
+                        <div class="progress-bar">
+                            <div class="inner-warp">
+                          <div data-progress="0"></div>
+                            </div>
+                        </div>
+                      </div>
+                    <!-- <div class="deviceview_wrp alignleft">
+                        <span>Device View</span>
+                        <span class="deviceicon desktopicon"><a href="javascript:;"><img src="{% static 'images/theme/desktopicon.svg' %}" ></a></span>
+                        <span class="deviceicon tableticon"><a href="javascript:;"><img src="{% static 'images/theme/tableticon.svg' %}" ></a></span>
+                        <span class="deviceicon mobileicon"><a href="javascript:;"><img  src="{% static 'images/theme/mobileicon.svg' %}"></a></span>
+                    </div> -->
+                    <div class="d-flex justify-content-center hidebtn edit-btn-wrap">
+                        <button type="button" class="closepoup sitebtn mr-3 hidebtn" >Edit Questions</button>
+                        <button type="button" class="sitebtn ml-3 hidebtn" id="shw_ins" >Edit Instructions</button>
+                    </div>
+                    <div class="d-flex justify-content-center .create_sur_btn ">
+                        <a class="newbtn pt-3 pb-3 text-white mb-3 " id="whtnxt">NEXT</a>
+                        </div>
+                </div>
+            </div>
+            <div class="whiteoverlay"></div>
+        </div><!-- end of survey_preview_popup -->
+    
+        <div class="survey_whtnxt_popup cmn_sitepopup">
+            <div class="survey_whtnxt_inn cmn_site_inn_popup">
+                <a href="javascript:;" class="closepoup"></a>
+                <div class="cmn_sitepopup_scroll congrats-wrap">
+                    <h2>Congratulations</h2>
+                    <h5>You have successfully created the survey.</h5>
+                    <div class="d-flex justify-content-center">
+                        <h4 style="color: #53B6AE; margin-top: 15px;">What's Next?</h4>
+                        <a href="{% url 'detail-client' surveyobj.Survey_client.id %}#step-2" id="step2-tab" role="tab"  class="" aria-selected="false"><span class="round-tab">2</span></a>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center drop_button">
+                        <button type="button" class="sitebtn mr-3" url="{% url 'detail-client' surveyobj.Survey_client.id %}" id="add_part">+ Add Participants</button>
+                        <a role="button" class="linkbtn ml-3" url="{% url 'detail-client' surveyobj.Survey_client.id %}" id="clifile"><u>Back to Client File</u></a>
+                    </div>                
+                </div>
+            </div>
+            <div class="whiteoverlay"></div>
+        </div>
+        <input type="hidden" class="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}">
+        <div class="upload_logo_popup cmn_sitepopup">
+            <div class="upload_logo_popup_inn cmn_site_inn_popup">
+                <a href="javascript:;" class="closepoup"></a>
+                <div class="cmn_sitepopup_scroll">
+                    <h2>Upload your logo</h2>
+                    <!-- <p class="upload-note">Image size should be less than 1 MB.</p> -->
+                    <input type="hidden" imgsrc="{% static 'images/theme/uploadimg.svg' %}" id="hiddendefuplimg">
+                    <div class="upload_logo_wrp">
+                        <div class="uploadimg"><img id="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}"></div>
+                        <div class="uploadimgname">
+                            <p>Drag and drop a file here....</p>
+                            <p>You can also upload a file from your computer.</p>
+                        </div>
+                    </div>
+                    <form name="uploadlogofrm" id="uploadlogofrm" method="post" action={% url 'survey-logo' surveyobj.pk %} enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="uploadlogo" id="uploadlogo" accept="image/*" />
+                        <input type="hidden" name="deletelogo" id="deletelogo"  value= {% url 'delete-logo' surveyobj.pk %}>
+                        <div class="sub_field">
+                            <button type="button" id="uploadlogofrmsub" class="btn btn-default">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="whiteoverlay"></div>
+        </div><!-- end of upload_logo_popup -->
+        <div class="recomm_survey_color_popup cmn_sitepopup" id="customheight">
+            <div class="recomm_survey_color_popup_inn cmn_site_inn_popup">
+                <a href="javascript:;" class="closepoup"></a>
+                <div class="cmn_sitepopup_scroll">
+                    <h2>Your Logo</h2>
+                    <div class="recomm_survey_col_box clearfix">
+                        <div class="center">
+                            <!-- <h3>Your Logo</h3> -->
+                            <div class="your-logo" id="recom_survey_logo">
+                            </div>
+                        </div>
+                        <!-- <div class="right">
+                            <h3>Recommended Colors</h3>
+                            <div class="allrecomsurvcolbox">
+                                <div class="titlebox recomsurvycolwrp">
+                                    <label>Title</label>
+                                    <div class="title_col_box innrecsurvycolbox" imgcolor="#F22F2780" onclick="myFunction('#F22F2780')"></div>
+                                </div>
+                                <div class="questbox recomsurvycolwrp">
+                                    <label>Questions</label>
+                                    <div class="questions_col_box innrecsurvycolbox" imgcolor="#40AC97A6" onclick="myFunction('#40AC97A6')"></div>
+                                </div>
+                                <div class="answerbox recomsurvycolwrp">
+                                    <label>Answers</label>
+                                    <div class="answer_col_box innrecsurvycolbox" imgcolor="#3AA49C" onclick="myFunction('#3AA49C')"></div>
+                                </div>
+                                <div class="accentsbox recomsurvycolwrp">
+                                    <label>Accents</label>
+                                    <div class="accents_col_box innrecsurvycolbox" imgcolor="#FFA81478" onclick="myFunction('#FFA81478')"></div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <!-- <div class="checkbox_cmnwrp dontshowagain_checkbox">
+                        <span class="checkboxwrp"><input type="checkbox" name="dontshowagain"></span> <label>Don't show this again</label>
+                    </div> -->
+                    <div class="recomsurvybtn_wrp">
+                        <!-- <a href="javascript:;" class="sitebtn skip_recom_color">Skip</a> -->
+                        <a href="#" class="sitebtn" id="confirm-btn" style="display:none;">Save</a>
+<button class="sitebtn" id="crop-btn" style="display:none;">Crop</button >
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="whiteoverlay"></div>
+        </div><!-- end of recomm_survey_color_popup -->
+    </div>
+</div>
+
+<div class="createsuv_instr_popup cmn_sitepopup" id="instpopup">
+    <div class="createsuv_instr_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+            <h2>Best Practice Instructions for Participants</h2>
+            <h5>Edit as needed</h5>
+            <!-- <form name="createsuvinstrfrm" id="createsuvinstrfrm" class="commnewfrmdesign" method="post"> -->
+                {% csrf_token %}
+                <div class="cmn_field">
+                    <div style="border: 1px solid #45A29E; " id="instr" contenteditable class="p-3">                        
+                        {% if surveyobj.instructions %}
+                        {{surveyobj.instructions|unquote_new| safe}}
+                        {% else %}                   
+                        <div style="font-size: .875rem;">Please be as open and candid as possible to the benefit of your colleague. Your answers will remain anonymous.</div>
+                        <ul class="bullets mt-2">                      
+                        <li> May type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>                                  
+                        <li>Your direct quotes may be included in an anonymous aggregated report from all participants. Be aware that if there is something that only you would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                        <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>                                            
+                        <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                        </ul> 
+                        {% endif %}         
+                        </div>
+                       
+                   <span class="error" id="createsuvinstrerr"></span>
+                </div>
+                <input type="hidden" id="hiddensurveyurl" action="{% url 'create-survey' %}">
+                <div class="sub_field">
+                    <button type="button" id="showparam_popup" onclick = 'saveinstr()' class="btn btn-default">Save & Continue</button>
+                </div>
+            <!-- </form> -->
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<div class="frmsucc_popup cmn_sitepopup" id="surv_format">
+    <div class="cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+        <h3 class="text-left">Choose a survey format</h3>
+           <div class="survey_parent">
+               <!-- <div class="survey_format_wrp" id="showprog">
+                   <h4>One question at a time</h4>
+                   <h6>Automaticallly scroll to the next question</h6>
+               </div>
+               <div class="survey_format_wrp survey2" id="hideprog">
+                       <h4>Classic</h4>
+                   <h6>Show all questions on a one page at once</h6>
+               </div> -->
+               </div>
+             <div class="survey_format_wrp">
+                <label>
+                    <input type="radio" name="surveyformat" value="onequestion" id="onequestattimecheck">
+                    Display one question per page
+                </label>
+                <label>
+                    <input type="radio" name="surveyformat" value="allquestion" checked>
+                    Display all questions on one page
+                </label>
+            </div>
+            <!-- <div class="create_surv_reminder_info">
+                <h3>Set Email Reminders</h3>
+                <h4>Send email reminder to:</h4>
+                <label><input type="radio" name="reminderval" value="NORESPONSE" checked> <span>No response</span></label>
+                <label><input type="radio" name="reminderval" value="PARTIALRESPONSE"> <span>Partial response</span></label>
+                <label><input type="radio" name="reminderval" value="BOTH"> <span>Both</span></label>
+                <h4>When to send reminder:</h4>
+                <label><input type="radio" name="whentoreminderval" value="WEEKLY" checked> <span>Weekly</span></label>
+                <label><input type="radio" name="whentoreminderval" value="WEEKLY48"> <span>Weekly and 48 hours before the survey is due</span></label>
+                <label><input type="radio" name="whentoreminderval" value="ONDEMAND"> <span>Send on demand</span></label>
+                <label><input type="radio" name="whentoreminderval" value="NOREMINDER"> <span>Do not send reminders</span></label>
+                <h3>Set Survey as Completed </h3><label>(Completed surveys are no longer active and therefore, responses can no longer be received)</label>
+                <label><input type="radio" name="surveymarkcomplet" value="AUTOMATICALLY" checked> <span>Automatically (survey marked “Completed” 3 weeks from date survey is sent to participants)</span></label>
+                <label><input type="radio" name="surveymarkcomplet" value="MANUALLY"> <span>Manually (mark survey “Completed” from client’s Active Survey status)</span></label>
+            </div> -->
+            <!-- <div class="checkbox_cmnwrp">
+                <span class="checkboxwrp"><input type="checkbox" name="progbar" id="progbar"></span>
+                <label>Display progress bar</label>
+            </div> -->
+            <div class="sub_field">
+            <button type="button" id="shw_preview" class="btn btn-default">Save & Continue</button>
+            </div>
+    </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<input type="hidden" id="survay_id" value="{{surveyobj.id}}">
+
+<div class="survey_title_popup_wrp cmn_sitepopup">
+    <div class="survey_title_poup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Internal Survey Title</h2>
+            <div class="surveytitle_frmwrp">
+                <form  id="surveytitfrm" name="surveytitfrm" >
+                    <div class="cmn_field">
+                        <label>Change your survey title</label>
+                        <input type="hidden" class="hiddensurveyquest"  id="surveydata"  value={% url 'survey-data' surveyobj.pk %}>
+                        <input type="text" name="newsurveytit" id="newsurveytit">
+                        <span class="error" id="newsurveytiterr"></span>
+                    </div>
+                    <div class="sub_field">
+                        <button type="button" id="surveytitsub" class="btn btn-default">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of survey_title_popup_wrp -->
+
+
+<div class="frmsucc_popup cmn_sitepopup">
+    <div class="cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <h2>Congratulations!</h2>
+        <p>You have successfully submitted your form.</p>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of frmsucc_popup -->
+                             
+<script>
+    function saveinstr() {
+			token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+			var data = {};
+			data['instr'] = document.getElementById('instr').innerHTML;
+			console.log(data)
+			try {
+					$.ajax({
+						  type: "POST",
+						  url: '{% url "save-instruction" surveyobj.id %}',
+						  data: data,
+						  headers: {'X-CSRFToken': token },
+						  success: function(data) {
+							console.log(data)
+							}
+						});
+					}
+				catch(err) {
+						console.log('error')
+					}
+            $('#instruction').fadeOut();
+		}
+        function myFunction(color) {
+        document.getElementById("recom_survey_logo").style.backgroundColor = color;
+        }
+</script>
+{% endblock content %}

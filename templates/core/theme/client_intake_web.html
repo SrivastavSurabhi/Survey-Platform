@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+{% csrf_token %}
+{% load static i18n %}
+<html>
+<head>
+	<title>Client Web Form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/theme/client-web-form.js' %}" ></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme/client-web-form.css' %}">
+
+</head>
+<body>
+	<div class="client_web_form_page">
+		<section class="client_web_form_sect">
+			<div class="center-wr">
+				<div class="client_web_form_inn">
+					<form method="post" id="clientwebform" class="commnewfrmdesign" name="clientwebform" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <div class="clientwebform_logo">
+							<figure>
+								<img src="{% static 'images/theme/sitelogo.png' %}"   alt="">
+							</figure>
+							<input type="file" name="clientwebfrmlogo" id="clientwebfrmlogo" style="display: none;">
+							<a href="javascript:;" class="sitebtn uploadchangelogo">Update/Change Logo</a>
+						</div>
+						<p>Welcome and congratulations on taking a step towards achieving your desired outcomes!</p> 
+						<p>The following questions will help me get to know you and support you the best way possible. The questions are intended to set a good foundation to begin the process of inquiry, learning and forward movement.</p> 
+						<p>Please submit this at least two business days before our coaching session. You may skip questions, and upload any documents as you see fit. As always, your information will be kept confidential.</p>
+						<p>Best, <br/>[Coach’s First Name]</p> -->
+                        <div class="clientwebformprf_wrp">
+							<div class="clientwebform_prof_img_wrp">
+								<div class="clientwebform_prf_img">
+									<a href="javascript:;" class="editclientwebfrmprofimg"><img src="{% static 'images/theme/pen.svg' %}"></a>
+									<figure><img src="{% static 'images/theme/dummy-image-landscape-1.jpg' %}"  alt=""></figure>
+								</div>
+								<input type="file" name="clientwebformprfimg" id="clientwebformprfimg" style="display: none;">
+							</div>
+							<a href="javascript:;" class="sitebtn removeimg">Remove Image</a>
+						</div>
+                        <div class="clearfix">
+                            <div class="left cmn_field inputicon usericon1"><input type="text" name="fname" id="fname" placeholder="First Name">
+                                <span class="error" id="fnameerr"></span>
+                            </div>
+                            <div class="right cmn_field inputicon usericon1"><input type="text" name="lname" id="lname" placeholder="Last Name">
+                                <span class="error" id="lnameerr"></span>
+                            </div>
+                        </div>
+						<div class="clearfix">
+                            <div class="left cmn_field inputicon usericon1"><input type="email" name="email" id="email" placeholder="Email"><span class="error" id="emailerr"></span></div>
+                            <div class="right cmn_field inputicon usericon1"><input type="tel" name="phone" id="phone" placeholder="Phone" pattern="[0-9]{10}"><span class="error" id="phoneerr"></span></div>
+                        </div>
+                        <div class="cmn_field inputicon usericon1"><input type="text" name="address" id="address" placeholder="Address"><span class="error" id="addresserr"></span></div>
+						<div class="add_info_form">
+                            <h4>Additional Info</h4>
+                            <div class="clearfix">
+                                <div class="left cmn_field inputicon usericon1"><input type="text" name="compname" id="compname" placeholder="Company Name"><span class="error" id="compnameerr"></span></div>
+                                <div class="right cmn_field inputicon usericon1"><input type="text" name="compurl" id="compurl" placeholder="Company URL"><span class="error" id="compurlerr"></span></div>
+                            </div>
+                            <div class="clearfix">
+                                <div class="left cmn_field inputicon usericon1"><input type="email" name="addemail" id="addemail" placeholder="Work Email"><span class="error" id="addemailerr"></span></div>
+                                <div class="right cmn_field inputicon usericon1"><input type="text" name="addphone" id="addphone" placeholder="Phone"><span class="error" id="addphoneerr"></span></div>
+                            </div>
+                            <div class="cmn_field inputicon usericon1"><input type="text" name="compaddress" id="compaddress" placeholder="Company Address"><span class="error" id="compaddresserr"></span></div>
+                        </div>
+						<div class="clientwebfrm_all_quest">
+							<div class="clientwebfrmquest">
+								<p>1. What are the organizational goals and objectives and how do you contribute?</p>
+								<div class="cmn_quest_field"><input type="text" value="" name="questnumber1"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>2. If you have taken part in coaching in the past, what worked well for you and what did not work for you?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber2"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>3. What do you hope to get out of this coaching engagement? i.e. what will be most different for you six months from now?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber3"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>4. Where were you born and raised and with whom did you grow up, i.e. parents, brother, sister, etc.?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber4"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>5. What schools did you attend (college and post-college)?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber5"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>6. What is your current family situation? Are you single? Do you have a spouse or partner? Do you have children?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber6"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>7. How would people have described your personality while you were growing up?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber7"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>8. What were your best subjects in middle school and high school?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber8"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>9. What extracurricular activities did you engage in (sports, clubs, jobs)?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber9"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>10. In your career, describe one of the most difficult challenges you faced. Explain how you approached it and with whom you worked best and least well.</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber10"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>11. Looking back in your career and life, can you describe some successes or accomplishments that you feel the most proud of?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber11"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>12. As you look ahead in your career, are there things you would especially like to avoid or are afraid of and why?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber12"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>13. As you look ahead in your career, are there things you are especially looking forward to and why?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber13"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>14. What are you really good at in your career? What do you have to contribute that is unique or what special knowledge do you have?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber14"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>15. What is the compliment or acknowledgment that you hear most often about yourself?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber15"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>16. How would you describe nagement style? What do you do best and what do you do least well?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber16"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>17. What do you do when you’re really up against an obstacle or barrier?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber17"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>18. When you are most “stuck,” what can I say that will return you to action?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber18"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>19. How do you go about learning something new?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber19"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>20. What approaches encourage you to motivate?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber20"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>21. What approaches discourage or de-motivate you?</p>
+								<div class="cmn_quest_field"><input type="text" name="questnumber21"></div>
+							</div>
+							<div class="clientwebfrmquest">
+								<p>It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
+								<div id="file-upload" class="custom-file-upload">
+									<figure><img  src="{% static 'images/theme/cloud-computing.svg' %}" alt=""></figure>
+                                    <span class="uploadspan">Upload File</span>
+                                    <input type="file" name="uploadlogo" id="uploadlogo" />
+									<!-- Progress bar -->
+									<div class="progress" style="display: none;">
+										<label>File Name</label>
+									    <div class="progress_bar_wrp"><div class="progress-bar"></div></div>
+									    <span>377 Kb</span>
+									</div>
+								</div>
+							</div>
+							<div class="sub_field">
+								<button type="submit" id="subclientwebfrm" class="btn btn-default">Submit Form</button>
+							</div>
+						</div>
+					</form>
+				</div> 
+			</div>
+		</section><!-- end of client_web_form_sect -->
+		<input type="hidden" class="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}">
+		<div class="upload_logo_popup cmn_sitepopup">
+			<div class="upload_logo_popup_inn cmn_site_inn_popup">
+				<a href="javascript:;" class="closepoup"></a>
+				<div class="cmn_sitepopup_scroll">
+					<h2>Upload your logo</h2>
+					<!-- <p class="upload-note">Image size should be less than 1 MB.</p> -->
+					<div class="upload_logo_wrp">
+						<div class="uploadimg"><img  src="{% static 'images/theme/uploadimg.svg' %}" ></div>
+						<div class="uploadimgname">
+							<p>Drag and drop a file here.</p>
+							<p>You can also upload a file from your computer.</p>
+						</div>
+					</div>
+					<!-- <form name="uploadlogofrm" id="uploadlogofrm" method="post" enctype="multipart/form-data">
+					<input type="file" name="uploadlogo" id="uploadlogo" />
+					<div class="sub_field">
+						<button type="button" id="uploadlogofrmcancel" class="btn btn-default">Cancel</button>
+					</div>
+				</form> -->
+				</div>
+			</div>
+			<div class="whiteoverlay"></div>
+		</div><!-- end of upload_logo_popup -->
+		<div class="frmsucc_popup cmn_sitepopup">
+			<div class="cmn_site_inn_popup">
+				<a href="javascript:;" class="closepoup"></a>
+				<div class="cmn_sitepopup_scroll"></div>
+					<h2>Congratulations!</h2>
+					<p>You have successfully submitted your form.</p>
+				</div>
+			</div>
+			<div class="whiteoverlay"></div>
+		</div><!-- end of frmsucc_popup -->
+	</div><!-- end of client_web_form_page -->
+	<footer class="sitefooter_new">
+		<div class="center-wr">
+			<div class="sitefooter_inn">
+				<p>&#169; Creative Assessment Portal  powered by Back Bay Executive Coaching</p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>
+
+<script>
+    
+    var ms = "{{ error|safe }}";
+    var ss = "{{ sucess|safe }}"
+    if(ms) {
+            alert("something went wrong please use unique email")
+        }
+    if(ss) {
+        jQuery('.frmsucc_popup').show();
+		modalShow(true);
+        }
+
+</script>

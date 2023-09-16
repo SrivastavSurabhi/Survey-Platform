@@ -1,0 +1,194 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}" ></script>
+<script src="{% static 'js/theme/survey_list.js' %}" ></script>
+<script src="{% static 'js/theme/sort.js' %}" ></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/active_clients.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}">
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+{% block content %}
+
+<div class="survey_list_page_wrp client_detail_wrp">
+    <div class="content-wrapper">
+        
+        <div class="d-block client_table mb-2 mb-lg-4">
+            <div class="row align-items-center">
+                <div class="col-12 col-sm-12 col-md-12">
+                    <div class="d-md-flex align-items-center justify-content-between">
+                        <div class="table-title">
+                            <h4 class="text-secondary font-weight-bold mb-4 mb-md-2 text-center text-md-left">
+                                All Clients
+                            </h4>
+                        </div>
+                        <div class="add-action d-inline-block">
+                            <a href="{% url 'client-intake' %}" class="btn them-outline-btn">
+                                + Add Client 
+                            </a>
+                        </div>
+                        <!-- <div class="right survey_right_wrp alignright global_table sort-drop-table" >
+                            <div class="survey_sort_wrp">
+                                <a href="javascript:;" class="sortbydropdowm">Sort By</a>
+                                <ul class="sortbydropdowmlist list-unstyled">
+                                    <li>
+                                        <a class="nosort" value="1">Name</a>
+                                    </li>
+                                    <li >
+                                        <a class="nosort" value="2">Organization</a>    
+                                    </li>
+                                    <li >
+                                        <a class="nosort" value="4">Status</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> -->
+                    </div> 
+                </div>
+            </div>
+
+            <div class="row mt-2 mt-lg-3">
+                <div class="col-12 col-md-12">
+                    <div class="cust-responsive global_table">
+                        <div class="right survey_right_wrp alignright  global_table">
+    
+                            <div class="survey_sort_wrp sort-grp ">
+                                <a href="javascript:;" class="sortbydropdowm">Sort By</a>
+                                <ul class="sortbydropdowmlist">
+                                    <li>
+                                        <a class="nosort" value="1">Name</a>
+                                    </li>
+                                    <li>
+                                        <a class="nosort" value="2">Organization</a>
+                                    </li>
+                                    <li>
+                                        <a class="nosort" value="4">Survey Status</a>
+                                    </li>                                   
+                                </ul>
+                            </div>
+    
+                        </div>
+                        <table class="table table_design " id="myTable">
+                        <!-- <table class="table cmn_table_wrp client_coach_list_table mt-0" id="myTable"> -->
+                            <thead>
+                                <tr>	
+                                    <th>No.</th> 
+                                    <th >Profile</th>                                    
+                                    <th>Name</th>
+                                    <th >Organization</th> 
+                                    <th >Email</th> 
+                                    <th >Coach</th> 
+                                    <!-- <th>Status</th> -->
+                                    <th></th>                               
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- {% if clientlist.paginator.num_pages > 1 %}
+                    <div class="survey_paginat_wrp d-block text-center mt-3 mt-lg-4">
+                        <div class="survey_pagination">
+                            <a {% if clientlist.has_previous %} href="?page={{ clientlist.previous_page_number }}" {% else %} href="" {% endif %}  class="prevpagination  alignleft"><svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#e0e0e0;}</style></defs><path class="a" d="M82.826,11.233,93.455.619a2.048,2.048,0,0,1,2.935,0l1.239,1.223a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L89.705,12.7l7.923,7.923a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L96.39,24.8a2.086,2.086,0,0,1-2.935,0L82.826,14.184a2.087,2.087,0,0,1-.6-1.484A2,2,0,0,1,82.826,11.233Z" transform="translate(-82.222 0)"/></svg></a>
+                            <a {% if clientlist.has_next %} href="?page={{ clientlist.next_page_number }}" {% else %} href="" {% endif %}  class="nextpagination alignright"><svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#fff;}</style></defs><g transform="translate(0 0)"><path class="a" d="M97.628,11.233,87,.619a2.048,2.048,0,0,0-2.935,0L82.826,1.842a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L90.749,12.7l-7.923,7.923a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L84.064,24.8A2.086,2.086,0,0,0,87,24.8L97.628,14.184a2.087,2.087,0,0,0,.6-1.484A2,2,0,0,0,97.628,11.233Z" transform="translate(-82.222 0)"/></g></svg></a>
+                        </div>
+                    </div>
+                    {% endif %} -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        localStorage.clear();
+        var table = $('#myTable').DataTable({
+            responsive: true, 
+            serverSide: true,
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+			sAjaxSource: window.location.origin + "/clientlistjson/",        
+                    columns: [
+                        {
+                    name: 'no',
+                    data: null,
+                    render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+
+                    },
+                    {name: "profile_img", data:0,
+                        "render": function(data, type, row, meta) {  
+                            link = document.location.origin+'/media/'+data                        
+                            return '<div class="img_wrp"><img src="'+link+'"/></div>';}},
+                    {name: "first_name", data:1,
+                        "render": function(data, type, row, meta) {  
+                            link = document.location.origin+'/super_admin/client/'+row[4]                        
+                            return '<a href="'+link+'"/>'+data+'</a>';}},
+                    // link = document.location.origin+'/client-detail/'+data 
+                    // },
+                    {name: "company_name", data:2},
+                    {name: "email", data:3}, 
+                    {name: "coach", data:5}, 
+                    // {name: "status", data:"Active",
+                    //     "render": function(data) {
+                    //         return 'Active';}},    
+                    {name: "id", data:4,   
+                        "render": function(data) {   
+                            link = document.location.origin+'/super_admin/client/'+data                       
+                        return ' <a href="javascript:;" class="edittabbtn"><svg xmlns="http://www.w3.org/2000/svg" width="6.8" height="27.2" viewBox="0 0 6.8 27.2"><defs><style>.a{fill:#3b3b3b;}</style></defs><path class="a" d="M6.8,195.4A3.4,3.4,0,1,1,3.4,192,3.4,3.4,0,0,1,6.8,195.4Zm0,0" transform="translate(0 -181.8)"></path><path class="a" d="M6.8,3.4A3.4,3.4,0,1,1,3.4,0,3.4,3.4,0,0,1,6.8,3.4Zm0,0"></path><path class="a" d="M6.8,387.4A3.4,3.4,0,1,1,3.4,384,3.4,3.4,0,0,1,6.8,387.4Zm0,0" transform="translate(0 -363.6)"></path></svg></a> <div class="editpopup_wrp"> <a href="'+link+'">More Detail</a> </div>';}},                                      
+                ],
+                    
+            // language: {                
+            //     "info": "Page _PAGE_ of _PAGES_",                          
+            // },
+            // "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            //     var index = iDisplayIndexFull + 1;
+            //     $("td:first", nRow).html(index);
+            //     return nRow;
+            // },
+            
+        });    
+        $(document).on('click', '.nosort', function() {
+                table.order([$(this).attr('value'), 'asc']).draw();
+                table.page('next').draw('page');
+                table.on('order.dt search.dt', function() {
+                    let i = 1;
+                    table.cells(null, 0, {
+                        search: 'applied',
+                        order: 'applied'
+                    }).every(function(cell) {
+                        this.data(i++);
+                    });
+                }).draw();
+            }) 
+            
+        // $('#myTable_filter input').on( 'keyup', function () {
+        //     table.search(  $('#myTable_paginate .paginate_button').removeClass('disabled') ).draw();
+           
+        // } );
+        
+    })
+
+</script>
+
+{% endblock content %}
+

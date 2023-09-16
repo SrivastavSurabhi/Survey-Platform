@@ -1,0 +1,225 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/profile.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<script src="{% static 'js/theme/profile.js' %}"></script>
+<script src="{% static 'js/theme/admin.js' %}"></script>
+
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<div class="content-wrapper  plan_page_wrp">
+  
+        <div class="center-wr">
+            <div class="plan-history">
+                
+                <div class="row all_plan_wrp mt-4 mb-2">
+                    {% for pln in plan %}
+                    <div class=" col-md-6 col-12 mb-5">
+                        <div class="plan_inn_wrp individ_plan_wrp w-100">
+                            <div class="plan_tit_wp" style="background-color: {{pln.color}};">
+                                <h3 class="title">{{pln.title}}</h3>
+                                <p>$<span class="prize">{{pln.prizepersurvey}}</span> / survey,starting with pack of <span class="surveycount">{{pln.noofsurvey}}</span><br> $<span class="annualfee">{% if pln.mode == "Yearly" %} {{pln.annuallicencefee}} {% else %} {{pln.monthlylicencefee}} {% endif %}</span> Annual license fee. Pay annually or monthy</p>
+                                <a href="javascript:;" class="editprofileimg editplan" id="{{pln.id}}"><img src="/static/images/theme/grey_pen.svg"></a>
+                            </div>
+                            <div class="plan_detail_wrp servicesinclude">
+                                    {{pln.servicesinclude|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                
+                </div>
+
+                
+
+                
+            </div>
+        </div>
+    
+    <div class="row mt-2 mt-lg-4">
+        <div class="col-12 col-md-12">
+            <div class="cust-responsive">
+                <table class="table cmn_table_wrp client_coach_list_table" id="myTable">
+                    <thead>
+                        <tr>
+                            <th style="width:10%;">No.</th>
+                            <th style="width:17%">Coach Name</th>
+                            <th style="width:17%">Plan Purchased</th>
+                            <th style="width:17%">Plan Purchasing Date</th>
+                            <th style="width:17%">No of Surveys used</th>
+                            <th style="width:17%">No of Surveys left</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for upln in userplan %}
+                       
+                        <tr>
+                            <td style="width:10%">{{forloop.counter}}</td>
+                            <td style="width:17%">{{upln.coach.first_name}} {{upln.coach.last_name}}</td>
+                            {% for upi in upinfo %}
+                                 {% if upln == upi.uplan %}
+                            <td style="width:17%">
+                                <a class="d-inline-block" >
+                                    {{upi.title}}
+                                </a>
+                            </td>
+                            <td style="width:17%">{{upln.created_ts|date:"F d, Y"}}</td>
+                            
+                            <td style="width:17%" class="survey_status">                              
+                                 {{ upi.surveyused }}                                 
+                           </td>
+                            <td style="width:17%" class="report_status">                              
+                                 {{ upi.surveyleft }}                                 
+                           </td>
+                           {% endif %}
+                              {% endfor %}
+                        </tr>
+                        
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2 mt-lg-4">
+      <div class="col-md-12">
+        <div class="add-action d-inline-block mb-4">
+           <a href="/client-intake/" class="btn them-outline-btn mr-2">
+              Create Surveys 
+           </a>
+           <a href="/client-intake/" class="btn them-outline-btn mr-2">
+              Send Surveys
+           </a>
+           <a href="/client-intake/" class="btn them-outline-btn">
+              Generate Reports 
+           </a>
+        </div>
+      </div>
+   </div>
+</div>
+ 
+
+    <div class="modal fade" id="editplanmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h3 class="text-dark font-weight-bold mb-0">Edit Plan</h3>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <div class="modal-body">
+             <div class="addmodal">
+                <div class="add_partici_wrp">
+                   <!-- <p>Enter each participant who would be providing feedback.</p> -->
+                   <div class="client_intake_form">
+                      <form name="planeditform" class="planeditform" id="planeditform"
+                         method="post" action="{% url 'planhistory' %}">
+                         {% csrf_token %}
+                         <div class="add_participant_data overflow-auto col-sm-12 h-auto ">
+                            <div class="d-block client-info mb-0 mb-lg-0" id="block-1">
+                               <div class="row mt-2 mt-lg-4">
+                                  <div class="col-12 col-md-6 col-lg-6">
+                                     <div class="form-group">
+                                        <div class="input-group cst-input-group mb-3">
+                                           <div class="input-group-prepend"><span
+                                              class="input-group-text" id="basic-addon1"><i
+                                              class="mdi mdi-account-outline"></i></span>
+                                           </div>
+                                           <input type="hidden" name="id" id="planid">
+                                           <input type="text" name="planname"
+                                              class="form-control cutome-input" id="planname"
+                                              placeholder="plan Name" required>
+                                           <span class="error" id="plannameerr"></span>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-12 col-md-6 col-lg-6">
+                                     <div class="form-group">
+                                        <div class="input-group cst-input-group mb-3">
+                                           <div class="input-group-prepend"><span
+                                              class="input-group-text" id="basic-addon1"><i
+                                              class="mdi mdi-account-outline"></i></span>
+                                           </div>
+                                           <input type="number" name="prizepersurvey"
+                                              class="form-control cutome-input" id="prizepersurvey"
+                                              placeholder="Prize Per Survey" required>
+                                           <span class="error" id="prizepersurveyerr"></span>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-12 col-md-6 col-lg-6">
+                                     <div class="form-group">
+                                        <div class="input-group cst-input-group mb-3">
+                                           <div class="input-group-prepend"><span
+                                              class="input-group-text" id="basic-addon1"><i
+                                              class="mdi mdi-account-outline"></i></span>
+                                           </div>
+                                           <input type="number" name="noofsurvey"
+                                              class="form-control cutome-input" id="noofsurvey"
+                                              placeholder="No of Survey" required>
+                                           <span class="error" id="noofsurveylerr"></span>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-12 col-md-6 col-lg-6">
+                                     <div class="form-group">
+                                        <div class="input-group cst-input-group mb-3">
+                                           <div class="input-group-prepend"><span
+                                              class="input-group-text" id="basic-addon1"><i
+                                              class="mdi mdi-account-outline"></i></span>
+                                           </div>
+                                           <input type="number" name="licencefee"
+                                              class="form-control cutome-input" id="licencefee"
+                                              placeholder="Annual Licence Fee" required>
+                                           <span class="error" id="licencefeeerr"></span>
+                                        </div>
+                                        
+                                     </div>
+                                  </div>
+                             
+                               <div class="col-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                   <div class="input-group cst-input-group mb-3">
+                                      <div contenteditable class="plan_detail_wrp servicesinclude form-control servicesincludedesc cutome-input client_email_content m-0 " name="plandesc" placeholder="Description" rows="10">  
+                                      </div>
+                                      <span class="error" id="cdescriptionerr"></span>
+                                   </div>
+                                </div>
+                             </div>
+                            </div>
+                         </div>
+                        </div>
+                         <div class="sub_field mt-0 mb-1 text-center">
+                            <button type="button" class="sitebtn m-0" id="saveplan" data-toggle="modal">Save</button>
+                         </div>
+                      </form>
+                   </div>
+                </div>
+             </div>
+          </div>          
+       </div>
+    </div>
+ </div>
+ 
+
+   
+    {% endblock content %}

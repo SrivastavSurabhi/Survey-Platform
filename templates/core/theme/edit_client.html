@@ -1,0 +1,212 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/client-intake-form.css' %}">
+<script src="{% static 'js/theme/client-intake-form.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/client-intake-form.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/step.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabeld">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+
+<div class="main-panel client_intake_form">
+    <div class="content-wrapper">
+
+        <div class="page-title-header">
+            <div class="row">
+                <div class="col-12 col-md-7 col-lg-12">
+                    <div class="page-title-text mb-sm-4 mb-lg-0">
+                        <h3 class="text-dark font-weight-bold">
+                            Edit Client
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="client_intake_form">
+            {% if redirectto %}
+            <form name="clientintakeform" class="commnewfrmdesign" id="clientintakeform" method="post" action="{% url 'edit-client' id %}?next='dashboard'">
+            {% else %}            
+                <form name="clientintakeform" class="commnewfrmdesign" id="clientintakeform" method="post" action="{% url 'edit-client' id %}">
+            {% endif %}
+                <div class="d-block client-info mb-2 mb-lg-4">
+                    {% csrf_token %}
+                    <div class="row mt-2 mt-lg-4">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="text" name="fname" class="form-control cutome-input" id="fname"  value = "{{ clientobj.first_name }}" placeholder="First Name">
+                                    <div class="input-group-append"><span class="input-group-text requird-field asterisk-sign">&#42;</span></div>
+                                    <span class="error" id="fnameerr"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="text" name="lname" class="form-control cutome-input" id="lname" value = "{{ clientobj.last_name }}"  placeholder="Last Name">
+                                    <div class="input-group-append"><span class="input-group-text requird-field asterisk-sign">&#42;</span></div>
+                                    <span class="error" id="lnameerr"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="email" name="email" class="form-control cutome-input" id="email"  value = "{{ clientobj.email }}" placeholder="Email">
+                                    <div class="input-group-append"><span class="input-group-text requird-field asterisk-sign">&#42;</span></div>
+                                    <span class="error" id="emailerr"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="tel" name="phone" pattern="[0-9]{10}" class="form-control cutome-input" id="phone" value= "{% if clientobj.phone != None %} {{clientobj.phone}} {% endif %}" maxlength="10" placeholder="Phone">
+                                    <span class="error" id="phoneerr"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="input-group cst-input-group mb-3">
+                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                    <input type="text" name="compname" id="compname"  class="form-control cutome-input" value="{% if clientobj.company_name != None %} {{clientobj.company_name}} {% endif %}" placeholder="Organization Name">
+                                    <!-- <div class="input-group-append"><span class="input-group-text requird-field asterisk-sign">&#42;</span></div> -->
+                                    <span class="error" id="compnameerr"></span>
+                                </div>
+                            </div>
+                        </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <div class="input-group cst-input-group mb-3">
+                                            <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                            <input type="text" name="compurl" id="compurl"  class="form-control cutome-input" value="{% if clientobj.company_url != None %} {{clientobj.company_url}} {% endif %}" placeholder="Organization URL (note-Please include http://)">
+                                            <span class="error" id="compurlerr"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <div class="input-group cst-input-group mb-3">
+                                                <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                                <input type="text" class="form-control cutome-input" name="title" id="comptitle" value="{% if clientobj.title != None %} {{clientobj.title}} {% endif %}" placeholder="Title ">
+                                                <!-- <div class="input-group-append"><span class="input-group-text requird-field asterisk-sign">&#42;</span></div> -->
+                                                <span class="error" id="comptitleerr"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <div class="input-group cst-input-group mb-3">
+                                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                                    <input type="text" name="address" class="form-control cutome-input" id="address" value="{% if clientobj.address != None %} {{clientobj.address}} {% endif %}" placeholder="Address">
+                                                    <span class="error" id="addresserr"></span>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <div class="form-group mb-3">
+                                                    <div class="input-group cst-input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                                        <input type="text" class="form-control cutome-input" name="city" id="city" value="{% if clientobj.city != None %} {{clientobj.city}} {% endif %}" placeholder="City">
+                                                        <!-- <span class="error" id="ccity"></span> -->
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <div class="form-group mb-3">
+                                                        <div class="input-group cst-input-group">
+                                                            <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                                            <input type="text" class="form-control cutome-input" name="zip" id="city" value="{% if clientobj.zip != None %} {{clientobj.zip}} {% endif %}" placeholder="ZIP Code">
+                                                            <!-- <span class="error" id="ccity"></span> -->
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                        <div class="form-group mb-3">
+                                                            <div class="input-group cst-input-group ">
+                                                                <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                                                <input type="text" class="form-control cutome-input" name="state" id="state" value="{% if clientobj.state != None %} {{clientobj.state}} {% endif %}" placeholder="State">
+                                                                <!-- <span class="error" id="csta
+                                                                    te"></span> -->
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                            <div class="col-12 col-md-6 col-lg-6">
+                                                                <div class="form-group mb-3">
+                                                                    <div class="input-group cst-input-group">
+                                                                        <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline"></i></span></div>
+                                                                        <input type="text" class="form-control cutome-input" name="country" id="country" value="{% if clientobj.country != None %} {{clientobj.country}} {% endif %}" placeholder="Country">
+                                                                        <!-- <span class="error" id="ccountry"></span> -->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+         
+
+                <div class="sub_field">
+                    <button type="button" class="btn btn-default mr-2" id="clientintakesub">Save</button>
+                    <!-- <a style="color:#45A29E" class="sitebtn" href="{% url 'detail-client' id %}">Cancel</a> -->
+                    <button style="color:#45A29E" type="button" class="sitebtn" onclick="window.history.back();">Cancel</button>
+                </div>
+
+               
+
+             
+                <div class="intakeformsuccpopup cmn_sitepopup">
+                    <div class="intakeformsuccpopup_inn cmn_site_inn_popup">
+                        <a href="javascript:;" class="closepoup"></a>
+                        <div class="cmn_sitepopup_scroll">
+                            <h2></h2>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="whiteoverlay"></div>
+                </div>
+               
+
+            </form> 
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extrajs %}
+<script>
+    var ms = "{{ suc|safe }}"
+    if (ms) {
+        jQuery('.intakeformsuccpopup').fadeIn();
+    }
+    //   scroll js
+
+    $(document).ready(function () {
+        if (!$.browser.webkit) {
+            $('.wrapper').html('<p>Sorry! Non webkit users. :(</p>');
+        }
+    });
+</script>
+
+{% endblock extrajs %}

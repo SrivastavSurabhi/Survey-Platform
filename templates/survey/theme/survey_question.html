@@ -1,0 +1,734 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<script src="{% static 'js/theme/jquery.richtext.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/richtext.min.css' %}">
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}" ></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+{% endblock extrastyle %}
+
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="survey_quest_wrp mt-0">
+        <div class="dash_instr_help_icon create_question">
+            <div class="main_title"><h3 class="common-head surveymaintit">{{ surveyobj.title }} </h3></div>
+            <!-- <div class="alignright">
+                <a href="javascript:;" class="dashinsthelpbtn"><img src="{% static 'images/theme/questmark.png' %}" alt=""></a> -->
+                <!-- <div class="dash_instr_help_popup">
+                    <div class="dash_instr_help_inn_popup">
+                        <div class="dash_instr_help_scrollbar">
+                            <h3>Help & Best Practice Tips</h3>
+                            <div class="dash_instr_help_cnt">
+                                <h4>Survey Title</h4>
+                                <p>Survey title is for your internal use and will not be visible by the participants.</p>
+                                <h4 class="insttips">Best Practice Tip:</h4>
+                                <p>Be consistent when naming your surveys. For example: “Client Name , 360 Feedback” or “Client Name, Repeat 360 Feedback”</p>
+                            </div>
+                            <div class="dash_instr_help_cnt">
+                                <h4>Upload Logo</h4>
+                                <p>Customize the survey with your logo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>end of dash_instr_help_popup -->
+            <!-- </div> -->
+        </div>
+
+        <div class="survey_upload_inst_btn upload_logo_cta">
+            <div class="alignright">
+                <!-- {% if not surveyobj.company_logo   %}
+                <div class="alignright">
+                    <a href="javascript:;" class="upload_logo sitebtn">Upload Logo</a>
+                   
+                </div>
+            </div>
+                {% endif %}
+
+                {% if surveyobj.company_logo   %}
+                <div class="showuploadlogo" >
+                    <div class="showuploadlogoimgwrp">
+                        <img src={{ surveyobj.company_logo.url }} alt="">
+                    </div>
+                    <div class="edit_delet_logo_wrp">
+                        <a href="javascript:;" class="editupdatedlogo sitebtn">Edit</a>
+                        <a href="javascript:;" class="deleteupdatedlogo sitebtn">Delete</a>
+                    </div>
+                </div>
+                {% endif %} -->
+                <div class="main_box">
+                    <div class="logo_container">
+                    {% if request.user.coaches.logo %}
+                    <div class=" intake-logo">
+                        <img class="main_intake_image"src="{{request.user.coaches.logo.url}}">
+                        <a href="javascript:;" class="remove_intake_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                    </div>
+                    {% else %}
+                        <a href="javascript:;" class="upload_logo sitebtn ">Add logo</a>
+                    {% endif %}
+                    </div>
+                    </div>
+
+            </div>
+        </div>
+
+        <div class="survey_questions_block mt-0">
+            <div class="surveyinst_cnt"></div>
+
+            <!-- <form name="surveyquestfrm" id="surveyquestfrm"  class="surveycmnquestfrm" > -->
+                <input type="hidden" class="hiddensurveyquest"  id="surveyqsurl"  value="{% url 'survey-question' surveyobj.pk %}">
+                <div class="all_enter_quest_wrp"></div>
+                
+                {% if questions %}
+                {% for que in questions %}
+
+                <!-- <div class="quest_field_clone_wrp">
+                    <div class="quest_field_wrp" ansnumb="0" questnumb="1">
+                        <div class="row">
+                            <div class="col-md-6 cmn_field quest_field m-0 mb-3">
+                                <label>Q<span>{{forloop.counter}}</span>.</label>
+                                <input type="text" name="questionfirst" class="mainquestfield" value="{{que.question}}">
+                                <span class="error questerr"></span>
+                            </div>
+
+                            <div class="col-md-6 cmn_field multichoice m-0 mb-3">
+                                {% if que.types == "MU" %}
+                                <div id="multichoice"><span class="qType" value="MultipleChoiceQuestion">Multiple Choice</span></div>
+                                <div class="survey_prevansw_block" id="MultipleChoiceAnswer" selectedquesttype="MultipleChoiceQuestion">
+                                    {{  que.option }}
+                                </div>
+                                {% elif que.types == "STAR" %}
+                                <div id="multichoice"><span class="qType" value="StarRatingQuestion">Star Rating</span></div>
+                                {% elif que.types == "TX" %}
+                                <div id="multichoice"><span class="qType" value="SingleTextboxQuestion">Single Textbox</span></div>
+                                <div class="survey_prevansw_block" id="SingleTextboxAnswer" selectedquesttype="SingleTextboxQuestion">
+                                    {{  que.option }}
+                                </div>
+                                {% endif  %}
+
+                                <div class="answertype_option_list">
+                                    <ul class="option-menu long add-q-menu" view-role="actionMenuView">
+                                        <li class="add-q-menu-container">
+                                            <ul class="add-q-menu-left">
+                                                <li class="q-item">
+                                                    <div class="q-item-contents">
+                                                        <div class="q-item-icon" data-help="qmc"></div>
+                                                        <a class="option add-q-item selected" data-action="MultipleChoiceQuestion" data-chatmode-support="true" data-help="qmc" href="javascript:;">
+                                                            <span class="listText">Multiple Choice</span>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                                <li class="q-item">
+                                                    <div class="q-item-contents">
+                                                        <div class="q-item-icon" data-help="qsr"></div>
+                                                        <a class="option add-q-item" data-action="StarRatingQuestion" data-chatmode-support="true" data-help="qsr" href="javascript:;">
+                                                            <span class="listText">Star Rating</span>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                                <li class="q-item">
+                                                    <div class="q-item-contents">
+                                                        <div class="q-item-icon" data-help="qst"></div>
+                                                        <a class="option add-q-item" data-action="SingleTextboxQuestion" data-chatmode-support="true" data-help="qst" href="javascript:;">
+                                                            <span class="listText">Single Textbox</span>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div><!-- end of answertype_option_list -->
+                            <!-- </div> -->
+
+                            <!-- <div id="MultipleChoiceQuestion" class="col-md-12 oneofanstypeoptwrp">
+                                <div class="multichoice_field">
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><input type="radio" name="your_selection"> </label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer choice"></textarea>
+                                                <span class="error" id="multichoiceerr"></span>
+                                            </div>
+                                            <div class="add_remove_ansrow_icon_wrp">
+                                                <a href="javascript:;" class="addansrow">+</a>
+                                                <a href="javascript:;" class="removeansrow">-</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><input type="radio" name="your_selection"> </label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer choice"></textarea>
+                                            </div>
+                                            <div class="add_remove_ansrow_icon_wrp">
+                                                <a href="javascript:;" class="addansrow">+</a>
+                                                <a href="javascript:;" class="removeansrow">-</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><input type="radio" name="your_selection"></label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer choice"></textarea>
+                                            </div>
+                                            <div class="add_remove_ansrow_icon_wrp">
+                                                <a href="javascript:;" class="addansrow">+</a>
+                                                <a href="javascript:;" class="removeansrow">-</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>end of MultipleChoiceQuestion -->
+
+                            <!-- <div id="StarRatingQuestion" class="col-md-12 starRatingquest oneofanstypeoptwrp">
+                                <div class="rating_scale_options">
+                                    <h4>Scale</h4>
+                                    <select>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                                <div class="star_option">
+                                    <h4>Color</h4>
+                                    <div class="color_box_wrp">
+                                        <div class="black colrshow"><span></span></div>
+                                        <ul>
+                                            <li currcolr="black" class="black"></li>
+                                            <li currcolr="yellow" class="yellow selectedcolr"></li>
+                                            <li currcolr="red" class="red"></li>
+                                            <li currcolr="blue" class="blue"></li>
+                                            <li currcolr="green" class="green"></li>
+                                        </ul>
+                                    </div>
+                                    <div class="star_wrp black">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>end of StarRatingQuestion -->
+
+                            <!-- <div id="SingleTextboxQuestion" class="col-md-12 singletextboxquest oneofanstypeoptwrp">
+                                <div class="multichoice_field">
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><span></span></label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer"></textarea>
+                                                <span class="error" id="multichoiceerr"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>end of SingleTextboxQuestion -->
+
+                            <!-- <div class="col-md-12 alignright savecanquestbtnwrp">
+                                <a href="javascript:;" class="savequestbtn sitebtn" data-type="save">Save</a>
+                                <a href="javascript:;" class="cancelquetbtn sitebtn">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div> --> -->
+
+                    <div> 
+                        <input type="text">{{que}}</input>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <!-- <div class="quest_field_clone_wrp">
+                    <div class="quest_field_wrp" ansnumb="0" questnumb="1">
+                        <div class="row">
+                            <div class="col-md-6 cmn_field quest_field m-0 mb-3">
+                                <label>Q<span>1</span>.</label>
+                                <input type="text" name="questionfirst" class="mainquestfield" placeholder="Enter Question">
+                                <span class="error questerr"></span>
+                            </div>
+
+                            <div class="col-md-6 cmn_field multichoice m-0 mb-3">
+                                <div id="multichoice"><span class="qType" value="MultipleChoiceQuestion">Multiple Choice</span></div>
+                                <div class="answertype_option_list">
+                                    <ul class="option-menu long add-q-menu" view-role="actionMenuView">
+                                        <li class="add-q-menu-container">
+                                            <ul class="add-q-menu-left">
+                                                <li class="q-item">
+                                                    <div class="q-item-contents">
+                                                        <div class="q-item-icon" data-help="qmc"></div>
+                                                        <a class="option add-q-item selected" data-action="MultipleChoiceQuestion" data-chatmode-support="true" data-help="qmc" href="javascript:;">
+                                                            <span class="listText">Multiple Choice</span>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                                <li class="q-item">
+                                                    <div class="q-item-contents">
+                                                        <div class="q-item-icon" data-help="qsr"></div>
+                                                        <a class="option add-q-item" data-action="StarRatingQuestion" data-chatmode-support="true" data-help="qsr" href="javascript:;">
+                                                            <span class="listText">Star Rating</span>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                                <li class="q-item">
+                                                    <div class="q-item-contents">
+                                                        <div class="q-item-icon" data-help="qst"></div>
+                                                        <a class="option add-q-item" data-action="SingleTextboxQuestion" data-chatmode-support="true" data-help="qst" href="javascript:;">
+                                                            <span class="listText">Single Textbox</span>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div><!-- end of answertype_option_list -->
+                            <!-- </div>
+                        
+                            <div id="MultipleChoiceQuestion" class="col-md-12 oneofanstypeoptwrp">
+                                <div class="multichoice_field">
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><input type="radio" data-count="1" name="your_selection"> </label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer choice"></textarea>
+                                                <span class="error" id="multichoiceerr"></span>
+                                            </div>
+                                            <div class="add_remove_ansrow_icon_wrp">
+                                                <a href="javascript:;" class="addansrow">+</a>
+                                                <a href="javascript:;" class="removeansrow">-</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><input type="radio" data-count="2" name="your_selection"> </label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer choice"></textarea>
+                                            </div>
+                                            <div class="add_remove_ansrow_icon_wrp">
+                                                <a href="javascript:;" class="addansrow">+</a>
+                                                <a href="javascript:;" class="removeansrow">-</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><input type="radio" data-count="3" name="your_selection"></label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer choice"></textarea>
+                                            </div>
+                                            <div class="add_remove_ansrow_icon_wrp">
+                                                <a href="javascript:;" class="addansrow">+</a>
+                                                <a href="javascript:;" class="removeansrow">-</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            <!-- </div>end of MultipleChoiceQuestion -->
+                        
+                            <!-- <div id="StarRatingQuestion" class="col-md-12 starRatingquest oneofanstypeoptwrp">
+                                <div class="rating_scale_options">
+                                    <h4>Scale</h4>
+                                    <select>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                                <div class="star_option">
+                                    <h4>Color</h4>
+                                    <div class="color_box_wrp">
+                                        <div class="black colrshow"><span></span></div>
+                                        <ul>
+                                            <li currcolr="black" class="black"></li>
+                                            <li currcolr="yellow" class="yellow selectedcolr"></li>
+                                            <li currcolr="red" class="red"></li>
+                                            <li currcolr="blue" class="blue"></li>
+                                            <li currcolr="green" class="green"></li>
+                                        </ul>
+                                    </div>
+                                    <div class="star_wrp black">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </div>
+                                </div> -->
+                            <!-- </div>end of StarRatingQuestion -->
+
+                            <!-- <div id="SingleTextboxQuestion" class="col-md-12 singletextboxquest oneofanstypeoptwrp">
+                                <div class="multichoice_field">
+                                    <div class="multichoiceinn_row">
+                                        <div class="q-ans-input">
+                                            <label><span></span></label>
+                                            <div class="answer-wrp">
+                                                <textarea placeholder="Enter an answer"></textarea>
+                                                <span class="error" id="multichoiceerr"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>	 -->
+                            <!-- </div>end of SingleTextboxQuestion -->
+
+                            <!-- <div class="col-md-12 alignright savecanquestbtnwrp">
+                                <a href="javascript:;" class="savequestbtn sitebtn" data-type="save">Save</a>
+                                <a href="javascript:;" class="cancelquetbtn sitebtn">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div> --> 
+                <div id="ques_block_main" class="custom_made_question mb-3 ques-list"> 
+                
+                    {% for que in ques %}
+                    <div id="ques_block{{forloop.counter}}" class=" mb-3"><span class="custom_number_width">Q{{forloop.counter}}</span>
+                        <textarea class="form-control border border-dark" type="text" data-type={{que.id}}>{{que}}</textarea>
+                        <!-- <button class="sitebtn speech" id="speech" name="record" ><i class="fa fa-microphone" aria-hidden="true"></i></button> -->
+                        <button class="sitebtn" url="{% url 'delete_que' que.id %}" data-type={{que.id}}>
+                        <!-- delete -->
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="ans_block mb-3"> 
+
+                        <span class="custom_number_width"></span>
+                        <div class="form-control border border-dark ml-2" readonly=""></div>
+                        <button class="sitebtn hide-btn"><i class="fa fa-trash"></i></button>              
+                      </div>
+                    {% endfor %}
+                    {% if conque %}                    
+                    <div id="conf_que_block" class=" input_custom_wrap mb-3"><span class="custom_number_width">Q{{ques|length|add:1}}</span>
+                        <textarea class="form-control confidentional-input border border-dark" type="text" data-type={{conque.id}}>{{conque.question}}</textarea>                        
+                        <span class="conf-icon"><i class="mdi mdi-star"></i></span>
+                        <button class="sitebtn" url="{% url 'deleteconf_que' conque.id %}" data-type={{conque.id}}>
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="ans_block mb-3"> 
+                        <span class="custom_number_width"></span>
+                        <div class="form-control border border-dark ml-2" readonly=""></div>    
+                        <button class="sitebtn hide-btn"><i class="fa fa-trash"></i></button>             
+                      </div>
+                    {% endif %}
+                    
+                    
+                </div>
+                <div class="custom_question_cta mt-4 d-flex justify-content-center">     
+                    <button type="button" class="sitebtn pl-4 pr-4 mr-2" onClick="javascript:history.go(-1);">Go Back</button> 
+                    <button type="button" id='add_ques' class="sitebtn pl-4 pr-4 mr-2">+ Add More</button> 
+                    <button type="button" id="createsurveysub" class="sitebtn pl-4 pr-4 ml-2">Save & Continue</button>
+                    <a role="button" class="linkbtn ml-3" url="#" id="conf_que">Add Confidential Question 
+                        <div class="info-here">
+                            <i class="fa fa-info"></i>
+                            <div class="hover-text">You may add a confidential question that will only appear in the feedback report for the coach. This question and its responses will not appear in the feedback report for client or manager.</div>
+                        </div></a>
+                </div>
+                {% endif %}
+            <!-- </form> -->
+        </div>
+    </div>
+
+</div>
+
+
+<div class="createsuv_instr_popup cmn_sitepopup" id="instpopup">
+    <div class="createsuv_instr_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1 ">
+            <h2>Best Practice Instructions for Participants</h2>
+            <h5>Edit as needed</h5>
+            <!-- <form name="createsuvinstrfrm" id="createsuvinstrfrm" class="commnewfrmdesign" method="post"> -->
+                {% csrf_token %}
+                <div class="cmn_field " >
+                    <div style="border: 1px solid #45A29E; " id="instr" contenteditable class="p-3">                        
+                    {% if surveyobj.instructions %}
+                    {{surveyobj.instructions|unquote_new| safe}}
+                    {% else %}                   
+                    <div style="font-size: .875rem;">Please be as open and candid as possible to the benefit of your colleague. Your answers will remain anonymous.</div>
+                    <ul class="bullets mt-2">                      
+                    <li> May type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>                                  
+                    <li>Your direct quotes may be included in an anonymous aggregated report from all participants. Be aware that if there is something that only you would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                    <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>                                            
+                    <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                    </ul> 
+                    {% endif %}         
+                    </div>
+
+                    <!-- <textarea name="createsuvinstr" id="createsuvinstr"> -->
+                        <!-- <p>Best Practice Instructions for Participants</p>
+                        <p><i>Edit as needed</i></p>
+                        <ul>
+                            <li>You may type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>
+                            <li>Your direct quotes may be included in an anonymous aggregated report of direct quotes from all participants. Be aware that if there is something that Only You would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                            <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>
+                            <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                        </ul> -->
+                    <!-- </textarea> -->
+                    <span class="error" id="createsuvinstrerr"></span>
+                </div>
+                <input type="hidden" id="hiddensurveyurl" action="{% url 'create-survey' %}">
+                <div class="sub_field">
+                    <button type="button" id="showparam_popup" onclick = 'saveinstr()' class="btn btn-default">Save & Continue</button>
+                </div>
+            <!-- </form> -->
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<div class="survey_preview_popup cmn_sitepopup">
+    <div class="survey_preview_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+            <h2>Preview</h2>
+            <!-- <h3 class="alignleft" id="title">{{ surveyobj.title }}</h3> -->
+            <div class="surveypreviewfrm mail-preview-wrap"> 
+                <div class="d-flex justify-content-center hidebtn edit-btn-wrap">
+                    <button type="button" class="closepoup sitebtn mr-3 hidebtn uniqe-btn" >Edit Questions</button>
+                    <button type="button" class="sitebtn ml-3 hidebtn uniqe-btn" id="shw_ins" >Edit Instructions</button>
+                </div>               
+            </div>
+            <div class="progress">
+                <h4 class="progress-text"></h4>
+                <div class="progress-bar">
+                    <div class="inner-warp">
+                  <div data-progress="0"></div>
+                    </div>
+                </div>
+              </div>
+                      
+            <div class="d-flex justify-content-center hidebtn edit-btn-wrap">
+                <button type="button" class="closepoup sitebtn mr-3 hidebtn" >Edit Questions</button>
+                <button type="button" class="sitebtn ml-3 hidebtn" id="shw_ins" >Edit Instructions</button>
+            </div>
+            <div class="d-flex justify-content-center .create_sur_btn ">
+                <a class="newbtn pt-3 pb-3 text-white mb-3 " id="whtnxt">NEXT</a>
+                </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of survey_preview_popup -->
+
+<div class="survey_whtnxt_popup cmn_sitepopup">
+    <div class="survey_whtnxt_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll congrats-wrap">
+            <h2>Congratulations</h2>
+                    <h5>You have successfully created the survey.</h5>
+                    <div class="d-flex justify-content-center">
+                        <h4 style="color: #53B6AE; margin-top: 15px;">What's Next?</h4>
+                        <a href="{% url 'detail-client' surveyobj.Survey_client.id %}#step-2" id="step2-tab" role="tab"  class="" aria-selected="false"><span class="round-tab">2</span></a>
+                    </div>
+                    
+                    
+                    <div class="d-flex justify-content-center align-items-center drop_button">
+                        <button type="button" class="sitebtn mr-3" url="{% url 'detail-client' surveyobj.Survey_client.id %}" id="add_part">+ Add Participants</button>
+                        <a role="button" class="linkbtn ml-3" url="{% url 'detail-client' surveyobj.Survey_client.id %}" id="clifile"><u>Back to Client File</u></a>
+                    </div>               
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<input type="hidden" class="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}">
+<div class="upload_logo_popup cmn_sitepopup">
+    <div class="upload_logo_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Upload your logo</h2>
+            <!-- <p class="upload-note">Image size should be less than 1 MB.</p> -->
+            <input type="hidden" imgsrc="{% static 'images/theme/uploadimg.svg' %}" id="hiddendefuplimg">
+            <div class="upload_logo_wrp">
+                <div class="uploadimg"><img id="uploadlogoimgs" src="{% static 'images/theme/uploadimg.svg' %}"></div>
+                <div class="uploadimgname">
+                    <p>Drag and drop a file here....</p>
+                    <p>You can also upload a file from your computer.</p>
+                </div>
+            </div>
+            <form name="uploadlogofrm" id="uploadlogofrm" method="post" action={% url 'survey-logo' surveyobj.pk %} enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="uploadlogo" id="uploadlogo" accept="image/*"/>
+                <input type="hidden" name="deletelogo" id="deletelogo"  value= {% url 'delete-logo' surveyobj.pk %}>
+                <div class="sub_field">
+                    <button type="button" id="uploadlogofrmsub" class="btn btn-default" ><a style="color:#45A29E" href="{% url 'survey-question' surveyobj.pk %}">Cancel</a> </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of upload_logo_popup -->
+
+
+<div class="recomm_survey_color_popup cmn_sitepopup" id="customheight">
+    <div class="recomm_survey_color_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Your Logo</h2> 
+            <div class="recomm_survey_col_box clearfix">
+                <div class="center">
+                    <!-- <h3>Your Logo</h3> -->
+                    <div class="your-logo" id="recom_survey_logo" >
+                    </div>
+                </div>
+               
+            </div>
+            
+            <div class="recomsurvybtn_wrp">
+                <!-- <a href="javascript:;" class="sitebtn skip_recom_color">Skip</a> -->
+                <a href="#" class="sitebtn" id="confirm-btn" style="display:none;">Save</a>
+<button class="sitebtn" id="crop-btn" style="display:none;">Crop</button >
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of recomm_survey_color_popup -->
+
+
+<div id="instruction" class="instructions_popup_wrp cmn_sitepopup">
+    <div class="instructions_poup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Instructions</h2>
+            <div class="instruction_frmwrp">
+                <form method="post" id="instructionfrm" name="instructionfrm">
+                    <div class="cmn_field">
+                        <label>Enter instructions for the participants here.</label>
+                        <textarea name="instructions" id="inst"></textarea>
+                        <span class="error" id="instructionerr"></span>
+                    </div>
+                    <div class="sub_field">
+                        <button type="submit" id="savinstbtn" onclick="saveinstr()" class="btn btn-default">Save</button>
+                        <button type="button" class="closepoup">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of instructions_popup_wrp -->
+
+
+<div class="survey_title_popup_wrp cmn_sitepopup">
+    <div class="survey_title_poup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h2>Internal Survey Title</h2>
+            <div class="surveytitle_frmwrp">
+                <form  id="surveytitfrm" name="surveytitfrm" >
+                    <div class="cmn_field">
+                        <label>Change your survey title</label>
+                        <input type="text" name="newsurveytit" id="newsurveytit">
+                        <input type="hidden" class="hiddensurveyquest"  id="surveydata"  value={% url 'survey-data' surveyobj.pk %}>
+                        <span class="error" id="newsurveytiterr"></span>
+                    </div>
+                    <div class="sub_field">
+                        <button type="button" id="surveytitsub" class="btn btn-default">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of survey_title_popup_wrp -->
+
+
+<div class="frmsucc_popup cmn_sitepopup">
+    <div class="cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        {% if success %}
+        <h2>Congratulations!</h2>
+        {% endif %}
+        <p>Successfully Updated</p>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of frmsucc_popup -->
+<input type="hidden" id="survay_id" value="{{surveyobj.id}}">
+
+
+<div class="frmsucc_popup cmn_sitepopup" id="surv_format">
+    <div class="cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+        <h3 class="text-left">Choose a survey format</h3>
+           <div class="survey_parent">
+               <!-- <div class="survey_format_wrp" id="showprog">
+                   <h4>One question at a time</h4>
+                   <h6>Automaticallly scroll to the next question</h6>
+               </div>
+               <div class="survey_format_wrp survey2" id="hideprog">
+                       <h4>Classic</h4>
+                   <h6>Show all questions on a one page at once</h6>
+               </div> -->
+               </div>
+             <div class="survey_format_wrp">
+                <label>
+                    <input type="radio" name="surveyformat" value="onequestion" id="onequestattimecheck" >
+                    Display one question per page
+                </label>
+                <label>
+                    <input type="radio" name="surveyformat" value="allquestion" checked>
+                    Display all questions on one page
+                </label>
+            </div>
+        
+            <div class="sub_field">
+            <button type="button" id="shw_preview" class="btn btn-default">Save & Continue</button>
+            </div>
+    </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+{% endblock content %}
+{% block extrajs %}
+<script>
+
+function myFunction(color) {
+  document.getElementById("recom_survey_logo").style.backgroundColor = color;
+}
+
+
+function saveinstr() {
+    
+			token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+			var data = {};
+			data['instr'] = document.getElementById('instr').innerHTML;
+			try {
+					$.ajax({
+						  type: "POST",
+						  url: '{% url "save-instruction" surveyobj.id %}',
+						  data: data,
+						  headers: {'X-CSRFToken': token },
+						  success: function(data) {
+							console.log(data)
+							}
+						});
+					}
+				catch(err) {
+						console.log('error')
+					}
+            $('#instruction').fadeOut();
+		}
+
+       </script>
+{% endblock extrajs %}

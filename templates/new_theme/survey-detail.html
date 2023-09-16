@@ -1,0 +1,184 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+
+{% endblock extrastyle %}
+
+{% block content %}
+
+    <section class="display_section">
+        <div class="inside">
+
+            <div class="col-sm-12 plans_pricing mt-3">
+                <div class="row">
+
+                    <div class="col-lg-12 single_block mb-4">
+                        <div class="shadow_box">
+                            <div class="page_title with_go_back">
+                                <a onclick="history.back()"><img src="{% static 'new_theme/images/go-back.svg' %}" alt="go-back /"></a>
+                                <h4>Survey Detail </h4>
+                                
+                            </div>
+                           <div class="survey_detail mt-3">
+                                <div class="detail_topbar">
+                                    <div class="image">
+                                        {% if survey.Survey_client.coach.logo %}
+                                            <img src="{{survey.Survey_client.coach.logo.url}}" alt="Logo" style="display: block;width: auto;height: 100px;" border="0">
+                                        {% endif %}
+                                    </div>
+                                    <div class="about_info">
+                                        <ul>
+                                            <li>
+                                                <span>Survey Coach</span>
+                                                <strong>{{survey.Survey_client.coach.first_name}} {{survey.Survey_client.coach.last_name}}</strong>
+                                            </li>
+                                            <li>
+                                                <span>Survey Client</span>
+                                                <strong>{{survey.Survey_client.first_name}} {{survey.Survey_client.last_name}}</strong>
+                                            </li>
+                                            <li>
+                                                <span>Survey Created Date</span>
+                                                <strong>{{survey.created_ts|date:"d-m-y"}}</strong>
+                                            </li>
+                                            <li>
+                                                <span>Participants</span>
+                                                <strong>{{participant_count}}</strong>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="progress_chart">
+                                        <div id="chart2"></div>
+                                    </div>
+                                </div>
+                           </div>
+                            <div class="divider"><hr /></div>
+                            <div class="survey_title">
+                                <h3>{{survey.title}}</h3>
+                                
+                                    <div class="cstm-flex"> 
+                                        {% if report|length > 0 %}
+                                            {% if report.0.status == 'Completed' %}         
+                                                <a class="dr-btn" target="_blank" href="/survey/download/{{survey.id}}/Client#step-2" class="view download">Download Report</a>
+                                            {% else %}
+                                                <a class="gr-btn" href="{% url 'generate_report' survey.id %}">Edit Report</a>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if survey.status == 'CT' %}
+                                                <a class="gr-btn" href="{% url 'generate_report' survey.id %}">Generate Report</a>
+                                            {% endif %}
+                                        {% endif%}
+                                       <div> 
+                                        {% if survey.status != 'CT' %}
+                                            <button class="send_survey_btn" type="button" data-toggle="modal" data-target="#selectParticipant">
+                                                Send Survey
+                                            </button>
+                                        {% endif%}
+                                       
+                                       </div>
+                                       </div>
+                            </div>
+                            <div class="survey_instruction"><p style="font-size: 1rem">{{survey.instructions|unquote_new|safe}}</p></div>                            
+                            <table class="survey_table tableLayout responsive" id="surveyDetailDatatable" style="width:100%" >
+                                <thead>
+                                    <tr>
+                                        <th>Sr. No</th>
+                                        <th>Question</th>
+                                        <th>Answer</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+     <!-- select client and participants to whom survey to be Send Modal -->
+  <div class="modal fade" id="selectParticipant" tabindex="-1" role="dialog" aria-labelledby="selectParticipantTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Select Participant</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body table_design">
+                           
+                <table class="tableLayout responsive nowrap" id="participantDataTable">
+                    <thead>
+                        <tr>
+                            <td><input type="checkbox" class="select_all"></td>
+                            <td>S. no.</td>
+                            <td>Name</td>
+                            <td>Email</td>
+                            <td>Relation</td>
+                            <td>Status</td>
+                        </tr>
+                    </thead>
+                </table>            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="reset" data-dismiss="modal">Close</button>
+          <button type="button" class="submit show_survey_detail_modal">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{%block extrajs%}
+<script>
+    var client_id = {{survey.Survey_client.id}}
+    var survey_id = {{survey.id}}
+      var options = {
+    chart: {
+        height: 220,
+        type: "radialBar"
+    },
+    series: [{{progress}}],
+    plotOptions: {
+        radialBar: {
+        hollow: {
+            margin: 15,
+            size: "70%"
+        },
+        
+        dataLabels: {
+            showOn: "always",
+            name: {
+                offsetY: -10,
+                show: true,
+                color: "#000",
+                fontSize: "15px"
+            },
+            value: {
+                offsetY: 5,
+                color: "#111",
+                fontSize: "24px",
+                show: true
+            }
+        }
+        }
+    },
+    fill: {
+        colors: ['#E13B3B'],
+    },
+    stroke: {
+        lineCap: "round",
+    },
+    labels: ["Progress"]
+    };
+    var chart = new ApexCharts(document.querySelector("#chart2"), options);
+    chart.render();
+    
+</script>
+<script src="{% static 'new_theme/appScript/survey-detail.js' %}?v={{CACHE_VERSION}}"></script>
+<script src="{% static 'new_theme/appScript/send-survey.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs%}

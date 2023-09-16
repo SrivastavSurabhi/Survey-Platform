@@ -1,0 +1,58 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+
+<script src="{% static 'js/theme/generate_feedback_report.js' %}" ></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/generate_feedback_report.css' %}">
+
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="generate_feed_rep_wrp">
+        <h3 class="common-head">Generate Feedback Report</h3>
+        <!-- <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p> -->
+        <form name="gener_feed_rep_frm" id="gener_feed_rep_frm" method="post">
+            {% csrf_token %}
+            <div class="cmn_field mt-2">
+                <label>What survey do you want to generate a feedback report for?</label>
+                <select name="surforgenfeerep" id="surforgenfeerep">
+                    <option value="demo" selected>Select Survey </option>
+                    {% for sur in surveyobj %}
+                    <option value={{ sur.id }}>{{ sur.title }}</option>
+
+                    {% endfor %}
+                </select>
+                <span class="error" id="surforgenfeereperr"></span>
+            </div>
+            <p>You will have the option to brand this report with your logo, colors and footers.</p>
+            <div class="sub_field">
+                {% if id %}
+                <a  href="{% url 'detail-client' id %}" class="sitebtn">Back</a>
+                {% else %}
+                <button type="button" onclick="goBack()" class="sitebtn">Back</button>
+                {% endif %}
+                <button type="submit" id="generfeedrepsub" class="sitebtn">Next</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function goBack() {
+      window.history.back();
+    }
+</script>
+{% endblock content %}

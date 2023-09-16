@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+{% load static i18n %}
+<html lang="en" class="notranslate" translate="no">
+   <head>
+      <title>{{ title }}</title>
+      <meta name="google" content="notranslate" />
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://johannburkard.de/resources/Johann/jquery.highlight-4.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+      <!-- cropper -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+      <!-- <script src="//cdn.jsdelivr.net/npm/@ungap/custom-elements"></script>  -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+      <!-- datatable -->
+      <script src="{% static 'js/theme/dataTable.js' %}" ></script>
+      <script src="{% static 'js/theme/dataTables.responsive.min.js' %}" ></script>
+      <link rel="stylesheet" type="text/css" href="{% static 'css/theme/jquery.dataTables.min.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/theme/responsive.dataTables.min.css' %}">
+      <script src="{% static 'js/theme/jquery.actual.min.js' %}" ></script>
+      <script src="{% static 'js/theme/jquery.mCustomScrollbar.js' %}" ></script>
+      <script src="{% static 'js/theme/custom.js' %}?v={{CACHE_VERSION}}" ></script>
+      <!-- cropper cdn -->
+      <link rel="stylesheet" type="text/css" 
+         href="{% static 'css/theme/jquery.mCustomScrollbar.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/theme/styles.css' %}?v={{CACHE_VERSION}}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
+      {% block extrastyle %}
+      {% endblock extrastyle %}
+   </head>
+   <body >
+      {% csrf_token %}
+      <div class="coach_dash_page">
+         <section class="coach_dash_sect">
+            <div>
+               <!-- New header start-->
+               <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+                  <div class="navbar-brand-wrapper d-flex justify-content-center">
+                     <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">  
+                        <a class="navbar-brand brand-logo"  href="{% url 'dashboard' %}">
+                        <img src="{% static 'images/theme/logo.png' %}">
+                        </a>
+                        <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}">
+                        <img src="{% static 'images/theme/logo-min.png' %}" alt="logo">
+                        </a>
+                     </div>
+                  </div>
+                  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                     <ul class="navbar-nav mr-lg-4 w-100">
+                        <li class="nav-item nav-search d-none d-lg-block w-100">
+                           <!-- <div class="input-group" id="srch">
+                              <div class="input-group-prepend"><span class="input-group-text" id="search"><i class="mdi mdi-magnify"></i></span></div>
+                              <input type="search" class="form-control" name="seach" id="global_search" placeholder="Search here" aria-label="search" aria-describedby="search">
+                              </div> -->
+                        </li>
+                     </ul>
+                     <div class="home-icon-menu">
+                        <a href="{% url 'dashboard' %}" class="home-icon"><img src="{% static 'images/theme/homeicon.svg'%}" ></a>
+                     </div>
+                     {% block createbutton %}
+                     {% endblock createbutton %}
+                     <ul class="navbar-nav navbar-nav-right">
+                        <li class="nav-item dropdown notification-link mr-4 header-info">
+                           <div class="clearfix dash_instr_help_icon">
+                              <a href="javascript:;" class="dashinsthelpbtn"><img src="/static/images/theme/questmark.png" alt=""></a>
+                              <div class="dash_instr_help_popup">
+                                 <div class="dash_instr_help_inn_popup">
+                                    <div class="dash_instr_help_scrollbar">
+                                       <h3>Help & Best Practice Tips</h3>
+                                       <div class="dash_instr_help_cnt">
+                                          <div class="searchBar-wrap">
+                                          <input type="text" autocomplete="off" placeholder="Search here.." id="searchBar">                                               
+                                       <span><i class="fa fa-search" aria-hidden="true"></i></span>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h2>HOMEPAGE</h2>
+                                             <p>Your homepage displays a list of all your current clients in the Clients table, providing a summary view so you can track the feedback status of your clients. Key metrics include Survey Status and Feedback Report Status. Use the homepage to select a client and then manage their feedback process.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Add Client</h4>
+                                             <p>Add a client to begin the feedback process by clicking the “+ Add Client” button on the homepage. A list of your current clients will appear in the Clients table on your homepage. The most recent client will appear at the top of the list. You may sort the list as needed using the “Sort By” button. To manage your client’s feedback process, click their name or profile picture to access their unique Client File (see Client File).</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Clients</h4>
+                                             <p>The Clients table on the homepage lists all of your current clients. The Clients table contains the following columns:</p>
+                                             <ul>
+                                                <li>
+                                                   <h4>No.</h4>
+                                                   <p>This column simply represents the number of that client according to how the table is sorted via the ‘Sort By’ button. Newly added clients will appear at the top of the table until sorting.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Profile</h4>
+                                                   <p>This column displays the profile picture of your client. You may add your client’s profile picture from their Client File. Your client’s profile picture is for your internal purposes only and will not be shared with anyone during the feedback process.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Name</h4>
+                                                   <p>This column displays your client’s first and last name as entered in the Add Client page. Any edits made in the Edit Client page (see Edit Client), or the Client Intake Form (see Client Intake Form) will update this column. If you sort the Clients table by name, it will be sorted by first name. Clients can be searched for by using the search function (see Search).</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Organization</h4>
+                                                   <p>This column displays the name of your client’s organization as entered in Add Client page. Any edits made in the Edit Client page (see Edit Client), or the Client Intake Form (see Client Intake Form) will update this column. You may sort the Clients table by organization. Organizations can be searched for by using the search function (see Search).</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Survey Status</h4>
+                                                   <p>The survey status of the client’s most recent survey will appear in the Clients table. Survey Status can be searched for by using the search function (see Search). There are four survey status types on the homepage:</p>
+                                                   <ul class="dot-list">    
+                                                      <li>
+                                                         <h4>Not yet created</h4>
+                                                         <p>You have not yet drafted a survey for your client.</p>
+                                                      </li>
+                                                      <li>
+                                                         <h4>Draft</h4>
+                                                         <p>Draft surveys have not yet been emailed to participants; therefore, responses cannot be received.</p>
+                                                      </li>
+                                                      <li>
+                                                         <h4>Active</h4>
+                                                         <p>Active surveys have been emailed to participants and therefore, responses can be received.</p>
+                                                      </li>
+                                                      <li>
+                                                         <h4>Closed</h4>
+                                                         <p>Closed surveys are no longer active and therefore, responses can no longer be received. Feedback reports can be generated when the survey status is Closed (see Send Survey).</p>
+                                                      </li>
+                                                   </ul>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Feedback Report Status</h4>
+                                             <p>The Feedback Report Status from the client’s most recent survey will appear in the Clients table. The Feedback Report Status will show the status of the report you generated for your client. In the Clients table, you can filter by Feedback Report Status by using the search function (see Search). There are three feedback report status types:</p>
+                                            
+                                                <ul class="dot-list">    
+                                                   <li>
+                                                      <h4>Draft</h4>
+                                                      <p>You have drafted a feedback report for your client.</p>                                                
+                                                   </li>
+                                                   <li>
+                                                      <h4>Completed</h4>
+                                                      <p>You have generated a final feedback report for your client. The report is saved in your client’s file as a PDF and can be emailed directly to your client.</p>
+                                                   </li>
+                                                   <li>
+                                                      <h4>Emailed month/day/year</h4>
+                                                      <p>You have generated a final feedback report for your client and emailed the PDF report directly to your client on the date shown. The report is saved in your client’s file as a PDF.</p>
+                                                   </li>
+                                                </ul>
+                                             <p>Please note that you have the option to save a copy of your client’s feedback report specifically for you (the coach) or the manager to view; these feedback reports can be edited individually as needed. The status of these reports is displayed in the Client’s File (see Client File).</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Options</h4>
+                                             <ul class="dot-list">
+                                                <li>
+                                                   <h4>Edit Client</h4>
+                                                   <p>Edit any of the fields in your client’s profile. Any edits will also update the Client Intake Form (see Client Intake Form).</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Archive Client</h4>
+                                                   <p>Archived clients are clients with whom you are not currently engaged. You may select Archive Client for client’s that you do not want to appear in the Client’s table on the homepage. Your archived clients and their data will remain in the system and can be accessed from your Profile page. To access your archived clients, just click the down arrow next to your profile picture at the top right of the screen, choose Profile and then click the Archived Clients button. You may move an archived client back to the homepage by selecting the Unarchive Client option.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Delete Client</h4>
+                                                   <p>Deleting a client permanently removes the client and all of their data.</p>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Search</h4>
+                                             <p>The Search function on the top right of the Clients table allows you to search for data in the following columns: Name, Organization, Survey Status and Feedback Report Status.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Sort By</h4>
+                                             <p>You may sort the list by clicking the drop down arrow on the “Sort By” button. You can sort by Name, Organization, Survey Status and Feedback Report Status.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>As you add clients, you can use your homepage as a worklist to know where to focus your efforts when managing the feedback process. Just sort the list by Survey Status or Feedback Report Status and select your client.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>When you complete a coaching engagement, move your client to the Archived Clients section so that you can focus on your currently engaged clients from the Clients table on the homepage. Move your archived client back to the homepage if you become re-engaged with your client.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h2>CLIENT FILE</h2>
+                                             <p>Each client has a unique Client File. You can access a client’s file by selecting their name or profile picture from the Client table on the homepage. Once you are in their unique Client File, youcan managetheir feedback process by following the three steps in the Get Feedback section: Create Survey, Add Participants, and Generate Report. All of the data from the feedback process will be accessible fromthe table at the bottom of the Client File page (see Client File Table).</p>                                               
+                                          </div>
+                                             <div class="wrap-text">                                                
+                                                   <h4><span class="count_numeric">1.</span>Create Survey</h4>
+                                                   <p>Create a Qualitative 360 survey. Click step 1, Create Survey tochoose from three options: Start from scratch, Copy a past survey or Start from template, using one of the Creative Assessment Portal ®built-in suggested templates.All surveys can be customized and branded with your logo. If you started by clicking the Create Survey button on the top navigation bar, then select your client and then choose from the three options.</p>                                               
+                                                <ul>
+                                                <li>
+                                                   <h4>Start from scratch</h4>
+                                                   <p>Get started with a blank page. If you clicked the Create Survey button on the navigation bar, then click the Select Client drop-down and select your client’s name. If you are creating a survey directly from your Client’s File, then their name will already appear in the Select Client box. Enter a Survey Name, which is used as a reference for your internal purposes only and will appear in the table in your Client’s File. See Add / Edit Questions for next steps.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Copy a past survey</h4>
+                                                   <p>Copy one of your previous surveys to get started. If you clicked the Create Survey button on the navigation bar, then click the Select Client drop-down and select your client’s name. If you are creating a survey directly from your Client’s File, then their name will already appear in the Select Client box. Enter a Survey Name, which is used as a reference for your internal purposes only and will appear in the table in your Client’s File. Then click Create Survey to viewyour past surveys; the icons display survey name, number of survey questions and the date it was created. You can choose to view surveys by All or Favorites. Choose the survey you would like to copy by selecting the “copy” link at the top right of the icon and the survey will appear.  See Add / Edit Questions for next steps.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Start from template</h4>
+                                                   <p>Get started by using one of the Creative Assessment Portal  survey templates: Qualitative 360 or Qualitative 360 Repeat. If you clicked the Create Survey button on the navigation bar, then click the Select Client drop-down and select your client’s name. If you are creating a survey directly from your Client’s File, then their name will already appear in the Select Client box. Enter a Survey Name, which is used as a reference for your internal purposes only and will appear in the table in your Client’s File. See Add / Edit Questions for next steps.</p>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Add a survey to your list of Favoritesso you can easily select and copy your favorite survey. Just click the asterisk in the top right corner of the survey icon from the “Copy a past survey” page.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Get a head start by using one of the Creative Assessment Portal  survey templates, which have been market tested for best results. Use the Qualitative 360 Repeat survey six months after generating the initial Qualitative 360 feedback report to see how your client has improved.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <ul>
+                                                <li><h4>Add / Edit Questions</h4></li>
+                                                <li><p>Add questions to your survey by selecting the “+ Add More” button at the bottom of yoursurvey. You can add, edit and delete questions from this page. You can also give participants the option to share information that they wish to be kept confidential and not be included in the feedback report. Simply click the “Add Confidential Question” link at the bottom of the survey, and a red asterisk will appear to mark this as the confidential question. The Confidential Question and its responses will ONLY appear in the feedback report for you (the coach) to see. This question and its responses will NOT appear in the feedback report for the client or manager(see Save client report as)</p></li>
+                                                <li><p>Add your logo to customize the survey. Click Add Logo at the top right of the page and select your logo. Your logo will appear at the top of the survey. Your logo will be saved for future surveys, and you always have the option to change it. You can remove your logo by clicking the trash can.</p></li>
+                                             </ul>
+                                             </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Include a Confidential Question in your survey to gain further insight into how your client is perceived. Ask participants to share anything they wish to tell you that will help you when you coach the client. Let the participants know that this answer will be kept strictly confidential. Make sure to review the questions with your client to ensure you are both in agreement.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <ul>
+                                                <li><h4>Add Instructions for Participant</h4></li>
+                                                <li><p>Add any instructions participants need to take the survey. Recommended Best Practice Instructions for Participants are provided for you, and you may edit as needed. Instructions will be embedded in the email that is sent to participants and will also appear at the top of the
+                                                survey whenparticipants are responding. 
+                                             </p></li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Make it easier and faster for participants to answer your survey by letting them know they can respond via voice to text using their smartphone or computer.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <ul>
+                                                <li><h4>Choose a Survey Format</h4></li>
+                                                <li><p>Customize your survey format by selecting one of two options. Selecting “Display one question per page” will break up the survey into multiple pages and the participant will scroll to the next page. Selecting “Display all questions on one page” will allow the participant to just scroll down.</p></li>
+                                             </ul>
+                                             </div>
+                                          <div class="wrap-text">
+                                             <ul>
+                                             <li><h4> Preview Survey</h4></li>
+                                             <li><p>Review your survey for accuracy. You have the option to Edit Questions and Edit Instructions as needed. When you are finished creating the survey, click Next and go to step 2 Add Participants (see Add Participants).</p></li>
+                                             <li><p>In the Preview Survey page, you will see that participants have two options when responding to the survey: “Submit” or “Save and Finish Later”.  Participants click Submit when they are done responding. Once they click Submit, they will not have the option to change their responses; their responses will be marked as Completed in the Client’s File (see Message History); Participants can also choose Save and Finish Later. If they choose this option, their partial responses will be saved, and they will need to go back to finish responding to the survey at a later time by clicking the survey link in the email they received from you. Their responses will be saved as Partial in the Client’sFile (see Message History).</p></li>
+                                             <li><p>A survey will have a Survey Status of “Draft” if it has not yet been emailed to participants (see Send Survey).</p></li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Customize your survey by adding your logo to complement your brand. Your logo will appear at the top of the survey. Your logo will automatically be saved for future surveys, and you can change or delete your logo at any time. </p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4><span class="count_numeric">2.</span>Add Participants</h4>
+                                             <p>Participants are those who will provide feedback for your client by responding to your Qualitative 360 survey. In your Client’s File, Click step 2, Add Participants and click the “+ Add Participants” button at the bottom to enterparticipants. Participants will be displayed in the All Participants table at the bottom of the page when you are in step 2. The table includes participants’ First Name, Last Name, Email, and Relationship. Participants will remain in the Client’sFile for future surveys. You may Add, Edit and Delete participants as needed.</p>
+                                             <p>Alternatively, you can have your client enter their own participants by simply clicking the “Email client to add their own participants” link at the bottom of the page. Your client will simply enter their own participants by clicking the “Add Participants” button in the emailthey receive from you. The participants your cliententers will immediately appear in the All Participants table. Please note that your client will not have access to your Creative Assessment Portal ®account.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>It is best practice to have a well-rounded list of participants who have worked with your client for at least six months. Review the list of participants with your client and ensure you have at least three participants to maintain anonymity.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Save time by having your client add their own participants. Go to yourClient’s File, step 2 Add Participants and click the link “Email client to add their own participants” (see Add Participants).</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Send Survey</h4>
+                                             <p>When you are ready to send the survey to participants, Click the “Send Survey” button from theAdd Participants page. Select your survey and follow the steps.</p>
+                                             <ul class="dot-list">
+                                                <li>
+                                                   <h4> Select Participants</h4>
+                                                   <p>Select the participants who will receive the survey.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Set Automated Reminder Emails</h4>
+                                                   <p>You can send auto reminders to participants who did not respond (No response), who started to respond but did not yet submit their responses (Partial response) or to Both. Select whether to send “Weekly reminders” or “Weekly and 48 hours before the survey is due”. The reminder email is built into the system for you, and you can edit this email by clicking the “Automated Reminder Email” link.If you choose not to send automated reminder emails, select “Do not send reminders”. On-demand reminders can also be sent (see Send Reminder).</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Select How Survey will be Closed</h4>
+                                                   <p>A survey’s status must be Closed in order to generate a feedback report. Closedsurveys are no longer active and therefore, responses can no longer be received. “Automatically” closed surveys will be closed three weeks from the date the survey status becomes “Active”, regardless of the number of participants who submitted responses. “Manually” closed surveys will remain open until you manually select “Close Survey” from the Client File in the Options column. Any survey will automatically Closeif all participants submitted responses, regardless of your selection. For example, if a survey is “Automatically” set to close June 21 and all participants submitted their responses by June 14, then the survey status will change to “Close” on June 14.Closed surveys may be reopened to continue receiving responses (see Reopen Survey).</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Email Preview for Participant</h4>
+                                                   <p>You may preview and edit the email that will be sent to the participants on the “Email preview for Participant” pop up page. Once you click “Yes, Send Survey”, the email will be sent immediately. Once the survey is emailed, the survey status will be changed from Draft to Active. If you need to send the survey to additional participants who did not yet receive it, you can follow the Send Survey steps. </p>
+                                                   <p>Please note that the email participants receive will be branded with your full name and appear as FirstnameLastname@leadershiprealitycheck.com, for example,JoeSmith@leadershiprealitycheck.com. Any replies to the emailwill be sent directly to your personal email that is listed in your Profile.</p>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Send Reminder</h4>
+                                             <p>In addition to sending automated reminder emails, you also have the option to send on-demand reminder emails to remindparticipants to complete the survey.Reminder emails can only be sent to participants who have already received the survey. Click the “Send Reminder” button and choose your preferences: No response, Partial response or Both.After selecting your preferences, you may preview and edit the email that will be sent to the participants on the “Email reminder preview for Participant” pop up page.Once you click “Yes, Send Reminder”, the email will be sent immediately. </p>
+                                             <p>Please note that the email participants receive will be branded with your full name and appear as FirstnameLastname@leadershiprealitycheck.com, for example,JoeSmith@leadershiprealitycheck.com. Any replies to the email will be sent directly to your personal email that is listed in your Profile.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4><span class="count_numeric">3.</span>Generate Report</h4>
+                                             <p>Reports may be generated once the Survey Status is Closed. Click step 3, Generate Report to automatically create a feedback report for your client. Select your survey and follow thesteps. </p>
+                                             <ul>
+                                                <li>
+                                                   <h4>Select Groupings</h4>
+                                                   <p>Choose how you would like to organize participant responses. You have the option to group responses by relationship, such as by Manager, Direct Report or Peer. You can also skip this step and all responses will then be combined and randomized automatically. To protect anonymity,whetheror not you wish to group responses, all responses will be in randomized order for each question. </p>
+                                                </li>
+                                                <li>
+                                                   <h4>Preview and Edit</h4>
+                                                   <p>This step includes the name, title and response of each participant and is only for your review to help you understand the data. You also have the option to change the groupings selection anytime, edit and delete data as necessary, andto add headings and comments. The final report will be anonymized and will not include the participant names. </p>
+                                                   <p>You can also click the “Raw Data” button at the top right of this page to view a particular participant’s responses or to view responses by question. Raw data will remain saved and available for future reference, regardless of edits made to the report data.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Preview and Customize</h4>
+                                                   <p>ustomize the logo, colors and footer to match your brand. Your look and feel will be saved for future reports, and you will always have the option to change it. You also have the option to edit text, and add / edit headings and comments. After customizing your report, you can either “Save as Draft” to finish it later, or “Save and Generate Report” and a PDF of the reportwill be placed in your Client’s File. You can download the PDF, and you will also have the option to email it directly to your client(see Email Report to Client).</p>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>You should have at least three participants in your report to maintain anonymity. If you group responses by relationship, then ensure you have at least three participants in each group. A warning message will pop up if you have less than three participants in a group, except for Manager. With their approval, amanager’s feedback is sometimes shared in full with the client.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Email the feedback report to the client at the time you will review it with them. This will help your client keep an open mind and make it easier for you to engage the client during your meeting.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Coach and Manager Feedback Reports</h4>
+                                             <p>When you Generate Report in step 3, the system automatically creates a Feedback Report for Client, which is specifically created for the client to see. You have the option to create a copy of the report for the Coach or Managerand edit as needed (see Save client report as).</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Client File Table</h4>
+                                             <p>The Client File table in each client’s unique Client File summarizesthe information on your client’s surveys, responses and feedback reports. The Client File table contains the following columns:</p>
+                                             <ul>
+                                                <li>
+                                                   <h4>Survey Title</h4>
+                                                   <p>This column displays the name of the survey you created. This survey title is for internal purposes only.Click the link to view the survey and make edits. </p>
+                                                </li>
+                                                <li>
+                                                   <h4>Responses</h4>
+                                                   <p>This column displays the number of participants who submitted their responses to the survey(the numerator) and the number of participants who received the survey (the denominator).Click the link to view responses by Individual Responses or by Question Summary.</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Survey Period</h4>
+                                                   <p>The survey period includes the date the survey status becomes Active and the Close survey date (see Survey Status). If there is no Close date, then the survey will remain Active until is manually closed (see Close Survey).</p>
+                                                </li>
+                                                <li>
+                                                   <h4>Survey Status</h4>
+                                                   <p>There are three survey status types in the Client File:</p>
+                                                   <ul class="dot-list">
+                                                      <li>
+                                                         <h4>Draft</h4>
+                                                         <p>Draft surveys have not yet been emailed to participants; therefore, responses cannot be received.</p>
+                                                      </li>
+                                                      <li>
+                                                         <h4>Active</h4>
+                                                         <p>Active surveys have been emailed to participants and therefore, responses can be received.</p>
+                                                      </li>
+                                                      <li>
+                                                         <h4>Closed</h4>
+                                                         <p>Closed surveys are no longer active and therefore, responses can no longer be received. Feedback reports can be generated only after the survey status is Closed.</p>
+                                                      </li>
+                                                   </ul>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Draft Feedback Reports</h4>
+                                             <p>Draft feedback reports created specifically for the client, coach or manager are displayed in this column and are named accordingly in the table, i.e., Feedback Report for Client, Feedback Report for Coach and Feedback Report for Manager (see Save client report as). Click the link to continue drafting your report anytime.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Completed Feedback Reports</h4>
+                                             <p>Completed feedback reports created specifically for the client, coach or manager are displayed in this column and are named accordingly in the table, i.e., Feedback Report for Client, Feedback Report for Coach and Feedback Report for Manager. All completed feedback reports are saved as PDFs and may be downloaded. The Feedback Report for Client can be emailed as a PDF directly to your client by selecting “Email Report to Client” from the Options column. Client reports that are emailed to the client will have a status of Feedback Report for Client – Emailed month/day/year.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                            <h4>Options</h4>
+                                            <ul class="dot-list">                                            
+                                                <li>
+                                                    <h4>Save client report as</h4>
+                                                    <p>You may create a copy of the client report by saving it as a “Coach Report” or “Manager Report” and then edit as needed. If you choose to save it as a “Coach Report” and you have a confidential question in the survey (see Add / Edit Questions), then you will be asked if you want to include the confidential question in the Coach Report. The Confidential Question and its responses will ONLY appear in the feedback report for you (the coach) to see. This question and its responses will NOT appear in the feedback report for the client or manager.Feedback Reports for Manager and Coachwill be savedin the Client File table accordingly and completed reports can be downloaded as PDFs.</p>
+                                                </li>
+                                                <li>
+                                                    <h4>Delete Survey</h4>
+                                                    <p>You can delete a survey from aClient’s File. Deleting a survey will permanently delete the survey and all of the associated data, including responses, reports,and message history.</p>
+                                             <li>
+                                                <h4>Delete Feedback Report</h4>
+                                                <p>Select the feedback report you would like to delete and it will be permanently deleted.</p>
+                                            </li>
+                                            <li>
+                                                <h4>Close Survey</h4>
+                                                <p>Feedback reports can be generated when the survey status is Closed. Closed surveys are no longer Active and therefore, responses can no longer be received. You will select this option if you need to manually Close a survey (see Select How Survey will be Closed).</p>
+                                            </li>
+                                            <li>
+                                                <h4>Reopen Survey</h4>
+                                                <p>You may reopen a survey that has a Closed survey status. Reopening a survey will change the survey status to Active so that responses can be received. You can email the survey to participants who have not yet received it via the Send Survey button. You can send on-demand email reminders to participants who have already received the survey but have not yet submitted their responses via the Send Reminder button.Reopening a survey may be necessary if you and your client decide to get feedback from additional participant(s).</p>
+                                            </li>
+                                            <li>
+                                                <h4>Message History</h4>
+                                                <p>The Message History table displays the names and email addresses of the participants who received the survey. The table includes the date(s) the survey and any reminders were sent to each participant. The Responded column displays one of three options, Completed (participant submitted their responses), Partial (participant started to respond to survey but did not yet submit responses and No (participant did not respond to the survey).</p>
+                                            </li>
+                                            <li>
+                                                <h4>Email Report to Client</h4>
+                                                <p>Completed Feedback Reports for Client may be emailed as a PDF directly to your clientby selecting “Email Report to Client” from the Options column. Client reports that are emailed to the client will have a status of Feedback Report for Client – Emailed month/day/year.Feedback Reports for Manager or Coach cannot be emailed to clients.</p>
+                                                <p>Please note that the email your client receiveswill be branded with your full name and appear as FirstnameLastname@leadershiprealitycheck.com, for example,JoeSmith@leadershiprealitycheck.com. Any replies to the email will be sent directly to your personal email that is listed in your Profile.</p>
+                                            </li>
+                                          </ul>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Sometimes your client will want to share a summarized version of their feedback report with their manager. Creating a Feedback Report for Manager via the “Save client report as” option and editing it as needed is a convenient way to do so.</p>
+                                          </div>
+                                          <div class="wrap-text">
+                                             <h4>Other Client File Links and Client Profile Picture</h4>
+                                             <ul class="dot-list">         
+                                                <li><p>Clicking the Client File link at the top left of your client’s file will display the Client File table at the bottom of the page. This link may be helpful if you are in step 2 Add Participants and then you want to view the Client File table.</p></li>
+                                                <li><p>Clicking your client’s name will take you to the Edit Client page where you may edit your client’s profile information (see Edit Client).</p></li>
+                                                <li><p>You may include your client’s profile picture by clicking the pencil icon in the portrait image placeholder in your client’s file. You can remove your client’s profile picture by clicking the trash can. Your client’s profile picture will appear in the Clients table on the homepage. Your client’s profile picture is for your internal purposes only and will not be shared with anyone during the feedback process.</p></li>
+                                             </ul>
+                                          </div>
+                                             <div class="wrap-text">
+                                                <h4>Client Intake Form</h4>
+                                                <p>Easily gather your client’s personal and professional history byemailing your client a link to the online Client Intake Form. This will help you get to know your client so you can support them the best way possible. The questions are intended to set a good foundation to begin the process of inquiry, learning and forward movement. Any demographic fields that you entered when you added your client will auto-populate those same fields in the Client Intake Form. Anytime you edit your client, the data in the Client Intake Form will automatically be updated. Likewise, anytime you edit the demographic fields in the Intake Form, the client’s file will automatically be updated. This will save you time to avoid entering the same information twice.Once your client submits their responses, they will immediately appear on the form for your review.</p>
+                                                <p>Please note that the email your client receiveswill be branded with your full name and appear as FirstnameLastname@leadershiprealitycheck.com, for example,JoeSmith@leadershiprealitycheck.com. Any replies to the email will be sent directly to your personal email that is listed in your Profile.</p>
+                                             </div>
+                                             <div class="wrap-text">
+                                                <h4 class="insttips">Best Practice Tip:</h4>
+                                                <p>Use the Client Intake Form to get to know your client and use it as a basis for a conversation.</p>
+                                             </div>
+                                             <div class="wrap-text">
+                                                <h4>Additional Documents</h4>
+                                                <p>Upload any additional documents associated with your client, such as performance reviews. The documents will be stored in the Additional Documents link, and you may delete files as needed.</p>
+                                             </div>
+                                             <div class="wrap-text">
+                                                <h2>YOUR PROFILE</h2>
+                                                <p>Select Profile from the drop-down on the navigation bar to access your profile. Your profile information, including First Name, Last Name, Username, Email, Title, Organization, and Organization URLappears in the left margin. You can edit any of the fields in your profile as well as change your password; just click the “Save Changes” button when you finish editing. To add your profile picture, click the pencil icon and choose your profile picture from your files. Your profile picture will appear in your email signature when you email surveys to participants, and when you email the Client Intake Form to your client (see Client Intake Form).</p>
+                                             </div>
+                                             <div class="wrap-text">
+                                                <ul>
+                                                <li><h4>My Account</h4></li>
+                                                <li><p>This page displays the number of Surveys Remaining in your account, your Creative Assessment Portal ® plan, and your Transaction History and billing information. The number of Surveys Remaining is reduced by one each time a survey status changes from Draft to Active (see Send Survey). You can buy additional surveys by selecting Purchase Surveys.</p></li>
+                                                </ul>   
+                                             </div>
+                                                <div class="wrap-text">
+                                                   <ul>
+                                                   <li><h4>Archived Clients</h4></li>
+                                                   <li><p>lick the Archived Clients button to access your archived clients. The Archived Clients table displays those clients that you have chosen to archive from your homepage. You can access their Client File by selecting their name or profile picture from the Archived Clients table.Archived clients are clients with whom you are not currently engaged. If you become re-engaged with an archived client, you may select “Unarchive client” from the Options column in the Archived Clients table; that client will then be moved back to the Clients table on your homepage (see Clients). Your unarchived clients and their data will remain in the system unless you choose to Delete Client from the homepage.</p></li>
+                                                   </ul>
+                                                </div>
+                                                <div class="wrap-text">
+                                                   <h4 class="insttips">Best Practice Tip:</h4>
+                                                   <p>Add your picture to your profile page so that your picture will appear in your email signature when sending surveys to participants. Seeing your face will help humanize your email, build trust, and make participants feel more comfortable being open when responding to your surveys.</p>
+                                                </div>
+                                                <div class="wrap-text">
+                                                   <h4>Sign Out</h4>
+                                                   <p>Select Sign Out from the drop-down to log out of your account. You can log in again by entering your username and password. If you forget your logindetails, then click the forgotbutton and follow the steps.</p>
+                                                </div>
+                                                <div class="wrap-text">
+                                                   <h4>Contact Us</h4>
+                                                   <p>For additional help, please email us as LRChelp@backbayec.com.</p>
+                                                </div>
+                                           </div>
+                                          <!-- <div class="dash_instr_help_cnt">
+                                             <h4>Additional Documents</h4>
+                                             <p>Upload any additional documents associated with your client, such as performance reviews.
+                                             </p>
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Easily access additional client information so you have it at your fingertips.</p>
+                                             </div>
+                                             <div class="dash_instr_help_cnt">
+                                             <h4>Feedback Reports Generated</h4>
+                                             <p>View 360 feedback reports that you have created in the system.</p>
+                                             </div>
+                                             <div class="dash_instr_help_cnt">
+                                             <h4>Create Survey</h4>
+                                             <p>Create a 360 Feedback survey.</p>
+                                             </div>
+                                             <div class="dash_instr_help_cnt">
+                                             <h4>Participants</h4>
+                                             <p>View and add participants who will provide feedback. Participants in this list will
+                                                 automatically be linked to any survey you send for this client. Edit, add, and remove
+                                                 participants at any time. 
+                                             </p>
+                                             <h4 class="insttips">Best Practice Tip:</h4>
+                                             <p>Email your client a link to this online form so they can enter their participants
+                                                 directly.
+                                             </p>
+                                             </div>
+                                             <div class="dash_instr_help_cnt">
+                                             <h4>Generate Feedback Report</h4>
+                                             <p>Create a 360 Feedback report after participant responses have been received and the
+                                                 survey is marked completed.
+                                             </p>
+                                             </div> -->
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- <a class="nav-link  count-indicator dropdown-toggle d-flex align-items-center justify-content-center notification-dropdown" id="notificationDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                                 <img src="{% static 'images/theme/bellicon.svg'%}" alt="bellicon">                                        
+                                     {% if request.session.has_notification|escape == 'True'  %}
+                                     <span class="noticount"></span>
+                                     {% endif %}
+                                    
+                                 </a>
+                                 <div class="notification-box" style="display:none;">
+                                 <ul class="notification-list"></ul>
+                                 </div> -->
+                        </li>
+                        <li class="nav-item nav-profile dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown" id="profileDropdown" aria-expanded="false">
+                        {% if request.user.has_profile_image %} <img src= "{{ request.user.user_avatar.avatar.url }}" alt="">  {% else %} <img src="{% static 'images/theme/default.png'%}" alt=""> {% endif %}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item"  href="{% url 'profile' %}">Profile</a>
+                        <a class="dropdown-item"  href="{% url 'logout' %}?next=/login">Sign Out</a>
+                        </div>
+                        </li>
+                     </ul>
+                     <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center d-none" type="button" data-toggle="offcanvas">
+                     <span class="mdi mdi-menu"></span>
+                     </button>
+                     </div>
+               </nav>
+               <!-- New header end -->
+               <!-- <div class="container-fluid page-body-wrapper">
+                  <div class="row notification">
+                      <div class="col">
+                          {% for ntfctn in notification %}
+                              <div>
+                                  <a href="{% url 'my-account' %}">{{ntfctn.title}}</a>
+                                  <h6>{{ntfctn.description}}</h6>
+                              </div>
+                          {% endfor %}
+                      </div>
+                  </div>
+                  </div> -->
+               <div class="container-fluid page-body-wrapper">
+               {% if messages %}
+               {% for message in messages %}
+               {% if message.tags %}  
+               <div class="row alert-cstm-msg ">
+               <div class="col-12 col-md-12 col-lg-12 p-0 "> 
+               <div class="alert alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+               <strong>{{ message|safe }}</strong>
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+               </div>
+               </div>
+               </div>
+               <script>
+                  $('.row.alert-cstm-msg').parent().addClass('alertmsg');
+                  
+                  $('.row.alert-cstm-msg button').click(function(){
+                      $('.row.alert-cstm-msg').parent().removeClass('alertmsg')
+                  })
+                  
+               </script>
+               {% endif %}
+               {% endfor %}
+               {% endif %}
+               {% block content %}
+               {% endblock content %}
+               <nav class="sidebar sidebar-offcanvas" id="sidebar">
+               <ul class="nav">
+               <li class="nav-item">
+               <a class="nav-link" href="{% url 'dashboard' %}">
+               <i class="mdi mdi-account-outline menu-icon"></i>
+               <span class="menu-title">My Dashboard</span>
+               </a>
+               </li>
+               </ul>
+               </nav>
+               </div>
+               </div>
+            </div>
+         </section>
+         <!-- <div class="changepass_popup cmn_sitepopup">
+            <div class="changepass_inn_poup cmn_site_inn_popup">
+               <a href="javascript:;" class="closepoup"></a>
+               <div class="cmn_sitepopup_scroll">
+                  <h4>Want to change password ?</h4>
+                  <form name="changepassfrm" id="changepassfrm" method="post" 
+                     action="{% url 'change-password' %}" >
+                     {% csrf_token %}
+                     <div class="cmn_field inputicon keyicon">
+                        <input type="text" name="oldpass" placeholder="Old Password">
+                        <span class="error" id="oldpasserr"></span>
+                     </div>
+                     <div class="cmn_field inputicon keyicon">
+                        <input type="text" name="changepass" placeholder="New Password">
+                        <span class="error" id="changepasserr"></span>
+                     </div>
+                     <div class="cmn_field inputicon keyicon">
+                        <input type="text" name="confchangepass" placeholder="Confirm Password">
+                        <span class="error" id="changepasconfserr"></span>
+                     </div>
+                     <div class="sub_field">
+                        <button type="submit" id="changepasssub" class="btn btn-default">Change Password</button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+            <div class="whiteoverlay"></div>
+         </div> -->
+      </div>
+   </body>
+   {% block extrajs %}
+
+   {% endblock extrajs %}
+</html>

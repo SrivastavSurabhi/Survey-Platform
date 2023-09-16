@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static i18n %}
+{% load customtags %}
+<head>
+    <meta charset="UTF-8">
+    <title>pdf</title>
+    <script src='{% static "pdfmake/pdfmake.min.js" %}'></script>
+    <script src='{% static "pdfmake/Roboto.min.js" %}'></script>
+    <script src='{% static "pdfmake/vfs_fonts.min.js" %}'></script>
+    <script src='{% static "pdfmake/Courier.min.js" %}'></script>
+    <script src='{% static "pdfmake/Helvetica.min.js" %}'></script>
+    <script src='{% static "pdfmake/Symbol.min.js" %}'></script>
+    <script src='{% static "pdfmake/ZapfDingbats.min.js" %}'></script>
+    <script src='{% static "pdfmake/Times.min.js" %}'></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,300;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+  {% csrf_token %}
+<script>
+
+  const CRegular= "{{url}}fonts/CaflischRegular.ttf";
+  const NSansRegular= "{{url}}fonts/Nunito_Sans/NunitoSans-Regular.ttf";
+  const NSansbold= "{{url}}fonts/Nunito_Sans/NunitoSans-Bold.ttf";
+  const NSanssemibold= "{{url}}fonts/NunitoSans-SemiBold.ttf";
+
+  pdfMake.fonts = {
+    Courier: {
+      normal: 'Courier',
+      bold: 'Courier-Bold',
+      italics: 'Courier-Oblique',
+      bolditalics: 'Courier-BoldOblique'
+    },
+    Helvetica: {
+      normal: 'Helvetica',
+      bold: 'Helvetica-Bold',
+      italics: 'Helvetica-Oblique',
+      bolditalics: 'Helvetica-BoldOblique'
+    },
+    Times: {
+      normal: 'Times-Roman',
+      bold: 'Times-Bold',
+      italics: 'Times-Italic',
+      bolditalics: 'Times-BoldItalic'
+    },
+    Symbol: {
+      normal: 'Symbol'
+    },
+    Caflisch: {
+      normal: CRegular
+    },
+    nunitoregular: {
+      normal: NSansRegular
+    },
+    nunitobold: {
+      normal: NSansbold
+    },
+    nunitosemibold: {
+      normal: NSanssemibold
+    },
+    ZapfDingbats: {
+      normal: 'ZapfDingbats'
+    }
+  };
+
+
+  allcontent = []
+
+{% if encoded_url %}
+  logoimg =    {
+          image: "{{encoded_url}}" ,
+          width: 105,
+          // height: 105,
+          
+          fit: [105, 105]
+
+      },
+      allcontent.push(logoimg)
+  {% endif %} 
+
+  page1= {'text': [
+                      {
+                          text: [
+                              {text: `\n\nCreative Assessment Portal `, font:'Caflisch', fontSize: 42.75,alignment: 'center',  margin: [ 80, 0, 0, 0 ] },	
+                              {text: `®`, fontSize: 37, bold:true, sup : { offset : '30%'} }
+                            ],
+                      },
+
+                      {
+                          text: '\n\nConfidential Feedback Report for\n\n',
+                          fontSize: 19.5,
+                          alignment: 'center',
+                          color:'#545454',
+
+                      },
+                      {
+                          text: '{{client.first_name|title|capfirst}} {{client.last_name|title|capfirst}}\n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+
+
+                      },
+                          {
+                          text: '{{client.title|safe|title|capfirst}} \n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+
+                          },
+                     {% if not client.company_name == NONE %}
+                          {
+                          text: '{{client.company_name|safe}} \n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+                          },                    
+                     {% endif %}
+
+                     {
+                          text: '{% now "F d, Y" %}\n\n\n',
+                          alignment: 'center',
+                          fontSize:16.5,
+                          color:'#545454',
+                          font:'nunitobold',
+                      },
+                      {
+                          text: [
+                          { text:  ' Prepared By ',
+                              fontSize: 15,
+                              font:'nunitoregular',
+                              alignment: 'right',
+                              color:'#545454',
+                          },
+                          { text:  '{{survey.Survey_client.coach.first_name|title}} {{survey.Survey_client.coach.last_name|title}}\n',
+                              fontSize: 15,
+                              font:'nunitobold',
+                              color:'#545454',
+
+                              alignment: 'right',
+                              color:'#545454',
+                          },
+                          ],alignment: 'right',
+                          color:'#545454',
+                      },
+                      {% if not survey.Survey_client.coach.title == NONE %}
+                      {
+                          text: "{{survey.Survey_client.coach.title|escapejs|capfirst}}\n ",
+                          alignment: 'right',
+                          fontSize: 15,
+                          font:'nunitobold',
+                          color:'#545454',
+                      },
+                      {% endif %}
+                ]}
+
+// {% if encoded_url %}
+//   registeredsymbol= {'text': '® \n\n',fontSize: 22, bold:true,  absolutePosition: { x: 470, y: 240 },}
+// {% else %}
+//   registeredsymbol= {'text': '® \n\n',fontSize: 22, bold:true,  absolutePosition: { x: 470, y: 138 },}
+// {% endif %}
+
+  const SvgImage1=()=>{
+  return  {
+          svg:'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 403"><defs><clipPath id="clip-path"><rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px"  fill="#000" stroke="#707070" stroke-width="1"/></clipPath></defs><g id="Mask_Group_1" data-name="Mask Group 1" clip-path="url(#clip-path)"><path id="Path_1" class="bc-color-styling" data-name="Path 1" d="M0,173.333s440-142.667,904-6.667,878.667,64,1018.667,0,0,352,0,352l-1936-13.333-6.667-332Z" transform="translate(0 -97.285)" fill="{{fotrclr}}"/> </g> </svg>',
+           margin: [-40,0,0,0],
+           width:595,
+           height: 400,
+           absolutePosition: { x: 0, y: 570 },
+
+      }
+  }
+
+  const SvgImage2=()=>{
+  return  {
+          svg:'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 403"><defs><clipPath id="clip-path"><rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px" fill="#d7de68" stroke="#707070" stroke-width="1"/></clipPath></defs><g id="Mask_Group_1" data-name="Mask Group 1" clip-path="url(#clip-path)"><path id="Path_1" class="bc-color-styling" data-name="Path 1" d="M1964.89,173.333s-440-142.667-904-6.667-878.667,64-1018.667,0,0,352,0,352l1936-13.333,6.667-332Z" transform="translate(-44.89 -108.285)" fill="{{footerfrontcolor}}"/></g></svg> ',
+           margin: [-40,0,0,0],
+           width:595,
+           height: 400,
+           absolutePosition: { x: 0, y: 570 }
+      }
+  }
+
+  page2part1 = {'text': [
+                     {% if report.heading %}
+                      { text: "{{report.heading|escapejs|capfirst}} \n".replace(/<div>/gi,'\n').replace(/<p>/gi,'\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '),
+                          fontSize:17,
+                          color:'#000',
+                          font:'nunitobold',
+                          lineHeight:1,
+                        },
+                     {% else %}
+                      { text: "Overview \n" ,
+
+                          fontSize:17,
+                          color:'#000',
+                          font:'nunitobold',
+                          lineHeight:1.5,
+                          },
+                     {% endif %}
+
+                      {% if report.comments %}
+                        { text: "{{report.comments|escapejs|capfirst}}\n".replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '),
+                        fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                          margin:[5,20,5,20]
+                           },
+                     {% else %}
+                          { text: [{ text: "As part of your executive coaching engagement, {{survey.creator.coach_full_name}} conducted a feedback process to understand how others perceive your strengths as well as your learning and development opportunities.\n",fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,},
+                          { text: "\n{{survey.Survey_client.coach.first_name}} gathered feedback data from {{survey.response_count}} participants with whom you have interfaced and have known for at least six months. All data was collected via an online questionnaire {% if survey.start_datetime == survey.end_datetime %} for {{survey.start_datetime|date:'F j'}} {% else %} from {{survey.start_datetime|date:'F j'}} to {{survey.end_datetime|date:'F j'}}{% endif %}. The participants included:\n" ,
+                          fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                          margin:[5,20,5,20]
+                        }   ],
+                          },
+                     {% endif %}
+                ], pageBreak: 'before' }
+
+page2part2 = {
+                bold:false,
+                margin: [0,15,0,8],
+                ol: [
+                    {% for part in participant %}
+                      {% for sc in surcom %}
+                        {% if sc.participant == part %}
+                          {
+                            text: "{{part.first_name}} {{part.last_name}}, {{part.relationship.relation}} \n" ,
+                            fontSize:10.5,
+                            color:'#545454',
+                            font:'nunitoregular',
+                            lineHeight:1.5,
+                          },
+                        {% endif %}
+                      {% endfor %}
+                    {% endfor %}
+                  ]
+                },
+
+              
+page2part3 = {'text': [
+        {% if report.summary %}
+              {
+                text: "{{report.summary|capfirst|escapejs}} \n" ,
+                fontSize:13.5,
+              color:'#000',
+              font:'nunitobold',
+              lineHeight:1.5,
+              },
+        {% else %}
+              {
+                text: "Participant Summary \n" ,
+                fontSize:13.5,
+              color:'#000',
+              font:'nunitobold',
+              lineHeight:1.5,
+              },
+        {% endif %}
+
+], margin: [0,0,0,8],}
+  const createTable=()=>{
+    return {
+    table: {
+          widths: ['25%', '25%', '25%', '25%'],
+        alignment: 'center',
+      body: [
+                 [{text: 'Relationship', alignment: 'center',font:'nunitobold',margin:10},
+                 {text: 'Selected', alignment: 'center',font:'nunitobold',margin:10,}, {text: 'Participated', alignment: 'center',font:'nunitobold',margin:10} , {text: 'Participation %', alignment: 'center',font:'nunitobold',margin:10}],
+                 {% for summary in participant_summary %}
+                 [{text: '{{ summary.relation }}', alignment: 'center',font:'nunitoregular',margin:10}, {text: '{{summary.total_sent}}', alignment: 'center',font:'nunitoregular',margin:10}, {text: '{{summary.participant_responded}}', alignment: 'center',font:'nunitoregular',margin:10}, {text: '{{summary.participation_percentage}} %', alignment: 'center',font:'nunitoregular',margin:10}],
+                 {% endfor %}
+           ]
+        }
+      }
+  }
+
+  page2part4 = {'text': [
+                     {% if report.text %}
+                         {
+                          text: "\n{{ report.text|capfirst|escapejs}}".replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '),
+                          fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                    {% else %}
+                    {
+                          text: "\nAs is best practice, participants were given anonymity to engender trust and candor. Their anonymous direct quotes were aggregated by question and are included in the report\n" ,
+                          fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                         {
+                           text: "\nWhen reviewing your report, please keep in mind that these are their perception of you, which may differ from how you see yourself. \n" ,
+                           fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                         {
+                           text: "\nDuring your coaching session with {{survey.Survey_client.coach.first_name}}, the report will be analyzed and key themes will be elicited. The purpose is to gain clarity and self-awareness to help refine your goals and determine the best path forward to achieve them.\n" ,
+                           fontSize:12,
+                          color:'#545454',
+                          font:'nunitoregular',
+                          lineHeight:1,
+                         },
+                    {% endif %}
+
+               ], pageBreak: 'after' }
+
+  allcontent.push(page1)
+  // allcontent.push(registeredsymbol)
+  allcontent.push(SvgImage2());
+  allcontent.push(SvgImage1());
+  allcontent.push(page2part1)
+  allcontent.push(page2part2)
+  allcontent.push(page2part3)
+  allcontent.push(createTable())
+  allcontent.push(page2part4)
+  count = 0
+  const getcount=()=>{
+    return count = count+1}
+
+  {% if groups %}
+    {% for questions, answers in questions_answers %}
+      question = { text: "\n{{questions.question|escapejs}}", fontSize:12, color:'#545454', font:'nunitoregular', lineHeight:1}
+      count = 0
+      const questionAnswerTable{{forloop.counter}}=()=>{
+        return {
+        table: {
+              widths: ['8%', '13%', '24%', '15%', '40%'],
+            alignment: 'center',
+          body: [
+                    [ {text: 'No.', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'},
+                      {text: 'Group', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'},
+                      {text: 'Name', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'}, 
+                      {text: 'Designation', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'} ,
+                      {text: 'Response', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'}],
+                    
+                     {% for group in groups %}                                      
+                      {% for answer in answers %}                         
+                        {% Answer_length answers group as ans_len %}
+                        {% for grp in group.relation.all %}
+                          {% if answer.participant__relationship__relation == grp.relation %}
+                          [{text: getcount(), alignment: 'center',font:'nunitoregular',margin:10},
+                          { rowSpan: {{ans_len}},text: '{{group.name}}', alignment: 'center',font:'nunitoregular',margin:10}, 
+                          {text: '{{answer.participant__first_name}}', alignment: 'center',font:'nunitoregular',margin:10}, 
+                          {text: '{{answer.participant__relationship__relation}}', alignment: 'center',font:'nunitoregular',margin:10}, 
+                          {text: '{{answer.answer|escapejs}}', alignment: 'center',font:'nunitoregular',margin:10}],
+                          {% endif %}
+                        {% endfor %}                        
+                      {% endfor %}
+                    {% endfor %}
+                ]
+            }
+          }
+      }
+      allcontent.push(question) 
+      allcontent.push(questionAnswerTable{{forloop.counter}}()) 
+    {% endfor %}
+  {% else %} 
+    {% for questions, answers in questions_answers %}
+      question = { text: "\n{{questions.question|escapejs}}", fontSize:12, color:'#545454', font:'nunitoregular', lineHeight:1}
+      const questionAnswerTable{{forloop.counter}}=()=>{
+        return {
+        table: {
+              widths: ['10%', '25%', '25%', '40%'],
+            alignment: 'center',
+          body: [
+                    [{text: 'No.', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'},
+                    {text: 'Name', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'}, 
+                    {text: 'Designation', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'} ,
+                      {text: 'Response', alignment: 'center',font:'nunitobold',margin:10,fillColor:'#5fc1b8',color:'white'}],
+                    {% for answer in answers %}
+                    [{text: '{{forloop.counter}}', alignment: 'center',font:'nunitoregular',margin:10},
+                      {text: '{{answer.participant__first_name}}', alignment: 'center',font:'nunitoregular',margin:10}, 
+                      {text: '{{answer.participant__relationship__relation}}', alignment: 'center',font:'nunitoregular',margin:10}, 
+                      {text: '{{answer.answer|escapejs}}', alignment: 'center',font:'nunitoregular',margin:10}],
+                    {% endfor %}
+              ]
+            }
+          }
+      }
+      allcontent.push(question) 
+      allcontent.push(questionAnswerTable{{forloop.counter}}()) 
+    {% endfor %}
+  {% endif %}
+
+
+
+  
+  notes = {'text': [
+                  {% if report.noteheading %}
+                      {
+                            text: "\n{{report.noteheading|escapejs}}".replace(/<div>/gi, "\n").replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ') ,
+                            fontSize:15,
+                            color:'#000',
+                            font:'nunitobold',
+                         },
+                  {% endif %}
+                  {% if report.notecomments %}
+                      {
+                            text: "\n{{report.notecomments|escapejs}}".replace(/<div>/gi, "\n").replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ') ,
+                            fontSize: 12,
+                            color:'#545454',
+                            font:'nunitoregular',
+                            bold:false
+                         },
+                  {% endif %}
+                      ]}
+
+  allcontent.push(notes)
+
+
+  // console.log("allcontent: ", allcontent)
+  const pdfCreate=()=>{
+
+      var dd = {
+            footer: function (currentPage, pageCount) {
+                  return {
+              columns: [
+                  {
+                      margin:0,
+                      alignment:'center',
+                      table: {
+                          widths:'*',
+                          body: [
+                              [{
+                                  border: [false, false, false, false],
+                                  fillColor: '{{fotrclr}}',
+                                  margin: [0,14.2,0,0],
+                                  columns: [
+                                    { text: '{{fotrtxt}}', alignment: 'left', fontSize:10.5, margin: [0,0,0,10], color: '#fff' },
+                                    { text: "Page " + currentPage.toString() + ' of ' + pageCount+'\n\n', alignment: 'right', fontSize:10.5, margin: [0,0,0,10], color: '#fff' },
+
+                                  ]
+                              },
+                              ]
+                          ]
+                      },
+                  },
+              ]
+
+            };
+            },
+
+            background:function () {
+                            return {
+                              canvas: [
+                            {
+                              type: 'rect',
+                              x: 0, y: 0, w: 595.28, h: 841.89,
+                              color: '#f2f2f2'
+                            }
+                          ]
+                          };
+                        },
+
+              content: allcontent,
+
+              defaultStyle: {
+                  font: 'Helvetica',
+                  fontSize: 12,
+                },
+      }
+      return dd
+   }
+  const downloadpdf=()=>{
+      const docDefinition=pdfCreate();
+      pdfMake.createPdf(docDefinition).open(window);
+  }
+
+  function sendajaxrequest(result){
+    var token ="";
+    var cmail = $('#client_mail').val();
+    var data = new FormData();
+    data.append('data', result);
+    data.append('cmail',cmail)
+    token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    var endpoint = window.location.origin + "/survey/send-mail/"
+    $.ajax({
+      type: "POST",
+      headers: {'X-CSRFToken': token},
+      url: endpoint,
+      data: data,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      success:function(data) {
+      console.log("Done");
+    }
+  });
+  }
+
+
+  const downloadreport=()=>{ 
+    const docDefinition=pdfCreate();   
+    pdfMake.createPdf(docDefinition).open(window);
+    let pdfDocGenerator = pdfMake.createPdf(docDefinition);
+    let promiseObject = pdfDocGenerator.getBase64((base64Data) => {
+    });
+    promiseObject.then(function(result) {
+        sendajaxrequest(result);
+    });
+  };
+
+ 
+  function loadUserCredentials() {
+    token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+    if (token) {
+       useCredentials(token);
+     }
+  }  
+
+{% if send_report %}
+
+window.onload=function(){  
+  alert("Mail sent successfully");
+  downloadreport();
+}
+{% else %}
+window.onload=function(){
+  downloadpdf();
+}
+{% endif %}
+
+
+
+  </script>
+  <input id="client_mail" value="{{client.email}}" hidden/>
+</body>
+</html>

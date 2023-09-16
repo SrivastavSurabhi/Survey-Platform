@@ -1,0 +1,30 @@
+
+    {% for par in parlist %}
+    <tr class="extended-html" id="{{par.id}}">
+        <td class="hide_col first_heading">
+            <label class="input_design mr-2"><input type="checkbox" name="client"><span></span></label>
+        </td>
+        <td >
+            {{forloop.counter}}
+        </td>
+        <td class="fName">
+            {{par.first_name}}
+        </td>
+        <td class="lName">{{par.last_name}}</td>
+        <td class="fourth_heading eMail">{{par.email}}</td>
+        <td class="relation">
+            {{par.relationship.relation}}
+        </td>
+        <td class="three_dots">
+            <div class="dropdown dropdown-cust">
+                <button class="btn dropdown-toggle no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item edit_value" data-toggle="modal" data-id="{{par.id}}" data-target="#edit-part">Edit</a>
+                    <a class="dropdown-item" onclick="deletepart({{par.id}})">Delete</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}

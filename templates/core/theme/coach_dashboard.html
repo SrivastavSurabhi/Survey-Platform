@@ -1,0 +1,345 @@
+{% extends "core/theme/base_theme.html" %} {% csrf_token %} {% load static i18n %} {% block extrastyle %}
+<script src="{% static 'js/theme/jQuery-plugin-progressbar.js' %}"></script>
+<script src="{% static 'js/theme/progress-custom.js' %}"></script>
+<script src="{% static 'js/theme/survey_list.js' %}"></script>
+<script src="{% static 'js/theme/sort.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/jQuery-plugin-progressbar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/admin_dash.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}">
+
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/theme/admin_dash.css' %}"> -->
+
+{% endblock extrastyle %} {% block createbutton %} {% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %} {% endblock createbutton %} {% block content %}
+
+<div class="client_detail_wrp mt-3 mt-md-0">
+    <!-- <div class="clearfix dash_instr_help_icon">
+        <div class="right alignright">
+            <a href="javascript:;" class="dashinsthelpbtn"><img src="{% static 'images/theme/questmark.png' %}" alt=""></a>
+            <div class="dash_instr_help_popup">
+                <div class="dash_instr_help_inn_popup">
+                    <div class="dash_instr_help_scrollbar">
+                        <h3>Help & Best Practice Tips</h3>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Active Clients Dashboard</h4>
+                            <p>Click on any of the buttons to view Active Client data and get more details.</p>
+                            <h4 class="insttips">Best Practice Tip:</h4>
+                            <p>Use this dashboard as a worklist to know where to focus your efforts to manage your surveys.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Add Client</h4>
+                            <p>Add a client to begin the feedback process</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Active Clients</h4>
+                            <p>Active Clients are clients with whom you are currently engaged. You may move your client to the Inactive Clients section when you have completed your coaching engagement.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Inactive Clients</h4>
+                            <p>Inactive Clients are clients with whom you are not currently engaged. You may move your client to the Active Clients section anytime. You may view Inactive Client data by selecting an InactiveClient.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Unsent Surveys</h4>
+                            <p>Unsent Surveys have not yet been emailed to participants and therefore, responses cannot be received.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Active Surveys</h4>
+                            <p>Active Surveys have been emailed to the participants and therefore, responses can be received.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Completed Surveys</h4>
+                            <p>Completed Surveys are no longer active and therefore, responses can no longer be received.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Create Survey</h4>
+                            <p>Create a 360 Feedback survey and then select your client. You can also create a survey directly from your client’s profile page.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div> -->
+    <div class="content-wrapper">
+        {% if login == False %}
+        <div class="welcome-dash">
+            <div class="row align-items-end">
+                <div class="col-12 col-md-12  p-0">
+                    <div class="welcome-text p-3 p-lg-5">
+                        <h2 class="text-dark mb-3">
+                            Welcome, <span class="font-weight-bold">{{request.user.coaches.first_name}}!</span>
+                        </h2>
+                        {% if client|length == 0 %}
+                        <h5 class="text-dark">
+                            To begin the feedback process, click <span class="font-weight-bold">“Add Client”</span>
+                        </h5>
+                        {% else %}
+                        <h5>
+                            Select your client and follow the steps
+                        </h5>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-5 col-lg-4">
+                    <img src="{% static 'images/theme/welcome-image.svg' %}" class="img-fluid" alt="welcome">
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center ">
+        </div>
+        {% else %}
+        <div class="welcome-dash bg-transparent">
+            <div class="row align-items-end">
+                <div class="col-12 col-md-12 col-lg-8 p-0">
+                    <div class="welcome-text">
+                        <h2 class="text-dark mb-3">
+                            Welcome back,
+                            <span class="font-weight-bold">{{request.user.coaches.first_name}}</span>
+                        </h2>
+                        {% if client|length == 0 %}
+                        <h5 class="text-dark">
+                            To begin the feedback process, click <span class="font-weight-bold">“Add Client”</span>
+                        </h5>
+                        {% else %}
+                        <h5>
+                            Select your client and follow the steps
+                        </h5>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="d-block where-left-continue mt-lg-4 mb-2 mb-lg-4">
+            <div class="row align-items-center">
+                <div class="col-12 col-sm-12">
+                    <!-- <button type="button" class="btn where-left-btn">
+                        <a >Continue where I left off</a>
+                    </button> -->
+                </div>
+            </div>
+        </div>
+        <div class="d-block client_table mb-2 mb-lg-4">
+            <div class="row mt-lg-5 align-items-center">
+                <div class="col-12 col-sm-12 col-md-12">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="table-title mt-3 mt-md-0">
+                            <h4 class="text-secondary font-weight-bold mb-4 mb-md-2 text-center text-md-left">
+                                Clients
+                            </h4>
+                        </div>
+                        <div class="add-action d-inline-block">
+                            <a href="{% url 'client-intake' %}" class="btn them-outline-btn">
+                                    + Add Client 
+                                </a>
+                        </div>
+                        <div class="blank-spot"></div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2 mt-lg-4">
+            <div class="col-12 col-md-12">
+                <div class="cust-responsive global_table">
+                    <div class="right survey_right_wrp alignright  global_table">
+
+                        <div class="survey_sort_wrp sort-grp ">
+                            <a href="javascript:;" class="sortbydropdowm">Sort By</a>
+                            <ul class="sortbydropdowmlist">
+                                <li>
+                                    <a class="nosort" value="1">Name</a>
+                                </li>
+                                <li>
+                                    <a class="nosort" value="2">Organization</a>
+                                </li>
+                                <li>
+                                    <a class="nosort" value="3">Survey Status</a>
+                                </li>
+                                <li>
+                                    <a class="nosort" value="4">Feedback Report Status</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <table class="table table_design " id="myTable">
+                        <thead>
+                            <tr>                                
+                                <th>No.</th>
+                                <th>Profile</th>
+                                <th>Name</th>
+                                <th>Organization</th>
+                                <th>Survey Status</th>
+                                <th>Feedback Report Status</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        
+                    </table>
+                </div>
+
+                {% if client.paginator.num_pages > 1 %}
+
+                <div class="survey_paginat_wrp d-block text-center mt-3 mt-lg-4">
+                    <div class="col-xs-6">
+                        <div class="survey_pagination">
+                            {% if client.has_previous %}
+
+
+                            <a onclick="location = getpage('{{ client.previous_page_number }}'); return false;" class="prevpagination alignleft">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#e0e0e0;}</style></defs>
+                                        <path class="a" d="M82.826,11.233,93.455.619a2.048,2.048,0,0,1,2.935,0l1.239,1.223a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L89.705,12.7l7.923,7.923a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L96.39,24.8a2.086,2.086,0,0,1-2.935,0L82.826,14.184a2.087,2.087,0,0,1-.6-1.484A2,2,0,0,1,82.826,11.233Z" transform="translate(-82.222 0)"></path>
+                                    </svg>
+                            </a>
+                            {% else %}
+                            <a class="prevpagination alignleft disable">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#e0e0e0;}</style></defs>
+                                        <path class="a" d="M82.826,11.233,93.455.619a2.048,2.048,0,0,1,2.935,0l1.239,1.223a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L89.705,12.7l7.923,7.923a2,2,0,0,1,.6,1.467,2.087,2.087,0,0,1-.6,1.484L96.39,24.8a2.086,2.086,0,0,1-2.935,0L82.826,14.184a2.087,2.087,0,0,1-.6-1.484A2,2,0,0,1,82.826,11.233Z" transform="translate(-82.222 0)"></path>
+                                    </svg>
+                            </a>
+                            {% endif %} {% if client.has_next %}
+                            <a onclick="location = getpage('{{ client.next_page_number }}'); return false;" class="nextpagination alignright">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#fff;}</style></defs><g transform="translate(0 0)">
+                                        <path class="a" d="M97.628,11.233,87,.619a2.048,2.048,0,0,0-2.935,0L82.826,1.842a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L90.749,12.7l-7.923,7.923a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L84.064,24.8A2.086,2.086,0,0,0,87,24.8L97.628,14.184a2.087,2.087,0,0,0,.6-1.484A2,2,0,0,0,97.628,11.233Z" transform="translate(-82.222 0)"></path></g>
+                                    </svg>
+                            </a>
+                            {% else %}
+                            <a class="nextpagination alignright disable">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16.01" height="25.4" viewBox="0 0 16.01 25.4"><defs><style>.a{fill:#fff;}</style></defs><g transform="translate(0 0)">
+                                        <path class="a" d="M97.628,11.233,87,.619a2.048,2.048,0,0,0-2.935,0L82.826,1.842a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L90.749,12.7l-7.923,7.923a2,2,0,0,0-.6,1.467,2.087,2.087,0,0,0,.6,1.484L84.064,24.8A2.086,2.086,0,0,0,87,24.8L97.628,14.184a2.087,2.087,0,0,0,.6-1.484A2,2,0,0,0,97.628,11.233Z" transform="translate(-82.222 0)"></path></g>
+                                    </svg>
+                            </a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <span class="current">
+                                Page {{ client.number }} of {{ client.paginator.num_pages }}
+                            </span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="delete_cnfm_popup cmn_sitepopup" id="del_sur">
+            <div class="delete_cnfm_inn cmn_site_inn_popup">
+                <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+                <div class="cmn_sitepopup_scroll">
+                    <h2>Are you sure you want to Delete Client?</h2>
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="delete_client">Yes, Delete</button>
+                        <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+            <div class="whiteoverlay"></div>
+        </div>
+        <input type="hidden" class="curr_client_id" id="curr_client_id">
+
+    </div>
+
+
+</div>
+
+
+</div>
+<script>
+    $(document).ready(function() {
+        localStorage.clear();
+        var table = $('#myTable').DataTable({
+            order: [[0, "desc"]],
+            columns: [
+                {
+                    data: null,
+                    render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }                   
+                },
+                {
+                    data: 'profile_img',
+                    "render": function(data) { 
+                        link = document.location.origin+'/media/'+data              
+                        return '<img src="'+link+'">';}
+                },
+                {
+                    data: 'complete_name',
+                    searchable: true,
+                    render: function(data, type, full, meta) {
+                        link = document.location.origin+'/client-detail/'+full['client_id']  
+                        element = '<a class="d-inline-block" href="'+link+'">'+data+'</a>'
+                        return element;}
+                },
+                {
+                    data: 'company_name',
+                    searchable: true
+                },
+                {
+                    data: 'survey_status',
+                    searchable: true
+                },
+                {
+                    data: 'complete_survey_report_status',
+                    "render": function(data) {  
+                        if (data == null){                                                  
+                            return '-';}
+                        else{ return data}                    
+                    },   
+                    searchable: true
+                },
+                {
+                    data: 'client_id',
+                    "render": function(data) { 
+                        return '<div class="dropdown dropdown-cust"> <button class="btn btn-sm dropdown-toggle no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-ellipsis-v dots-icon" aria-hidden="true"></i> </button> <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" > <a href="/edit-client/'+data+'" id="edtcli" class="dropdown-item edtcli">Edit Client</a> <a data="'+data+'" id="archivecli" class="dropdown-item archivecli">Archive Client</a> <a data="'+data+'" id="dltcli" class="dropdown-item dltcli">Delete Client</a> </div></div>';       
+                    }
+                },
+                
+            ],
+            searching: true,
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+            ajax: window.location.origin + "/clientlistdt",
+            oLanguage: {
+                sZeroRecords: "No data found",
+                sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
+            },
+
+        });
+
+        $('.survey_status').each(function() {
+            if ($(this).text().trim() == '') {
+                $(this).html('Not yet created')
+            }
+        })
+        $('.report_status').each(function() {
+            if ($(this).text().trim() == '') {
+                $(this).html('-')
+            }
+        })
+        $(document).on('click', '.nosort', function() {
+                table.order([$(this).attr('value'), 'asc']).draw();
+                table.page('next').draw('page');
+                table.on('order.dt search.dt', function() {
+                    let i = 1;
+                    table.cells(null, 0, {
+                        search: 'applied',
+                        order: 'applied'
+                    }).every(function(cell) {
+                        this.data(i++);
+                    });
+                }).draw();
+            })
+            // 
+    })
+</script>
+
+{% endblock content %}

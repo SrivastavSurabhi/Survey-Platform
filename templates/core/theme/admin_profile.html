@@ -1,0 +1,193 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/profile.css' %}">
+<script src="{% static 'js/theme/profile.js' %}" ></script>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+<div class="coach_admin_profile_wrp clearfix w-100 mt-0">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-5 coach_admin_profile_left">
+            <div class="coach_admin_profile_details">
+                <form method="post" id="coach_profile_form" class="profileupdatefrom" enctype="multipart/form-data">
+                
+                    <div class="coach_admin_img">
+                        <a href="javascript:;" class="editprofileimg"><img src="{% static 'images/theme/pen.svg'%}"></a>
+                        <div class="uploaded_profile_img">
+                            {% if request.user.has_profile_image %}
+                                <img src= "{{ request.user.user_avatar.avatar.url }}" alt="">
+                            {% else %}
+                                <img src="{% static 'images/theme/default.png'%}" alt="">
+                            {% endif %}
+                        </div>
+                        <input type="file" name="profilepict" id="profilepict" accept="image/*" value="" >
+                    </div>
+                    <!-- <p class="upload-note">Image size should be less than 1 MB.</p> -->
+                    <!-- <h3>{{ request.user.coach_full_name }}</h3> -->
+                    <!-- <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>First Name</span>
+                            <p><input type="text" name="fname" id="profilefname" value="{{ request.user.coach_full_name }}"><span class="error" id="profilefnmerr"></span></p>
+                        </a> 
+                        <a href="javascript:;" class="profediticon"><img src="/static/images/theme/grey_pen.svg"></a>
+                    </div>
+                    <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>Last Name</span>
+                            <p><input type="text" name="lname" id="profilelname" value="{{ request.user.coach_full_name }}"><span class="error" id="profilelnmerr"></span></p>
+                        </a> 
+                        <a href="javascript:;" class="profediticon"><img src="/static/images/theme/grey_pen.svg"></a>
+                    </div> -->
+                    <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>Username</span>
+                            <p><input type="text" name="username" id="profileuser" value="{{ request.user.username }}"><span class="error" id="profileusererr"></span></p>
+                        </a> 
+                        <a href="javascript:;" class="profediticon"><img src="/static/images/theme/grey_pen.svg"></a>
+                    </div>
+                    <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>Email</span>
+                            <p><input type="email" name="email" id="profileeamil" readonly value={{ request.user.email }}><span class="error" id="profileemailerr"></span></p>
+                        </a>
+                        <a href="javascript:;" class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}" ></a>
+                    </div>
+                    <!-- <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>Title</span>
+                            <p><input type="text" name="title" id="profiletitle" value={{ request.user.user_title  }}><span class="error" id="profiletiterr"></span></p>
+                        </a> 
+                        <a href="javascript:;" class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                    </div>
+                    <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>Organization Name</span>
+                            <p><input type="text" name="companyname" id="companyname" value={{ request.user.user_company  }}><span class="error" id="compnameerr"></span></p>
+                        </a> 
+                        <a href="javascript:;" class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                    </div>
+                    <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>Organization URL</span>
+                            <p><input type="text" name="companyurl" id="companyurl" value={{ request.user.user_company_url  }}><span class="error" id="compnayurlerr"></span></p>
+                        </a>
+                        <a href="javascript:;" class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                    </div> -->
+                    <!-- <div class="coach_admin_det_wrp">
+                        <a href="javascript:;" class="profeditinfo">
+                            <span>Change Password</span>
+                            <p><input type="password" name="" id="profilepass" value="1234444"><span class="error" id="changepasserr"></span></p>
+                        </a>
+                        <a href="javascript:;" class="profediticon"><img src="{% static 'images/theme/grey_pen.svg'%}"></a>
+                    </div>
+                    <div class="togglebtn_wrp">
+                                            
+                                                <span>Turn email notification on/off</span>
+                                                <label class="switch">
+                                                <input type="checkbox" name="togglecheck" value={% if  request.user.user_email_notify %} on {% else %} off {% endif %} {% if  request.user.user_email_notify %} checked  {% endif %}>
+                                                
+                                                <span class="slider round"></span>
+                                                </label>
+                                                <input type="hidden" value="" name="emailnotify" id="emailnotify"/>
+                    </div> -->
+                    <input type="hidden" id="profileurl" value="{% url 'profile-update-image' request.user.id %}">
+                    <input type="hidden" id="profiledataurl" value="{% url 'user-profile-data' request.user.id %}">
+                    <div class="coach_admin_sub sub_field">
+                        <button type="button" id="updatecoachprofsub" class="updateprofsubbtn btn btn-default">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+            <div class="col-lg-7 coach_admin_profile_right">
+                <div class="row">
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'planhistory' %}" class="client_detail_box lightbluecolwrp">
+                            <h4>Plan<br/> History</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/credit-card-green.svg'%}" ></div>
+                        </a>
+                    </div>   
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'completed-surveys-list' %}" class="client_detail_box orangecolwrp">
+                            <!-- <h4>Draft<br/> Surveys</h4> -->
+                            <h4>Survey's<br/> Done </h4>
+                            <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconorg.svg'%}" ></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'unsent-surveys-list' %}" class="client_detail_box lightbluecolwrp">
+                            <!-- <h4>Completed<br/> Surveys</h4> -->
+                            <h4>Survey's<br/> Pending </h4>
+                            <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconlightblue.svg'%}" ></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'active-surveys' %}" class="client_detail_box greencolwrp">
+                            <!-- <h4>All <br/>Clients</h4> -->
+                            <h4>Upcoming <br/> Survey's</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/allclienticon.svg'%}"></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'active-surveys-list' %}" class="client_detail_box redcolwrp">
+                            <!-- <h4>Active<br/> Surveys</h4> -->
+                            <h4>Survey's<br/> Alloted </h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg'%}"></div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 single_box">
+                        <a href="{% url 'coachlist' %}" class="client_detail_box bluecolwrp">
+                            <!-- <h4>All <br/>Coaches</h4> -->
+                            <h4>Client <br/>Alloted</h4>
+                            <div class="imgwrp"><img src="{% static 'images/theme/allcoachicon.svg'%}"></div>
+                        </a>
+                    </div>
+                    
+                </div>
+            <!-- <div class="all_client_details">
+                <a href="{% url 'all-surveys-list' %}" class="client_detail_box">
+                    <h4>All<br/> Surveys</h4>
+                    <span class="count">250+</span>
+                </a>
+                <a href="{% url 'active-surveys-list' %}" class="client_detail_box redcolwrp">
+                    <h4>Active<br/> Surveys</h4>
+                    <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg'%}"></div>
+                </a>
+                <a href="{% url 'unsent-surveys-list' %}" class="client_detail_box orangecolwrp">
+                    <h4>Draft<br/> Surveys</h4>
+                    <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconorg.svg'%}" ></div>
+                </a>
+                <a href="{% url 'completed-surveys-list' %}" class="client_detail_box lightbluecolwrp">
+                    <h4>Completed<br/> Surveys</h4>
+                    <div class="imgwrp"><img  src="{% static 'images/theme/surveyiconlightblue.svg'%}" ></div>
+                </a>
+            
+                <a href="{% url 'coachlist' %}" class="client_detail_box greencolwrp">
+                    <h4>All <br/>Clients</h4>
+                    <div class="imgwrp"><img src="{% static 'images/theme/allclienticon.svg'%}"></div>
+                </a>
+                <a href="{% url 'coachlist' %}" class="client_detail_box bluecolwrp">
+                    <h4>All <br/>Coaches</h4>
+                    <div class="imgwrp"><img src="{% static 'images/theme/allcoachicon.svg'%}"></div>
+                </a>
+            </div> -->
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

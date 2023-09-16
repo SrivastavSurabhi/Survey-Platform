@@ -1,0 +1,80 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/add_client.css' %}">
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+{% block content %}
+<div class="client_detail_wrp add_client_details">
+    <h3>Client file</h3>
+    <div class="all_client_details">
+        <a href="{% url 'client-intake' %}" class="client_detail_box lightredcolwrp">
+
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconredlight.svg' %}"></div>
+            <h4>Client Intake <br/>Form</h4>
+        </a>
+        <a href="{% url 'add-participant' %}" class="client_detail_box bluecolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconblue.svg' %}"></div>
+            <h4>Participants</h4>
+        </a>
+        <a href="{% url 'survey-create' %}" class="client_detail_box lightpinkcolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconlightpink.svg' %}"></div>
+            <h4>Create a <br/>Survey</h4>
+        </a>
+        <a href="{% url 'unsent-surveys-list' %}" class="client_detail_box orangecolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconorg.svg' %}"></div>
+            <h4>Draft<br/>Surveys</h4>
+        </a>
+
+        <a href="{% url 'active-surveys-list' %}" class="client_detail_box redcolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg' %}"></div>
+            <h4>Active<br/>Surveys</h4>
+        </a>
+        
+        <a href="{% url 'completed-surveys-list' %}" class="client_detail_box lightbluecolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconlightblue.svg' %}"></div>
+            <h4>Completed Surveys</h4>
+        </a>
+
+        <a href="{% url 'send-survey' %}" class="client_detail_box lightgreencolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconlightgreen.svg' %}"></div>
+            <h4>Send<br/>Surveys</h4>
+        </a>
+
+        <a href="{% url 'participant-response' %}" class="client_detail_box pinkcolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconpink.svg' %}"></div>
+            <h4>Participant Responses</h4>
+        </a>
+
+        <a href="{% url 'feedback-report' %}" class="client_detail_box greencolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyicongreen.svg' %}"></div>
+            <h4>Generate Feedback Report</h4>
+        </a>
+
+        <a href="{% url 'feedback-report' %}" class="client_detail_box browncolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/surveyiconbrown.svg' %}"></div>
+            <h4>Feedback Reports Generated</h4>
+        </a>
+
+
+        <a href="{% url 'feedback-report' %}" class="client_detail_box darkgreencolwrp">
+            <div class="imgwrp"><img src="{% static 'images/theme/paper-clip.svg' %}"></div>
+            <h4>Additional Documents</h4>
+        </a>
+              
+    </div>
+</div>
+{% endblock content %}
+

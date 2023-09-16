@@ -1,0 +1,456 @@
+{% extends "new_theme/base.html" %}
+{% csrf_token %}
+{% load static i18n %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'new_theme/css/survey-style.css' %}?v={{CACHE_VERSION}}">
+{% endblock extrastyle %}
+{% block content %}
+<section class="display_section">
+    <div class="inside">
+        <div class="col-sm-12 plans_pricing mt-3">
+            <div class="row">
+                <div class="col-lg-12 single_block mb-4">
+                    <div class="shadow_box">
+                        <div class="page_title with_go_back">
+                            <a onclick="history.back()"><img src="{% static 'new_theme/images/go-back.svg' %}" alt="go-back /"></a>
+                            <h4>Survey Report Preview</h4>
+                        </div>
+
+                        <div class="survey_detail my-3">
+                            <div class="about_info">
+                                <ul>
+                                    <li>
+                                        <span>Survey Title</span>
+                                        <strong>{{survey.title}}</strong>
+                                    </li>                                                                                    
+                                    <li>
+                                        <span>Survey Coach</span>
+                                        <strong>{{survey.Survey_client.coach.first_name}} {{survey.Survey_client.coach.last_name}}</strong>
+                                    </li>
+                                    <li>
+                                        <span>Survey Client</span>
+                                        <strong>{{survey.Survey_client.first_name}} {{survey.Survey_client.last_name}}</strong>
+                                    </li>                                           
+                                </ul>
+                            </div>                            
+                        </div>
+
+                        <form id="smartwizard">
+                                <ul class="nav">
+                                    <li class="nav-item">
+                                    <a class="nav-link">
+                                        <div class="num">1</div>
+                                        Grouping
+                                    </a>
+                                    </li>
+                                    {% comment %} <li class="nav-item">
+                                    <a class="nav-link">
+                                        <span class="num">2</span>
+                                        Questions Answers
+                                    </a>
+                                    </li> {% endcomment %}
+                                    <li class="nav-item">
+                                    <a class="nav-link">
+                                        <span class="num">2</span>
+                                        Add logo
+                                    </a>
+                                    </li>
+                                    <li class="nav-item">
+                                    <a class="nav-link ">
+                                        <span class="num">3</span>
+                                        Additional Notes
+                                    </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link ">
+                                            <span class="num">4</span>
+                                        Preview
+                                        </a>
+                                        </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                            <div class="mt-3 mb-5 p-4 ">
+                                                <div class="grouping-info">
+                                                    <p>You can organize your participant responses by grouping them.
+                                                    Select how you would like to combine participant responses in your report:</p>
+                                                    <ul>                               
+                                                        <li>Click arrow to assign relationship types to a group</li>
+                                                        <li>Group number simply represents the order in which they appear in the report</li>
+                                                        <li>Responses within each group will be in randomized order to maintain anonymity</li>
+                                                    </ul>
+                                                    
+                                                    <span>* You may press "Next" if you do not wish to group participant responses  - all responses will then be combined and randomized automatically</span>
+                                                </div>    
+                                                <div class="my-3">Would you like to group Participants?                                                 
+                                                        <input type="checkbox" name="grouping_enable">
+                                                        <div class="alert-info-new mt-2" role="alert"   >
+                                                            Responses will appear in random order within each group
+                                                        </div>
+                                                
+                                                </div>                                                              
+                                                <div class="relationship-grp">
+                                                    <div class="heading-wrap">
+                                                        <span class="choose">Relationship</span>
+                                                        <span class="choose">Group</span>
+                                                    </div>
+                                                   {% if groups %}
+                                                        {% for relation in relations %}                                                             
+                                                            <div class="lable-wrap disable ">
+                                                                <label>{{ relation.relation }}</label>                                                            
+                                                                <div class="input-group">
+                                                                    <select class="custom-select">
+                                                                    <option>Select Group</option>                                                                    
+                                                                    <option value="1" {% for group in groups %} {% if 'Group 1' == group.name  and relation in group.relation.all %} selected{% endif %} {% endfor %}>Group 1</option>
+                                                                    <option value="2" {% for group in groups %} {% if 'Group 2' == group.name  and relation in group.relation.all %} selected{% endif %} {% endfor %}>Group 2</option>
+                                                                    <option value="3" {% for group in groups %} {% if 'Group 3' == group.name  and relation in group.relation.all %} selected{% endif %} {% endfor %}>Group 3</option>  
+                                                                    <option value="4" {% for group in groups %} {% if 'Group 4' == group.name  and relation in group.relation.all %} selected{% endif %} {% endfor %}>Group 4</option>
+                                                                    <option value="5" {% for group in groups %} {% if 'Group 5' == group.name  and relation in group.relation.all %} selected{% endif %} {% endfor %}>Group 5</option>
+                                                                    <option value="6" {% for group in groups %} {% if 'Group 6' == group.name  and relation in group.relation.all %} selected{% endif %} {% endfor %}>Group 6</option>
+                                                                    </select>                                                                
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %} 
+                                                        {% for relation in relations %}     
+                                                            <div class="lable-wrap disable ">
+                                                                <label>{{ relation.relation }}</label>                                                            
+                                                                <div class="input-group">
+                                                                    <select class="custom-select">
+                                                                    <option selected>Select Group</option>
+                                                                    <option value="1">Group 1</option>
+                                                                    <option value="2">Group 2</option>
+                                                                    <option value="3">Group 3</option>  
+                                                                    <option value="4">Group 4</option>
+                                                                    <option value="5">Group 5</option>
+                                                                    <option value="6">Group 6</option>
+                                                                    </select>                                                                
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>                  
+                                            </div>
+                                            <span class="error selectoption" style="position: relative; bottom: 0px;"></span>
+                                    </div>
+                                    {% comment %} <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+                                        <div class="p-4">                                        
+                                            <ul class="main-list question_answer_wrap">
+                                            {% for question, answers in questions_answers %}
+                                            <li>
+                                                <p class="ques-text">{{question}}</p>
+                                                <ul class="all-response">
+                                                    <li>
+                                                        <p class="desigination-text d-none">{{answer.participant.first_name}}</p>                                                     
+                                                        <ul class="response-list">
+                                                        {% for answer in answers %}
+                                                                <li>{{answer.answer}}</li>
+                                                                <p class="name-text d-none">{{answer.participant__first_name}}</p>
+                                                                <p class="desigination-text d-none">{{answer.participant__relationship__relation}}</p>
+                                                        {% endfor %}
+                                                        </ul>                                                    
+                                                    </li>                                                 
+                                                </ul>
+                                            </li>
+                                            {% endfor %} 
+                                            </ul>                                                                               
+                                        </div>  
+                                    </div> {% endcomment %}
+                                    <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3" style="height:500px;">
+                                        <div class="lrc_content_step upload_complete" >   
+                                            <div class="prevs">
+                                                <div class="d-flex">
+                                                    <h3>Customize Logo</h3>
+                                                    <div class="info-here">
+                                                        <i class="fa fa-info"></i>
+                                                        <div class="hover-text">Your logo will be saved and automatically set for your future reports. You will have the option to change this at any time.</div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                            <div class="logo-parent" >
+                                                <div class="main_box">
+                                                    <div class="logo_container">
+                                                    {% if report.logo %}
+                                                    <div class="intake-logo">
+                                                        <img class="main_intake_image" src= "{{report.logo.url}}"> 
+                                                        <a href="javascript:;" class="remove_intake_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                    </div>
+                                                    <input type="file" name="logo" class="form-control report_logo d-none">
+                                                    {% else %}
+                                                    <div class="intake-logo d-none">
+                                                        <img class="main_intake_image" > 
+                                                        <a href="javascript:;" class="remove_intake_img"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                    </div>
+                                                    <input type="file" name="logo" class="form-control report_logo">
+                                                    {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+                                        <div class="row">
+                                            <div class="col-md-12 col-lg-12 mb-3">
+                                                <div class="form-group">
+                                                    <label>Note Heading</label>
+                                                    <input type="text" name="note_heading" placeholder="Note Heading" class="form-control" {% if report.noteheading and report.noteheading != 'None' %}value="{{report.noteheading}}"{% endif %}>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-lg-12 mb-3">
+                                                <div class="form-group">
+                                                    <label>Note Comment</label>
+                                                    <textarea type="text" name="note_comment" placeholder="Note Comment" class="form-control">{% if report.notecomments and report.notecomments != 'None' %}{{report.notecomments}}{% endif %}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>                                     
+                                    </div>
+                                    <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5"  style="display: block; overflow: scroll;height: 1000px;">                                    
+                                        <div class="insides" >
+                                            <fieldset id="1" class="first_page active_page">
+                                                <div class="front-page">
+                                                    <div class="inner-wrap">
+                                                        {% comment %} <div class="logo_container">                                
+                                                            <a href="javascript:;" class="upload_logo sitebtn ">Add logo</a>                    
+                                                        </div>  {% endcomment %}
+                                                        {% comment %} <div class="report-logo">
+                                                            <img class="main_image">
+                                                        </div> {% endcomment %}   
+                                                        {% if report.logo %}
+                                                            <div class="logo_container_step4">      
+                                                                <img src="{{report.logo.url}}"></img>                        
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="logo_container_step4">      
+                                                                <img src=""></img>                        
+                                                            </div>
+                                                        {% endif %}
+                                                        <div class="report_heading">
+                                                            <h1>Creative Assessment Portal<sup><i class="fa fa-registered" aria-hidden="true"></i></sup></h1>
+                                                        </div>
+                                                        <div class="pdf_content">
+                                                            <div class="heading_wrap">
+                                                                <h1 class="heading">Confidential Feedback Report for</h1>
+                                                                <h2 class="name" >{{survey.Survey_client.first_name|title|capfirst}} {{survey.Survey_client.last_name|title|capfirst}}</h2>
+                                                                <h3 class="titlle" >{{survey.Survey_client.title|title|capfirst}} </h3>
+                                                                <h4 class="company" >{% if not survey.Survey_client.company_name == NONE %}{{survey.Survey_client.company_name|title|capfirst}}{% endif %} </h4> 
+                                                            </div>
+                                                            <p class="date">{% now "F d, Y" %}</p>
+                                                        </div>
+                                                        <div class="botom_parent">
+                                                            <p class="coach">Prepared By <strong>{{survey.Survey_client.coach.first_name|title|capfirst}} {{survey.Survey_client.coach.last_name|title|capfirst}}</strong></p>
+                                                            <p class="toc"><strong>{% if not survey.Survey_client.coach.title == NONE %}{{survey.Survey_client.coach.title}}{% endif %}</strong></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="footer_parent_overview newfooter-parent">
+                                                        <div class="back-figure">
+                                                            <div class="btnedit btnpens">
+                                                                <button type="button" data-toggle="modal" data-target="#editbackfootercolor" class="back_footer"><i class="fa fa-pencil"></i></button>
+                                                            </div>
+                                                            <svg class="yellow-wrap" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="403" viewBox="0 0 1920 403">
+                                                                <defs>
+                                                                <clipPath id="clip-path">
+                                                                    <rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px" fill="#d7de68" stroke="#707070" stroke-width="1"></rect>
+                                                                </clipPath>
+                                                                </defs>
+                                                                <g id="Mask_Group_1" data-name="Mask Group 1" clip-path="url(#clip-path)">
+                                                                <path id="Path_1" class="bc-color-styling" data-name="Path 1" d="M1964.89,173.333s-440-142.667-904-6.667-878.667,64-1018.667,0,0,352,0,352l1936-13.333,6.667-332Z" transform="translate(-44.89 -108.285)" fill="{% if footer %}{{footer.frontfootercolor}}{% else %}#61c1b9{% endif %}"></path>
+                                                                </g>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="front-figure">
+                                                            <svg class="blue-warp" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="403" viewBox="0 0 1920 403">
+                                                                <defs>
+                                                                <clipPath id="clip-path">
+                                                                    <rect id="Rectangle_1" data-name="Rectangle 1" width="100%" height="440px" transform="translate(0 11)" fill="#fff" stroke="#707070" stroke-width="1"></rect>
+                                                                </clipPath>
+                                                                <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+                                                                    <stop offset="0" stop-color="#61c1b9"></stop>
+                                                                    <stop offset="1" stop-color="#4bb1a8"></stop>
+                                                                </linearGradient>
+                                                                </defs>
+                                                                <g id="Mask_Group_1" data-name="Mask Group 1" transform="translate(0 -11)" clip-path="url(#clip-path)">
+                                                                <path class="color-styling" id="Path_1" data-name="Path 1" d="M0,173.333s440-142.667,904-6.667,878.667,64,1018.667,0,0,352,0,352l-1936-13.333-6.667-332Z" transform="translate(0 -97.285)" fill="{% if footer %}{{footer.color}}{% else %}#d7de68{% endif %}"></path>
+                                                                </g>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="prev-footer" style="background: #d7de68;">
+                                                        <ul>
+                                                            <li>
+                                                                {% if footer.text %}
+                                                                <p class="footer_text">{{footer.text}}</p>
+                                                                {% else %}
+                                                                <p class="footer_text">Creative Buffer Consultancy Private Limited| creativebuffer.com</p>
+                                                                {% endif %}
+                                                                <div class="btnedit btnpens">
+                                                                <button type="button" class="edit_footer" data-toggle="modal" data-target="#editfooter">
+                                                                <i class="fa fa-pencil"></i>
+                                                                </button>
+                                                            </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset id="2" class="second_page">
+                                                <div class="outer-wrap p-4" style="height:1000px;">
+                                                    <div class="overview-wrap">
+                                                        <h4>Overview</h4>
+                                                        <p>As part of your executive coaching engagement, lalita devi conducted a feedback process to understand how others perceive your strengths as well as your learning and development opportunities.</p>
+                                                        <br>
+                                                        <p>lalita gathered feedback data from 6 participants with whom you have interfaced and have known for at least six months. All data was collected via an online questionnaire from October 6 to October 6. The participants included:</p>
+                                                        <ol class="mt-3">
+                                                            {% for survey_campaign in survey_campaigns %}
+                                                            <li>{{survey_campaign.participant.first_name}} {{survey_campaign.participant.last_name}}, {{survey_campaign.participant.relationship.relation}}</li>
+                                                            {% endfor %}
+                                                        </ol>
+                                                        <h3>Participant Summary</h3>
+                                                        <div class="table-responsive mt-4">
+                                                            <table class="table border-new" style="border: 1px solid #000;">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <th>Relationship</th>
+                                                                    <th>Selected</th>
+                                                                    <th>Participated</th>
+                                                                    <th>Participation %</th>
+                                                                </tr>
+                                                                {% for summary in participant_summary %} 
+                                                                <tr>
+                                                                    <td>{{summary.relation}}</td>
+                                                                    <td> {{summary.total_sent}}</td>
+                                                                    <td>{{summary.participant_responded}}</td>
+                                                                    <td>{{summary.participation_percentage}} %</td>
+                                                                </tr>
+                                                                {% endfor %}                                                                 
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <br>
+                                                        <p>As is best practice, participants were given anonymity to engender trust and candor. Their anonymous direct quotes were aggregated by question and are included in the report.</p>
+                                                        <br>
+                                                        <p>When reviewing your report, please keep in mind that these are their perceptions of you, which may differ from how you see yourself.</p>
+                                                        <br> 
+                                                        <p>During your coaching session with lalita, the report will be analyzed and key themes will be elicited. The purpose is to gain clarity and self-awareness to help refine your goals and determine the best path forward to achieve them.</p>
+                                                    </div>                                                
+                                                    <div class="prev-footer">
+                                                        <ul>
+                                                            <li>
+                                                                {% if footer.text %}
+                                                                <p class="footer_text">{{footer.text}}</p>
+                                                                {% else %}
+                                                                <p class="footer_text">Creative Buffer Consultancy Private Limited| creativebuffer.com</p>
+                                                                {% endif %}
+                                                            
+                                                            <div class="btnedit btnpens">
+                                                                <button type="button" class="edit_footer" data-toggle="modal" data-target="#editfooter">
+                                                                    <i class="fa fa-pencil"></i>
+                                                                </button>
+                                                            </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="p-4 free-space"></div>
+                                            </fieldset>
+                                            <fieldset id="3" class="last_page">
+                                                <div class="outer-wrap p-4 question_answer_wrap_preview"> 
+                                                    <div class="pdf-preview-wrap overview-wrap">                                                        
+                                                    </div>                                                                       
+                                                </div>
+                                            </fieldset>
+                                            <nav aria-label="Page navigation example">                  
+                                                <ul class="buttons-nexts pagination paging">   
+                                                    <button type="button" name="prev" class="prevpg" onclick="gotoprvpage()" value="Previous" style="display: none;"><i class="fa fa-chevron-left fa-lg"></i></button>                        
+                                                    <li class="page-item">
+                                                        <a class="page_link page-link active" onclick="gotopage(1)">1</a> 
+                                                    </li>     
+                                                    <li class="page-item">
+                                                        <a class="page_link page-link" onclick="gotopage(2)">2</a> 
+                                                    </li>  
+                                                    <li class="page-item">
+                                                        <a class="page_link page-link" onclick="gotopage(3)">3</a> 
+                                                    </li>  
+                                                
+                                                    <button type="button" name="nxt" class="nxtpg" onclick="gotonxtpage()" value="Next"><i class="fa fa-chevron-right fa-lg"></i></button>
+                                                </ul>                    
+                                            </nav>
+                                        </div>
+                                    </div>                                
+                                </div>  
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- edit footer -->
+<div class="modal fade border-modal common-modal-body" id="editbackfootercolor">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">                   
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Choose your footer Color</label>
+                        <input type="color" name="bgcolor" class="form-control footerbgcolor" >
+                    </div>
+                </div>
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="savebackfooter">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade border-modal common-modal-body" id="editfooter">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 p-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="Headings_center">
+                    <h2>Edit Footer</h2>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Enter footer text here</label>
+                        <input type="text" id="footer-text" class="form-control footertext" >
+                    </div>
+                    <div class="form-group mt-4">
+                        <label class="mb-2 font-weight-bold">Choose your footer Color</label>
+                        <input type="color" name="favcolor" class="form-control footercolorntext" >
+                        
+                    </div>
+                </div>
+
+                <div class="modal-buton">
+                    <button type="button" class="btn-modals" id="savefooter">Save</button>
+                    <button type="button" class="btn-modals" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end -->
+
+{% endblock content %}
+
+{% block extrajs %}
+<script>    
+   question_answers = {{questions_answers|safe}}
+   survey_id = {{survey.id}}
+   coach_id = {{survey.Survey_client.coach.id}}
+   report_id = {{report.id}}
+</script>
+<script src="{% static 'new_theme/appScript/generate_report.js' %}?v={{CACHE_VERSION}}"></script>
+{% endblock extrajs %}

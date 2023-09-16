@@ -1,0 +1,84 @@
+.genfeedrep_relat_type_wrp .cmn_field {
+    margin: 50px 0 30px;
+}
+.genfeedrep_relat_type_wrp .cmn_field p {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0 0 15px;
+}
+.genfeedrep_relat_type_wrp .cmn_field label input {
+    margin-right: 8px;
+}
+.genfeedrep_relat_type_wrp .cmn_field label {
+    display: block;
+    margin: 14px 0;
+    font-size: 13px;
+    line-height: 17px;
+}
+.genfeedrep_relat_type_wrp .cmn_field label input:checked + span {
+    color: #45A29E;
+}
+.genfeedrep_relat_type_wrp .sub_field {
+    text-align: center;
+}
+.genfeedrep_relat_type_wrp .sub_field button, .genfeedrep_relat_type_wrp .sub_field .sitebtn {
+    font-size: 13px;
+    width: auto;
+    padding: 5px 26px 4px;
+    margin: 0 15px;
+}
+.genfeedrep_relat_type_wrp .cmn_field select {
+    border: 1px solid #DBDBDB;
+    padding: 8px 24px;
+    background-image: url(../Images/lightdownarrow.svg);
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
+    background-position: right 20px center;
+    font-size: 13px;
+}
+.genfeedrep_relat_type_wrp span.error {
+    position: unset;
+}
+.parti_relation_type_popup p {
+    text-align: center;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 10px 0;
+}
+
+.select_option_popup p {
+    text-align: center;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 10px 0;
+}
+
+.parti_relation_type_popup a.sitebtn {
+    font-size: 13px;
+    padding: 5px 30px;
+    line-height: 17px;
+}
+.parti_relation_type_popup .cmn_site_inn_popup {
+    width: 400px;
+    padding: 38px 20px 30px 25px;
+    background-size: 100% 10px;
+}
+.parti_relation_type_popup a.closepoup {
+    width: 22px;
+    height: 22px;
+}
+.parti_relation_type_popup a.closepoup::before {
+    background-size: 8px 8px;
+    width: 8px;
+    height: 8px;
+}
+.cmn_site_inn_popup.select-opt-popup {
+    max-width: 600px;
+    width: 100%;
+    padding: 40px;
+}
+.main_heading-select
+{
+    font-weight: 600;
+}

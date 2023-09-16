@@ -1,0 +1,217 @@
+body {
+    background-image: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    min-height: 100vh;
+}
+section.client_web_form_sect {
+    padding: 70px 0 40px;
+}
+.client_web_form_inn {
+    box-shadow: 0px 0px 30px #00000029;
+    border-radius: 40px;
+    padding: 50px 80px 150px 80px;
+    background-color: #fff;
+}
+.clientwebform_logo {
+    text-align: center;
+}
+.clientwebform_logo figure {
+    width: 270px;
+    margin: 0 auto 15px;
+}
+.client_web_form_inn p {
+    font-size: 15px;
+    line-height: 25px;
+    font-weight: 600;
+    color: #3B3B3B;
+    margin: 20px 0;
+}
+.clientwebformprf_wrp .clientwebform_prof_img_wrp, .clientwebformprf_wrp a {
+    display: inline-block;
+    vertical-align: middle;
+}
+.clientwebform_prof_img_wrp figure img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+.clientwebform_prof_img_wrp figure {
+    width: 100%;
+    height: 100%;
+}
+.clientwebform_prf_img {
+    width: 70px;
+    height: 70px;
+    position: relative;
+    box-shadow: 0px 6px 6px #00000029;
+    border-radius: 10px;
+}
+a.editclientwebfrmprofimg {
+    position: absolute;
+    right: 0;
+    top: 0;
+    box-shadow: 0px 3px 15px #00000029;
+    border-radius: 50%;
+    padding: 6px;
+    width: 24px;
+    height: 24px;
+    line-height: 11px;
+    background-color: #fff;
+}
+.clientwebformprf_wrp a {
+    margin-left: 20px;
+}
+.client_web_form_inn .cmn_field {
+    margin: 10px 0;
+}
+.client_web_form_inn form h3 {
+    color: #3B3B3B;
+    font-size: 20px;
+    line-height: 30px;
+    margin: 30px 0 10px;
+}
+.all_add_field .cmn_field:nth-child(2) {
+    margin-left: 47px;
+    margin-right: 47px;
+}
+.all_add_field .cmn_field {
+    display: inline-block;
+    vertical-align: top;
+    width: 30%;
+}
+.clientwebformprf_wrp {
+    margin-bottom: 40px;
+}
+.clientwebfrmquest p {
+    font-size: 17px;
+    line-height: 28px;
+    margin: 40px 0 12px;
+    font-weight: 400;
+}
+.cmn_quest_field input {
+    border: 1px solid #E6E6E6;
+    width: 100%;
+    font-size: 15px;
+    line-height: 20px;
+    padding: 10px 30px;
+    font-weight: 400;
+}
+.clientwebfrmquest input#file-upload {
+    display: none;
+}
+.custom-file-upload figure, .custom-file-upload span {
+    display: inline-block;
+    vertical-align: middle;
+}
+.custom-file-upload span.uploadspan {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 400;
+    margin-left: 15px;
+}
+.custom-file-upload figure {
+    padding: 10px;
+    width: 50px;
+    background-color: #38A59C;
+    border-radius: 7px;
+}
+.custom-file-upload {
+    background: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    display: inline-block;
+    padding-right: 10px;
+    border-radius: 7px;
+    color: #fff;
+    font-size: 0;
+    min-width: 170px;
+}
+.upload_logo_popup_inn.cmn_site_inn_popup {
+    width: 600px!important;
+    padding: 20px 20px 40px;
+}
+.uploadimg {
+    width: 30%;
+    margin: 0 auto 20px;
+}
+.upload_logo_wrp p {
+    text-align: center;
+    color: #CECECE;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 400;
+    margin: 10px 0;
+}
+#uploadlogo {
+    display: none;
+}
+.upload_logo_wrp {
+    padding: 80px;
+    background-image: url(../Images/rectangle_border.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}
+.upload_logo_wrp:hover {
+    cursor: pointer;
+}
+#uploadlogofrm button#uploadlogofrmsub {
+    width: 130px;
+    font-size: 15px;
+}
+.upload_logo_popup_inn a.canceluploadlogo {
+    margin-top: 40px;
+}
+.custom-file-upload .progress-bar {
+    height: 8px;
+    background: linear-gradient(to bottom, #67c5bd, #5bbcb4, #4fb3aa, #42aaa1, #34a198);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    /*width: 0;*/
+}
+.custom-file-upload .progress_bar_wrp {
+    background-color: #ffff;
+    box-shadow: 1px 1px 6px #67c5bd59;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin: 2px 0;
+}
+.custom-file-upload .progress label, .custom-file-upload .progress span {
+    color: #3B3B3B;
+    font-size: 12px;
+    margin-left: 10px;
+}
+.custom-file-upload .progress {
+    display: inline-block;
+    vertical-align: middle;
+    min-width: 110px;
+}
+.custom-file-upload.showfilename {
+    background: transparent;
+}
+.frmsucc_popup .cmn_site_inn_popup {
+    width: 400px;
+    padding: 35px 40px 50px;
+}
+.frmsucc_popup .cmn_site_inn_popup h2 {
+    margin-bottom: 15px;
+}
+.frmsucc_popup .cmn_site_inn_popup p {
+    text-align: center;
+    margin: 0;
+}
+/* Footer */
+footer.sitefooter_new {
+    text-align: center;
+}
+.sitefooter_inn p {
+    color: #fff;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 300;
+    margin: 0;
+}
+footer.sitefooter_new {
+    text-align: center;
+    padding-bottom: 30px;
+}

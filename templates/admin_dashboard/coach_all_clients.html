@@ -1,0 +1,406 @@
+{% extends "core/theme/base_theme.html" %} 
+{% load static i18n %} 
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey_table.css' %}">
+{% endblock extrastyle %}
+<title></title>
+{% block content %}
+<div class="personal-dtl">
+   <div class="d-block client_table mb-2 mb-lg-4">
+      <div class="row align-items-center">
+         <div class="col-12 col-sm-12 col-md-12">
+            <div class="d-md-flex align-items-center justify-content-between">
+               <div class="table-title">
+                  <h4 class="text-secondary font-weight-bold mb-4 text-center text-md-left">
+                     All Clients for {{coach.first_name}} {{coach.last_name}}
+                  </h4>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row mt-2 mt-lg-3">
+         <div class="col-12 col-md-12">
+            <div class="cust-responsive global_table all-doc coach-dt">             
+               <table class="table table_design uploaded_file_table mt-0" id="myTable-2">
+                  <thead>
+                     <tr>
+                        <th>Sr.No.</th>
+                        <th>Profile</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Organization</th>
+                        <!-- <th>Survey Status</th> -->
+                        <th>Action</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <!-- <div class="row mt-2 mt-lg-3">
+         <div class="col-12 col-md-12">
+            <div class="cust-responsive global_table all-doc coach-dt">             
+               <div class="right survey_right_wrp alignright  global_table coach-dt">
+                  <div class="survey_sort_wrp sort-grp ">
+                     <a href="javascript:;" class="sortbydropdowm">Sort By</a>
+                     <ul class="sortbydropdowmlist">
+                        <li>
+                           <a class="nosort" value="5">Plan</a>
+                        </li>
+                        <li>
+                           <a class="nosort" value="4">Type</a>
+                        </li>
+                     </ul>
+                  </div>
+                  <div class="sort-view">
+                     <a href="javascript:;" class="main-btn viewall-btn">view all</a>
+                  </div>
+               </div>
+               <table class="table table_design uploaded_file_table mt-0" id="myTable-2">
+                  <thead>
+                     <tr>
+                        <th>Sr.No.</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Relationship Type</th>
+                        <th>Email</th>                       
+                        <th>Action</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                   </tbody>
+               </table>
+            </div>
+         </div>
+      </div> -->
+   </div>
+</div>
+
+<div class="modal fade" id="edit-part" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h3 class="text-dark font-weight-bold">Edit Participant</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="addmodal">
+               <!--form-->
+               <div class="add_partici_wrp">
+                  <div class="client_intake_form mt-3">
+                     <form name="editparticipantfrm" class="commnewfrmdesign" id="editparticipantfrm"
+                        method="post">
+                        {% csrf_token %}
+                        <div class="add_participant_data overflow-auto col-sm-12 h-auto ">
+                           <div class="d-block client-info mb-0 mb-lg-0" id="block-1">
+                              <div class="row mt-2 mt-lg-4">
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="text" name="fname"
+                                             class="form-control cutome-input" id="efname"
+                                             placeholder="First Name">
+                                          <span class="error" id="fnameerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="text" name="lname"
+                                             class="form-control cutome-input" id="elname"
+                                             placeholder="Last Name">
+                                          <span class="error" id="lnameerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <input type="email" name="email"
+                                             class="form-control cutome-input" id="eemail"
+                                             placeholder="Email">
+                                          <span class="error" id="eemailerr"></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                       <div class="input-group cst-input-group mb-3">
+                                          <div class="input-group-prepend"><span class="input-group-text"
+                                             id="basic-addon1"><i
+                                             class="mdi mdi-account-outline"></i></span></div>
+                                          <select name="relationship" class="form-control cutome-input"
+                                             id="erelationship">
+                                             <option value="demo">Select Relationship</option>
+                                             {% for r in relation %}
+                                             <option value={{ r.id }}>{{ r.relation }}</option>
+                                             {% endfor %}
+                                          </select>
+                                          <span class="error" id="relationshiperr"></span>
+                                       </div>
+                                       <!-- <div class="cmn_field forgot_pass checkbox_cmnwrp mt-3 participant_check">
+                                          <label class="text-black"><input type="checkbox" name="forgtpass"> Enter Relation</label>
+                                          </div> -->
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-md-12 alignright savecanquestbtnwrp">
+                              </div>
+                           </div>
+                        </div>
+                        <input type="hidden" id="id" value="#id" name="id">
+                        <div class="sub_field mt-0 mb-3">
+                           <a class="savequestbtn sitebtn m-0" id="edit" data-toggle="modal">Save</a>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+               <!--form-end-->
+            </div>
+            <div class="modal-footer pt-1 pb-1">
+               <div class="sub_field">
+                  <a class="savequestbtn sitebtn" data-dismiss="modal"> Cancel</a></a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>  
+</div>
+
+<div class="delete_cnfm_popup cmn_sitepopup" id="del_particip">
+   <div class="delete_cnfm_inn cmn_site_inn_popup">
+      <a href="javascript:;" class="closepoup" data-dismiss="modal"></a>
+      <div class="cmn_sitepopup_scroll">
+         <h2>Are you sure you want to delete Participant?</h2>
+         <div class="d-flex justify-content-center">
+            <button type="button" class="sitebtn mr-3 pl-5 pr-5" id="delete_participant">Yes</button>
+            <button type="button" class="sitebtn ml-3 pl-5 pr-5 closepoup" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+   <div class="whiteoverlay"></div>
+</div>
+
+
+<input type="hidden" id="curr_survey_id">
+<script>
+
+
+$('body').on('click', '.edit_value', function () {
+       var a = $(this).parents('tr').find('.fName').text();
+       var b = $(this).parents('tr').find('.lName').text();
+       var c = $(this).parents('tr').find('.eMail').text();
+       var d = $(this).parents('tr').find('.relation').text();
+       var dataId = $(this).attr('data-id');
+       var e = $.trim(a);
+       jQuery('#eemailerr').text('');
+       $('#edit-part #efname').val(e);
+       $('#edit-part #elname').val(b);
+       $('#edit-part #eemail').val(c);
+       $('#edit-part #id').val(dataId);
+       $('#erelationship').children('option').each((key, item) => {
+           var isSelected = ($(item).html() == $.trim(d)) ? true : false;
+           if (isSelected)
+               $(item).attr('selected', 'selected');
+       });
+   });
+   
+      function deletepart(id) {
+         $('#curr_survey_id').val(id);
+         $('#del_particip').modal('show');
+      }
+
+   $(document).ready( function () {     
+      
+   //   t = $('#myTable-2').DataTable({
+   //          responsive: true,   
+   //          serverSide: true,
+   //          searching: false,
+   //          ajax: window.location.origin + "/super_admin/coachparticipantlist/" + {{coach.id}} ,
+   //          rowId: "id",
+   //          columns: [    
+   //             { "data": "id", render: function(data, type, full, meta) {
+   //                      return meta.row + meta.settings._iDisplayStart + 1;
+   //                  }}, 
+   //             { "data": "first_name", },
+   //             { "data": "last_name", },
+   //             { "data": "relationship"},
+   //             { "data": "email" },               
+              
+   //             { "data": "id",
+   //                "render": function(data, type, row, meta) {                       
+   //                return '<a class="d-inline-block view edit_value" data-id="'+data+'" data-toggle="modal" data-target="#edit-part">Edit</a><a onclick="deletepart('+data+')" class="d-inline-block view">Delete</a>';}        
+   //             },
+                     
+   //                   ],        
+   
+   //    });
+
+   t = $('#myTable-2').DataTable({
+            responsive: true,   
+            serverSide: true,
+            searching: false,
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+            ajax: window.location.origin + "/super_admin/coachclientlist/" + {{coach.id}} ,
+            rowId: "id",
+            columns: [    
+               { "data": "id", render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }}, 
+               { "data": "profile_img",  "render": function(data, type, row, meta) { 
+                  link = document.location.origin+'/'+data              
+                  return '<img src="'+link+'">';}        
+              },
+               { "data": "first_name", },
+               { "data": "email"},
+               { "data": "company_name" },               
+               { "data": "id",
+                  "render": function(data, type, row, meta) {    
+                  link = document.location.origin+'/super_admin/client/'+data
+                  return '<a href="'+link+'" class="d-inline-block view vd-btn">View Detail</a>';}        
+               },
+                     
+                     ],        
+   
+      });
+
+      $('#delete_participant').on('click',function(){
+       token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+       $('#del_particip').modal('hide');
+       $.ajax({
+           url: "{% url 'congo' %}",
+           type: "DELETE",
+           data: {
+               'id': jQuery('#curr_survey_id').val(),               
+           },
+           headers: {
+               'X-CSRFToken': token
+           },
+           success: function (data) {
+               t.row( $('tr#'+data['id']) ).remove().draw();
+           }
+       })
+       $('.loading_img').fadeIn();
+       setInterval(function () {
+           $('.loading_img').fadeOut();
+       }, 1000);
+   });
+
+   $('body').on('click', '#edit', function () {
+      var email = document.getElementById('eemail').value;
+      if(email == "" || email == null) {
+			jQuery('#eemailerr').text('Please enter a email address');
+		} else {
+			var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm;
+			if (re.test(email)) {
+				jQuery('#eemailerr').text('');
+            $('#edit-part').modal('hide');
+            token = document.getElementsByName("csrfmiddlewaretoken")[0].value
+            var data = {};
+            try {
+               var fn = document.getElementById('efname').value;
+               var ln = document.getElementById('elname').value;           
+               var rl = document.getElementById('erelationship').value;
+               data["fname"] = fn;
+               data["lname"] = ln;
+               data["email"] = email;
+               data["rel"] = rl;               
+               data["participant_id"] = document.getElementById('id').value;
+            }
+            catch (err) {
+               console.log('error')
+            }
+            try {
+               $.ajax({
+                     type: "PUT",
+                     url: "{% url 'congo' %}",
+                     data: JSON.stringify(data),
+                     headers: {
+                        'X-CSRFToken': token
+                     },
+                     success: function (data) {
+                        t.draw();                       
+                     },
+                     error: function (data) {
+                        console.log(data)
+                     }
+               });
+            } catch (err) {
+               console.log(err)
+            } 
+			} else {
+            console.log(jQuery('#eemailerr'))
+				jQuery('#eemailerr').text('Please enter a valid email address');
+			}
+				
+	   }            
+   });
+   
+
+       $('#myTable-1').DataTable({
+            responsive: true,    
+            searching: false,
+            serverSide: true,
+            "processing": true,
+            oLanguage: {sProcessing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'},
+            
+            ajax: window.location.origin + "/super_admin/coachsurveylist/" + {{coach.id}} ,
+            columns: [    
+               { "data": "id", render: function(data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }}, 
+               { "data": "creator", },
+               { "data": "title"},
+               { "data": "total_sent" },
+               { "data": "start_datetime", "render": function (data) {
+                  if (data){
+                        var date = new Date(data);
+                        var month = date.toLocaleString('default', { month: 'short' });
+                        return (month.toString().length > 1 ? month : "0" + month) + " " + date.getDate() + "," + date.getFullYear();
+                     }
+                     else{ return "-"}
+                  }},
+               { "data": "end_datetime", "render": function (data) {
+                     if (data){
+                        var date = new Date(data);
+                        var month = date.toLocaleString('default', { month: 'short' });
+                        return (month.toString().length > 1 ? month : "0" + month) + " " + date.getDate() + "," + date.getFullYear();
+                     }
+                     else{ return "-"}
+                     } },
+               { "data": "has_related_feedbackreport",
+                  "render": function(data, type, row, meta) {   
+                  if (data){   
+                  link = document.location.origin+'/survey/download/'+data+'/Client'  
+                  return '<a href="'+link+'" class="d-inline-block downl-icon">Completed  <i class="fa fa-download" aria-hidden="true"></i></a>';}
+                  else{
+                     return '-'
+                  }
+               },         
+               },
+               { "data": "id", "render": function(data) {   
+                  link = document.location.origin+'/survey/show_survey/'+data                      
+                  return '<a href="'+link+'" class="d-inline-block view vd-btn">View Detail</a>';}},         
+                     ],
+               } );   
+      
+   } );
+          
+</script>
+{% endblock content %}

@@ -1,0 +1,511 @@
+{% extends "core/theme/base_theme.html" %}
+{% csrf_token %}
+{% load static i18n %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/richtext.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/survey.css' %}">
+<!--<style>-->
+<!--.new_modal_design .surveybtnwrp.sub_field {-->
+<!--    margin: 0;-->
+<!--    display: flex;-->
+<!--    display: -webkit-flex;-->
+<!--    margin: 0;-->
+<!--    justify-content: space-between;-->
+<!--    -webkit-justify-content: space-between;-->
+<!--}-->
+<!--.new_modal_design .create_survay_popup_inn {-->
+<!--    max-width: 700px;-->
+<!--}-->
+<!--.new_modal_design .all_survey_btn {-->
+<!--    margin: 10px 0 0 0;-->
+<!--}-->
+
+<!--.checked_div {-->
+<!--    border: 2px solid #000;-->
+<!--}-->
+
+<!--.survey_parent {-->
+<!--    display: flex;-->
+<!--    display: -webkit-flex;-->
+<!--     justify-content: space-between;-->
+<!--    -webkit-justify-content: space-between;-->
+<!--        margin-top: 20px;-->
+<!--}-->
+<!--.survey_parent .survey_format_wrp {-->
+<!--    width: 48%;-->
+<!--}-->
+
+<!--.checkbox_cmnwrp input[checked="checked"]::after {-->
+<!--    content: "";-->
+<!--    width: 10px;-->
+<!--    height: 6px;-->
+<!--    position: absolute;-->
+<!--    left: 2px;-->
+<!--    border-bottom: 2px solid #000;-->
+<!--    border-left: 2px solid #000;-->
+<!--    transform: rotate(-->
+<!--310deg);-->
+<!--    top: 2px;-->
+<!--}-->
+
+<!--.survey_parent .survey_format_wrp {-->
+<!--    width: 48%;-->
+<!--    background: #f0817c;-->
+<!--    color: white;-->
+<!--    border-radius: 10px;-->
+<!--    padding: 42px;-->
+<!--    box-shadow: inset 0 0 10px rgb(255 255 255 / 50%);-->
+<!--}-->
+<!--.survey_parent .survey_format_wrp h6 {-->
+<!--    line-height: 24px;-->
+<!--}-->
+<!--.survey_parent .survey_format_wrp.survey2{-->
+<!--background: #fad18b;-->
+<!--}-->
+<!--#scratchpopup form {-->
+<!--    position: relative;-->
+<!--}-->
+<!--#scratchpopup .reminder_pop {-->
+<!--    position: absolute;-->
+<!--    z-index: 9999;-->
+<!--    background: white;-->
+<!--    top: 220px;-->
+<!--    left: -260px;-->
+<!--    width: 100%;-->
+<!--    padding: 10px;-->
+<!--    text-align: left;-->
+<!--    max-width: 259px;-->
+<!--    bottom: 0;-->
+<!--    box-shadow: 0 0 30px rgb(0 0 0 / 22%);-->
+<!--    overflow-y: auto;-->
+<!--    display: none;-->
+<!--}-->
+<!--#scratchpopup .reminder_pop ul {-->
+<!--    padding: 0;-->
+<!--    margin: 0;-->
+<!--}-->
+<!--#scratchpopup .reminder_pop label{-->
+<!--    display: flex;-->
+<!--    display: -webkit-flex;-->
+<!--    margin-bottom: 10pxrem;-->
+<!--}-->
+<!--#scratchpopup .reminder_pop label input[type="radio"] {-->
+<!--    min-width: 15px !important;-->
+<!--}-->
+<!--#scratchpopup .reminder_pop label p{-->
+<!--    font-size: 12px;-->
+<!--    line-height: 19px;-->
+<!--    margin: 0;-->
+<!--}-->
+<!--#scratchpopup .reminder_pop label input{-->
+<!--    margin-right: 15px;-->
+<!--}-->
+<!--#scratchpopup .cmn_site_inn_popup {-->
+<!--    position: relative;-->
+<!--}-->
+<!--</style>-->
+
+<script src="{% static 'js/theme/jquery.richtext.js' %}" ></script>
+<script src="{% static 'js/theme/survey.js' %}?v={{CACHE_VERSION}}" ></script>
+{% endblock extrastyle %}
+
+{% block createbutton %}
+{% if client.count == 0 %}
+<div class="create_sur_btn"><a href="#" class="newbtn disabled-btn" disabled="">Create Survey</a></div>
+{% else %}
+<div class="create_sur_btn"><a href="{% url 'survey-create' %}" class="newbtn">Create Survey</a></div>
+{% endif %}
+
+{% endblock createbutton %}
+
+
+
+{% block content %}
+
+<div class="client_detail_wrp createsurvey_dashbox">
+    <div class="clearfix dash_instr_help_icon">
+        <!-- <div class="right alignright">
+            <a href="javascript:;" class="dashinsthelpbtn"><img src="{% static 'images/theme/questmark.png' %}" alt=""></a> -->
+            <!-- <div class="dash_instr_help_popup">
+                <div class="dash_instr_help_inn_popup">
+                    <div class="dash_instr_help_scrollbar">
+                        <h3>Help & Best Practice Tips</h3>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Start from scratch</h4>
+                            <p>Create a new survey</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Copy a past survey</h4>
+                            <p>Use one of your previous surveys to get started.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4>Start from template</h4>
+                            <p>Use one of our survey templates to get started.</p>
+                        </div>
+                        <div class="dash_instr_help_cnt">
+                            <h4 class="insttips">Best Practice Tip:</h4>
+                            <p>Get a head start by using one of our survey templates, which have been market tested for best results.</p>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        <!-- </div> -->
+    </div>
+    
+    
+    <div class="content-wrapper">
+        <div class="d-block client_table mb-2 mb-lg-4 client_info_title">
+            <div class="row mt-2 mt-lg-2">
+                <h4 class="text-secondary font-weight-bold m-0">
+                    {% if client %}
+                    <a style="color: #686868!important;" href="{% url 'detail-client' client.id %}"> {{client.first_name}} {{ client.last_name}}</a>
+                    {% endif %}
+                </h4>
+            </div>
+        </div>
+
+
+        <div class="all_client_details">
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-12 similar_boxes">
+                    <div class="client_detail_box scratch_survey redcolwrp">
+                        <div class="imgwrp"><img src="{% static 'images/theme/surveyiconred.svg'%}"></div>
+                        <h4>Start from scratch</h4>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-12 similar_boxes">
+                    <div class="client_detail_box copy_survey greencolwrp">
+                        <div class="imgwrp"><img src="{% static 'images/theme/surveyicongreen.svg'%}" ></div>
+                        <h4>Copy a past survey</h4>
+                    </div>
+
+                </div>
+                <div class="col-md-4 col-sm-4 col-12 similar_boxes">
+                    <div class="client_detail_box default_survey lightorngcolwrp">
+                        <div class="imgwrp"><img src="{% static 'images/theme/lightorangeicon.svg'%}" ></div>
+                        <h4>Start from template</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+{% block extrajs %}
+
+
+<div class="create_survay cmn_sitepopup">
+    <div class="create_survay_popup_inn cmn_site_inn_popup">
+        <h5 class="text-center">Creating Your Survey....</h5>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of create_survay_popup -->
+
+<div class="create_survay_popup cmn_sitepopup new_modal_design" id="scratchpopup">
+    <div class="create_survay_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+<!--        <div class="reminder_details cmn_survey_radio_box" style="display: none;">-->
+<!--            <h4>Send email reminder to:</h4>-->
+<!--            <label><input type="radio" name="reminderval" value="NORESPONSE" checked> <span>No response</span></label>-->
+<!--            <label><input type="radio" name="reminderval" value="PARTIALRESPONSE"> <span>Partial response</span></label>-->
+<!--            <label><input type="radio" name="reminderval" value="BOTH"> <span>Both</span></label>-->
+<!--            <h4>When to send reminder:</h4>-->
+<!--            <label><input type="radio" name="whentoreminderval" value="WEEKLY" checked> <span>Weekly</span></label>-->
+<!--            <label><input type="radio" name="whentoreminderval" value="WEEKLY48"> <span>Weekly and 48 hours before the survey is due</span></label>-->
+<!--        </div>-->
+<!--        <div class="survey_mark_comp_detail cmn_survey_radio_box" style="display: none;">-->
+<!--            <label><input type="radio" name="surveymarkcomplet" value="AUTOMATICALLY" checked> <span>Automatically</span></label>-->
+<!--            <label><input type="radio" name="surveymarkcomplet" value="MANUALLY" > <span>Manually</span></label>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <h3>Name Your Survey</h3>-->
+<!--        </div>-->
+        <div class="cmn_sitepopup_scroll">
+            {% if error  %} <p class="failsmsg">{{ error }}</p>{% endif %}
+            <form name="createsurveyfrm" id="createsurveyfrm" class="commnewfrmdesign" method="post" >
+                {% csrf_token %}
+                {% if client %}
+                <div class="cmn_field inputicon custom_input_icon usericon">
+                    <select name="surveycat" id="surveycat">
+                        <option value={{ client.id }} selected> {{client.first_name}} {{ client.last_name}}</option>
+                    </select>
+                </div>
+                {% else %}
+                <div class="cmn_field inputicon custom_input_icon usericon1">
+                    <select name="surveycat" id="surveycat">
+                        <option value="demo" selected>Select Client </option>
+                        {% for cli in surveyclient %}
+                        <option value={{ cli.id }}> {{ cli.first_name}} {{ cli.last_name}}</option>
+
+                        {% endfor %}
+                    </select>
+                    <span class="error" id="surveycaterr"></span>
+                </div>
+                {% endif %}
+
+                <div class="cmn_field inputicon custom_input_icon usericon1">
+                    <input type="text" name="surveyname" id="surveyname" placeholder="Survey Name">
+                    <span class="error" id="sureynameerr"></span>
+                </div>
+                <div class="hiddeninstfieldwrp">
+                    <textarea name="hiddeninstfield" id="hiddeninstfield"></textarea>
+                </div>
+                
+                
+                
+                <!-- <h5>Choose a survey format</h5> -->
+<!--                <div class="survey_parent">-->
+<!--                    <div class="survey_format_wrp" id="showprog">-->
+<!--                        <h4>One question at a time</h4>-->
+<!--                        <h6>Automaticallly scroll to the next question</h6>-->
+<!--                    </div>-->
+<!--                    <div class="survey_format_wrp survey2" id="hideprog">-->
+<!--                            <h4>Classic</h4>-->
+<!--                        <h6>Show all questions on a one page at once</h6>-->
+<!--                    </div>-->
+<!--                    </div>-->
+                 <!-- <div class="survey_format_wrp">
+                    <label>
+                        <input type="radio" name="surveyformat" value="onequestion" id="onequestattimecheck">
+                        Display one question per page
+                    </label>
+                    <label>
+                        <input type="radio" name="surveyformat" value="allquestion" checked>
+                        Display all questions on one page
+                    </label>
+                </div>
+                <div class="create_surv_reminder_info">
+                    <h3>Set Reminders</h3>
+                    <h4>Send email reminder to:</h4>
+                    <label><input type="radio" name="reminderval" value="NORESPONSE" checked> <span>No response</span></label>
+                    <label><input type="radio" name="reminderval" value="PARTIALRESPONSE"> <span>Partial response</span></label>
+                    <label><input type="radio" name="reminderval" value="BOTH"> <span>Both</span></label>
+                    <h4>When to send reminder:</h4>
+                    <label><input type="radio" name="whentoreminderval" value="WEEKLY" checked> <span>Weekly</span></label>
+                    <label><input type="radio" name="whentoreminderval" value="WEEKLY48"> <span>Weekly and 48 hours before the survey is due</span></label>
+                    <label><input type="radio" name="whentoreminderval" value="ONDEMAND"> <span>Send on demand</span></label>
+                    <label><input type="radio" name="whentoreminderval" value="NOREMINDER"> <span>Do not send reminders</span></label>
+                    <h3>Set Survey as Completed (Completed surveys are no longer active and therefore, responses can no longer be received)</h3>
+                    <label><input type="radio" name="surveymarkcomplet" value="AUTOMATICALLY" checked> <span>Automatically (survey marked “Completed” 3 weeks from date survey is sent to participants)</span></label>
+                    <label><input type="radio" name="surveymarkcomplet" value="MANUALLY"> <span>Manually (mark survey “Completed” from client’s Active Survey status)</span></label>
+                </div>
+                <div class="checkbox_cmnwrp">
+                    <span class="checkboxwrp"><input type="checkbox" name="progbar" id="progbar"></span>
+                    <label>Display progress bar</label>
+                </div> -->
+
+                <!-- <div class="customcheckbox_wrap">
+                    <input type="checkbox" id="javascript">
+                    <label for="javascript">&nbsp;</label>
+                </div> -->
+
+                <div class="all_survey_btn">
+                    <div class="surveybtnwrp sub_field">
+<!--                        <button type="button" id="reminder" class="btn btn-default">Reminders</button>-->
+                        <button type="button" id="createdefinstsub"  class="btn btn-default">Create Survey</button>
+<!--                        <button type="button" id="sendsurvey" class="btn btn-default">Ready to Send Survey</button>-->
+<!--                        <button type="button" id="markcompleted" class="btn btn-default">Survey Marked Completed</button>-->
+                    </div>
+                </div>
+
+                <!-- side_popus -->
+               
+            </form>
+        </div>
+
+<!--        <div class="reminder_pop">-->
+<!--            <ul>-->
+<!--                <label>-->
+<!--                    <input type="radio" name="remin" checked>-->
+<!--                    <p>Should a reminder be sent out to a participant that has not opened the survey? </p>-->
+<!--                </label>-->
+<!--                <label>-->
+<!--                    <input type="radio" name="remin">-->
+<!--                    <p>Should a reminder be sent out to a participant that has opened the survey but not started the survey?</p>-->
+<!--                </label>-->
+<!--                <label>-->
+<!--                    <input type="radio" name="remin">-->
+<!--                    <p>Should a reminder be sent out to a participant that has started the survey but not completed the survey?</p>-->
+<!--                </label>-->
+<!--                <label>-->
+<!--                    <input type="radio" name="remin">-->
+<!--                    <p>Should a reminder be sent out to reminding the participant 48hrs before the survey is completed? </p>-->
+<!--                </label>-->
+<!--            </ul>-->
+<!--            <div class="text-center mt-3">-->
+<!--                <button type="button" id="donebtn" class="sitebtn m-0">Done</button>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+    <div class="whiteoverlay"></div>
+    
+</div><!-- end of create_survay_popup -->
+
+<div class="copy_survay_popup cmn_sitepopup new_modal_design" id="copypopup">
+    <div class="copy_survay_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            {% if error  %} <p class="failsmsg">{{ error }}</p>{% endif %}
+            <form name="createsurveyfrm" class="commnewfrmdesign" method="post" >
+                {% csrf_token %}
+                {% if client %}
+                <div class="cmn_field inputicon custom_input_icon usericon">
+                    <select name="surveycat" id="copysurveycat">
+                        <option value={{ client.id }} selected> {{client.first_name}} {{ client.last_name}}</option>
+                    </select>
+                </div>
+                {% else %}
+                <div class="cmn_field inputicon custom_input_icon usericon1">
+                    <select name="surveycat" id="copysurveycat">
+                        <option value="demo" selected>Select Client </option>
+                        {% for cli in surveyclient %}
+                        <option value={{ cli.id }}> {{ cli.first_name}} {{ cli.last_name}}</option>
+
+                        {% endfor %}
+                    </select>
+                    <span class="error" id="copysurveycaterr"></span>
+                </div>
+                {% endif %}
+
+                <div class="cmn_field inputicon custom_input_icon usericon1">
+                    <input type="text" name="surveyname" id="copysurveyname" placeholder="Survey Name">
+                    <span class="error" id="copysureynameerr"></span>
+                </div>
+                <div class="hiddeninstfieldwrp">
+                    <textarea name="hiddeninstfield" id="hiddeninstfield"></textarea>
+                </div>                
+            
+                <div class="all_survey_btn">
+                    <div class="surveybtnwrp sub_field">                        
+                        <button type="button" id="proceed"  class="btn btn-default">Create Survey</button>
+                 </div>
+                </div>             
+            </form>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<div class="default_survey_templ_popup cmn_sitepopup">
+    <div class="create_survay_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <!-- <h2>Name your Survey</h2> -->
+            <form name="createdefsurveyfrm" id="createdefsurveyfrm" class="commnewfrmdesign" method="post">
+                {% csrf_token %}
+                <div class="cmn_field inputicon usericon1">
+                    <select name="defsurveycat" id="defsurveycat">
+                        <option value="">Select Template</option>
+                        <option value="360">Qualitative 360</option>
+                        <option value="360 Repeat">Qualitative 360 Repeat</option>
+                    </select>
+                    <span class="error" id="defsurveycaterr"></span>
+                </div>
+
+                {% if client %}
+                <div class="cmn_field inputicon custom_input_icon usericon">
+                    <select name="surveycat" id="surveycatg">
+                        <option value={{ client.id }} selected> {{client.first_name}} {{ client.last_name}}</option>
+                    </select>
+                </div>
+                {% else %}
+                <div class="cmn_field inputicon custom_input_icon usericon1">
+                    <select name="surveycat" id="surveycatg">
+                        <option value="demo" selected>Select Client </option>
+                        {% for cli in surveyclient %}
+                        <option value={{ cli.id }}> {{ cli.first_name}} {{ cli.last_name}}</option>
+
+                        {% endfor %}
+                    </select>
+                    <span class="error" id="defsurveyclierr"></span>
+                </div>
+                {% endif %}
+                
+                <div class="cmn_field inputicon usericon1">
+                    <input type="text" name="defsurveyname" id="defsurveyname" placeholder="Survey Name">
+                    <span class="error" id="defsureynameerr"></span>
+                </div>
+
+                
+                <div class="all_survey_btn">
+                    <div class="surveybtnwrp sub_field"><button type="button" id="createdefsurveysub" class="btn btn-default">Create Survey</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of default_survey_templ_popup -->
+
+<div class="creating_survey_process_popup cmn_sitepopup" id="creatingsurvey">
+    <div class="cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll">
+            <h5 class="text-center">Creating Your Survey....</h5>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div>
+
+<div class="createsuv_instr_popup cmn_sitepopup" id="instpopup">
+    <div class="createsuv_instr_popup_inn cmn_site_inn_popup">
+        <a href="javascript:;" class="closepoup"></a>
+        <div class="cmn_sitepopup_scroll cmn_sitepopup_scroll1">
+            <h2>Enter Instructions</h2>
+            <form name="createsuvinstrfrm" id="createsuvinstrfrm" class="commnewfrmdesign" method="post">
+                {% csrf_token %}
+                <div class="cmn_field">
+                    <textarea name="createsuvinstr" id="createsuvinstr">
+                        <!-- <p>Best Practice Instructions for Participants</p>
+                        <p><i>Edit as needed</i></p>
+                        <ul>
+                            <li>You may type your answers or use your voice via the microphone on your device to automatically transcribe your answers. Please do not worry about grammar!</li>
+                            <li>Your direct quotes may be included in an anonymous aggregated report of direct quotes from all participants. Be aware that if there is something that Only You would say that your colleague would know is coming from you, then you may want to be careful how you say it.</li>
+                            <li>Only the coach will know how you answered each question and the coach will maintain strict anonymity.</li>
+                            <li>The last survey question allows you to tell the coach something that you want to keep strictly confidential. The answer to this question will not be included in the report and will not be shared with your colleague.</li>
+                        </ul> -->
+                    </textarea>
+                    <span class="error" id="createsuvinstrerr"></span>
+                </div>
+                <input type="hidden" id="hiddensurveyurl" action="{% url 'create-survey' %}">
+                <div class="sub_field">
+                    <button type="button" id="showparam" class="btn btn-default">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="whiteoverlay"></div>
+</div><!-- end of createsuv_instr_popup -->
+
+
+<!--<div class="creating_survey_process_popup cmn_sitepopup confirmation">-->
+<!--    <div class="cmn_site_inn_popup con_popup" id="tkinp">-->
+<!--        <a href="javascript:;" class="closepoup"></a>-->
+<!--        <div class="cmn_field">-->
+<!--            If you send the survey now, it will be sent to all the participants listed in the client profile.-->
+<!--        </div>-->
+<!--        <div class="sub_field">-->
+<!--            <button type="button" class="stop">Yes</button>-->
+<!--            <button href="javascript:;" class="closepoup">No</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="whiteoverlay"></div>-->
+<!--</div>-->
+
+<!--<div class="creating_survey_process_popup cmn_sitepopup cmn_sitepopup showerror" >-->
+<!--    <div class="cmn_site_inn_popup con_popup" id="bktohmpg">-->
+<!--        <a href="javascript:;" class="closepoup"></a>-->
+<!--        <div class="cmn_field">-->
+<!--           The survey will not be sent out at this time but when they are ready you can send it via the client profile.-->
+<!--        </div>-->
+<!--        <div class="sub_field">-->
+<!--             <button type="button" class="closepoup" id="closepopup">Done</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="whiteoverlay"></div>-->
+<!--</div>-->
+
+{% endblock extrajs %}

@@ -1,0 +1,25 @@
+.client_intake_form h4 {
+    font-size: 18px;
+    line-height: 20px;
+    margin: 25px 0 20px;
+}
+.add_info_form {
+    margin-top: 40px;
+}
+/* form#clientintakeform .sub_field {
+    margin-top: 60px;
+} */
+form#clientintakeform .cmn_field {
+    margin: 15px 0;
+}
+.intakeformsuccpopup_inn p {
+    text-align: center;
+    margin: 0;
+}
+.intakeformsuccpopup_inn {
+    width: 450px;
+    padding: 40px 60px 60px;
+}
+.intakeformsuccpopup_inn h2 {
+    margin: 0 0 15px;
+}

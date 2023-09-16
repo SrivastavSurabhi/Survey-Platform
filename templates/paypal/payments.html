@@ -1,0 +1,131 @@
+
+
+  <!DOCTYPE html>
+  {% csrf_token %}
+  {% load static i18n %}
+  
+<html>
+<head>
+<meta charset="utf-8">
+<title>PayPal JS SDK</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/theme/paypal.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--Create an app and replace "YOUR_CLIENT_ID" with your client ID-->
+    <!-- <script src="https://www.paypal.com/sdk/js?client-id={{PAYPAL_CLIENT_ID}}&vault=true"> </script>  -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AVoRCvz4H-rmAB9UwGpjSUFUjI-xXsk4DuqJosXLsoia63frmaFXWKlPt1iXPcfRhq-YxNz30KtyRpeJ&currency=USD" data-sdk-integration-source="button-factory"></script>
+</head>
+
+    <body>
+      <!-- Set up a container element for the button -->
+      <input id="plan-id"  value={{plan}} hidden/> 
+      <section class="paypal_butt_sect">
+        <div class="center-wr">
+          <div class="paypal_button_inn">
+            <div id="paypal-button-container"></div>
+          </div>
+        </div>
+      </section><!-- end of paypal_butt_sect -->
+      <div class="payment_err_popup cmn_payment_popup">
+        <div class="payment_err_popup_inn cmn_payment_popup_inn">
+           <a href="{% url 'plan' %}" class="closepopup"><figure><img src="{% static 'images/theme/crossred.svg'%}"></figure></a>
+           <p>Sorry, your transaction could not be processed.</p>
+        </div>
+        <div class="whiteoverlay"></div>
+      </div><!-- end of payment_err_popup-->
+      <div class="payment_succ_popup cmn_payment_popup">
+        <div class="payment_succ_popup_inn cmn_payment_popup_inn">
+           <a href="{% url 'dashboard' %}" class="rightsymbol" id="succlink"><figure><img src="{% static 'images/theme/greenright_icon.svg'%}"></figure></a>
+           <p></p>
+        </div>
+        <div class="whiteoverlay"></div>
+      </div><!-- end of payment_succ_popup-->
+<script>
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+const plan = document.getElementById('plan-id').value
+paypal.Buttons({
+
+// Call your server to set up the transaction
+createOrder: function(data, actions) {
+                
+                return fetch('/payment/create/'+plan, {
+                    method: 'post',
+                    headers: {"X-CSRFToken": csrftoken}
+                }).then(function(res) {
+                    console.log(res)
+                    return res.json();
+                }).then(function(orderData) {
+                    console.log(orderData)
+                    return orderData.id;
+                });
+            },
+
+// Call your server to finalize the transaction
+onApprove: function(data, actions) {
+                return fetch('/payment/transaction/'+ data.orderID +'/'+plan, {
+                    method: 'post',
+                    headers: {"X-CSRFToken": csrftoken}
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(orderData) {
+                    // Three cases to handle:
+                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                    //   (2) Other non-recoverable errors -> Show a failure message
+                    //   (3) Successful transaction -> Show a success / thank you message
+
+                    // Your server defines the structure of 'orderData', which may differ
+                    var errorDetail = Array.isArray(orderData.details) && orderData.details[0];
+
+                    if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
+                        // Recoverable state, see: "Handle Funding Failures"
+                        // https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+                        return actions.restart();
+                    }
+
+                    if (errorDetail) {
+                        var msg = 'Sorry, your transaction could not be processed.';
+                        if (errorDetail.description) msg += '\n\n' + errorDetail.description;
+                        if (orderData.debug_id) msg += ' (' + orderData.debug_id + ')';
+                        // Show a failure message
+                        jQuery('.payment_err_popup').show();
+                        modalShow(true);
+                        // return alert(msg);
+                    }
+
+                    // Show a success message to the buyer
+                    // alert('Transaction completed by ' + orderData.payer.name.given_name);
+                    jQuery('.payment_succ_popup').show();
+                    modalShow(true);
+                    setTimeout(function(){
+                      jQuery("#succlink")[0].click()
+                    },3000);
+                    
+                    jQuery('.payment_succ_popup p').text('Transaction completed by ' + orderData.payer.name.given_name);
+                });
+            }
+
+
+        }).render('#paypal-button-container');
+</script>
+
+
+</body>
+</html>
+
+
